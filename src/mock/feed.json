@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "content": "오늘은 절약한 날!",
+    "price": 10000,
+    "priceOption": 0,
+    "createdAt": "2024-10-18",
+    "updatedAt": "2024-10-18"
+  },
+  {
+    "id": 2,
+    "userId": 1,
+    "content": "치킨을 먹었다! 맛있었다",
+    "price": 50000,
+    "priceOption": 0,
+    "createdAt": "2024-10-17",
+    "updatedAt": "2024-10-17"
+  },
+  {
+    "id": 3,
+    "userId": 2,
+    "content": "외식을 했다. 돈을 많이썻다!",
+    "price": 200000,
+    "priceOption": 0,
+    "createdAt": "2024-10-16",
+    "updatedAt": "2024-10-16"
+  },
+  {
+    "id": 4,
+    "userId": 2,
+    "content": "아버지 생신잔치를 했다!",
+    "price": 2000000,
+    "priceOption": 0,
+    "createdAt": "2024-10-16",
+    "updatedAt": "2024-10-16"
+  },
+  {
+    "id": 5,
+    "userId": 3,
+    "content": "다이어트를 해서 돈을 아꼈다!",
+    "price": 8000,
+    "priceOption": 0,
+    "createdAt": "2024-10-15",
+    "updatedAt": "2024-10-15"
+  }
+]
