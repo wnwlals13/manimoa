@@ -7,3 +7,10 @@ export interface FeedData {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UserData {
+  uid: number;
+  email: string;
+  name: string;
+  profileImg: string;
+}
