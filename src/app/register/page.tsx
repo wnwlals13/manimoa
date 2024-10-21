@@ -1,11 +1,12 @@
 'use client';
-import { ButtonComponent } from '@/components/ui/button';
-import { InputComponent } from '@/components/ui/input';
+
 import logo from '@/styles/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
 import { userRegister } from '@/lib/auth/registerUser';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export interface RegisterFormInputs {
   email: string;
@@ -27,7 +28,6 @@ export default function Page() {
 
   const onSubmit = (data: RegisterFormInputs) => {
     userRegister(data).then((res) => {
-      console.log(res);
       if (res.status === 201) {
         router.push('/login');
       } else if (res.status === 400) {
@@ -45,10 +45,9 @@ export default function Page() {
       <div className="w-full">
         <label htmlFor="email">이메일</label>
         <div className="relative">
-          <InputComponent
-            size="medium"
-            state={`${errors.email ? 'error' : 'default'}`}
-            placeholderText="이메일을 입력해주세요."
+          <Input
+            variant={`${errors.email ? 'error' : 'default'}`}
+            placeholder="이메일을 입력해주세요."
             {...register('email', {
               pattern: {
                 value: EMAIL_PATTERN,
@@ -65,10 +64,8 @@ export default function Page() {
       <div className="w-full">
         <label htmlFor="email">비밀번호</label>
         <div className="relative"></div>
-        <InputComponent
-          size="medium"
-          state="default"
-          placeholderText="비밀번호를 입력해주세요."
+        <Input
+          placeholder="비밀번호를 입력해주세요."
           type="password"
           {...register('password', {
             pattern: {
@@ -86,10 +83,8 @@ export default function Page() {
       <div className="w-full">
         <label htmlFor="email">이름</label>
         <div className="relative"></div>
-        <InputComponent
-          size="medium"
-          state="default"
-          placeholderText="이름을 입력해주세요."
+        <Input
+          placeholder="이름을 입력해주세요."
           {...register('name', { required: '이름을 입력해주세요.' })}
         />
         {errors.name && (
@@ -99,16 +94,14 @@ export default function Page() {
       <div className="w-full">
         <label htmlFor="email">다짐</label>
         <div className="relative"></div>
-        <InputComponent
-          size="medium"
-          state="default"
-          placeholderText="이루고 싶은 소비 다짐을 입력해주세요. (선택)"
+        <Input
+          placeholder="이루고 싶은 소비 다짐을 입력해주세요. (선택)"
           {...register('goal')}
         />
       </div>
-      <ButtonComponent intent="default" type="submit" disabled={false}>
+      <Button variant="default" size="full">
         회원가입
-      </ButtonComponent>
+      </Button>
     </form>
   );
 }

@@ -2,12 +2,12 @@
 
 import logo from '@/styles/logo.png';
 import Link from 'next/link';
-import { InputComponent } from '@/components/ui/input';
-import { ButtonComponent } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { userLogin } from '@/lib/auth/loginUser';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export interface LoginFormInputs {
   email: string;
@@ -24,7 +24,6 @@ export default function Page() {
     userLogin(data).then((res) => {
       if (res.status === 201) {
         router.push('/');
-        console.log('res->', res.user);
         setUser({
           uid: res.user.uid,
           email: res.user.email,
@@ -40,22 +39,15 @@ export default function Page() {
       onSubmit={handleSubmit(onSubmit)}
     >
       <img width={180} src={logo.src} alt="" />
-      <InputComponent
-        size="medium"
-        state="default"
-        placeholderText="이메일을 입력해주세요."
-        {...register('email')}
-      />
-      <InputComponent
-        size="medium"
-        state="default"
+      <Input placeholder="이메일을 입력해주세요." {...register('email')} />
+      <Input
         type="password"
-        placeholderText="비밀번호를 입력해주세요."
+        placeholder="비밀번호를 입력해주세요."
         {...register('password')}
       />
-      <ButtonComponent intent="default" type="submit">
+      <Button variant="default" size="full">
         로그인
-      </ButtonComponent>
+      </Button>
       <Link href={'/register'}>회원가입</Link>
     </form>
   );

@@ -22,6 +22,13 @@ export async function POST(req: Request) {
         throw new Error('비밀번호가 일치하지 않습니다.');
       }
 
+      const userInfo = {
+        uid: user[0].id,
+        email: user[0].email,
+        name: user[0].name,
+        profileImg: user[0].profile_img,
+      };
+
       // 사용자 인증 성공 시 JWT 생성
       const token = jwt.sign(
         { email },
@@ -31,23 +38,21 @@ export async function POST(req: Request) {
       const response = NextResponse.json({
         status: 201,
         message: '로그인 성공',
-        user: {
-          uid: user[0].uid,
-          email: user[0].email,
-          name: user[0].name,
-          profileImg: user[0].profile_img,
-        },
+        user: userInfo,
       });
 
       // 쿠키 설정
       response.cookies.set('token', token, {
         httpOnly: true,
       });
-      response.cookies.set('user', user[0].email);
+      response.cookies.set('user', JSON.stringify(userInfo), {
+        httpOnly: true,
+      }); // 직렬화하여 저장
 
       return response;
     } else {
       // 해당하는 이메일의 유저가 없다.
+      console.error('failed');
     }
   } catch (err) {
     console.error('Failed to login', err);

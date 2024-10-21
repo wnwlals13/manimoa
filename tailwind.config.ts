@@ -50,8 +50,17 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        main: { DEFAULT: 'hsl(var(--main))' },
-        subMain: { DEFAULT: 'hsl(var(--sub-main))' },
+        main: {
+          DEFAULT: 'hsl(var(--main))',
+          foreground: 'hsl(var(--main-foreground))',
+        },
+        submain: {
+          DEFAULT: 'hsl(var(--submain))',
+          foreground: 'hsl(var(--submain-foreground))',
+        },
+      },
+      width: {
+        custom: '600px',
       },
       maxWidth: {
         custom: '600px',

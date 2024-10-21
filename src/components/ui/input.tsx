@@ -1,43 +1,40 @@
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
-import React, { forwardRef } from 'react';
 
-const inputStyles = cva('border rounded-md p-2 w-full', {
-  variants: {
-    size: {
-      medium: 'text-base h-10',
+const inputVariants = cva(
+  'flex h-9 w-full rounded-md border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: 'border',
+        error: 'border-red-300',
+      },
     },
-    state: {
-      default: 'border-gray-300',
-      error: 'border-red-300',
+    defaultVariants: {
+      variant: 'default',
     },
   },
-  defaultVariants: {
-    size: 'medium',
-    state: 'default',
-  },
-});
+);
 
-type InputSize = 'medium';
-type InputState = 'default' | 'error';
-interface InputComponentProps {
-  size: InputSize;
-  state: InputState;
-  type?: string;
-  placeholderText: string;
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  variant?: 'default' | 'error';
 }
 
-export const InputComponent = forwardRef(function InputComponent(
-  { size, state, placeholderText, type = 'text', ...rest }: InputComponentProps,
-  ref: React.ForwardedRef<HTMLInputElement>,
-) {
-  return (
-    <input
-      type={type}
-      ref={ref}
-      maxLength={50}
-      className={inputStyles({ size, state })}
-      placeholder={placeholderText}
-      {...rest}
-    />
-  );
-});
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, variant = 'default', ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={cn(inputVariants({ variant, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  },
+);
+Input.displayName = 'Input';
+
+export { Input };

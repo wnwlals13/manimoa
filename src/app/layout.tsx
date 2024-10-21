@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main className="relative min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
+        <main className="relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
           {children}
         </main>
       </body>

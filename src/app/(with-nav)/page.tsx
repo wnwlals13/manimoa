@@ -3,8 +3,14 @@ import { FiPlus } from 'react-icons/fi';
 import mock from '@/mock/feed.json';
 import { FeedData } from '@/types';
 import { Suspense } from 'react';
+import { Button } from '@/components/ui/button';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 function AllFeeds() {
+  const userCookie = cookies().get('user') as RequestCookie;
+  if (!userCookie) redirect('/login'); // 로그인유저가 없으면 로그인페이지 리다이렉트
   return (
     <div>
       {mock.map((item: FeedData) => (
@@ -24,9 +30,12 @@ export default function Home() {
       <Suspense fallback={<div>loading...</div>}>
         <AllFeeds />
       </Suspense>
-      <button className="fixed custom:right-[calc((100vw-570px)/2)] right-5 bottom-20 rounded-full flex justify-center items-center h-[50px] w-[50px] bg-main shadow-lg z-10">
+      <Button
+        asChild
+        className="fixed custom:right-[calc((100vw-570px)/2)] right-5 bottom-20 rounded-full flex justify-center items-center h-[50px] w-[50px] shadow-lg z-10"
+      >
         <FiPlus color="white" size="25" />
-      </button>
+      </Button>
     </>
   );
 }

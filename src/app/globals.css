@@ -38,7 +38,9 @@ html {
     --radius: 0.5rem;
 
     --main: 220, 100%, 62%;
-    --sub-main: 154, 58%, 48%;
+    --main-foreground: 0 0% 98%;
+    --submain: 154, 58%, 48%;
+    --submain-foreground: 0 0% 98%;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -83,5 +85,14 @@ html {
   .swiper-button-next:after,
   .swiper-button-prev:after {
     font-size: 15px !important;
+  }
+  .profile-btn::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
   }
 }

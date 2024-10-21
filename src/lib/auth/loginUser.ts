@@ -14,7 +14,9 @@ export async function userLogin(data: LoginFormInputs) {
     if (!response.ok) {
       console.error('Error');
     }
-    return await response.json();
+    const result = await response.json();
+
+    return result;
   } catch (err) {
     console.error('Error', err);
   }
