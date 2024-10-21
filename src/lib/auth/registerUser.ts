@@ -1,14 +1,11 @@
 import { RegisterFormInputs } from '@/app/register/page';
 
 export async function userRegister(data: RegisterFormInputs) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/auth/register`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    },
-  );
+  const response = await fetch(`/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
 
   if (!response.ok) {
     console.error(`Error during register user : ${response.status}`);
