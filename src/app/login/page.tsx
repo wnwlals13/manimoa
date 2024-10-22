@@ -3,7 +3,7 @@
 import logo from '@/styles/logo.png';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { userLogin } from '@/lib/auth/loginUser';
+import { userLogin } from '@/app/actions/user-login';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
