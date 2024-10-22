@@ -21,7 +21,8 @@ export default function Page() {
     defaultValues: { email: '', password: '' },
   });
   const onSubmit = (data: LoginFormInputs) => {
-    userLogin(data).then((res) => {
+    const login = async () => {
+      const res = await userLogin(data);
       if (res.status === 201) {
         router.push('/');
         setUser({
@@ -31,7 +32,8 @@ export default function Page() {
           profileImg: res.user.profileImg,
         });
       }
-    });
+    };
+    login();
   };
   return (
     <form
