@@ -23,6 +23,7 @@ export default function Page() {
   const onSubmit = (data: LoginFormInputs) => {
     const login = async () => {
       const res = await userLogin(data);
+      console.log('login page =>', res);
       if (res.status === 201) {
         router.push('/');
         setUser({
