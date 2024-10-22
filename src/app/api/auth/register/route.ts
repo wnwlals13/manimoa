@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     if (rows.length > 0) {
       const existingUser = rows[0] as RowDataPacket[];
-      console.log(existingUser, existingUser.length);
+
       if (existingUser.length > 0) {
         console.error('이미 등록된 이메일입니다.');
         return NextResponse.json({

@@ -9,17 +9,10 @@ import { FiSearch } from 'react-icons/fi';
 import { FiMessageCircle } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 
-export default function Navigation({
-  token,
-  cookies,
-}: {
-  token?: string;
-  cookies?: UserData;
-}) {
+export default function Navigation({ cookies }: { cookies?: UserData }) {
   const { user, setUser } = useAuthStore();
   useEffect(() => {
     if (cookies) setUser(cookies);
-    console.log(token);
   }, [cookies]);
   return (
     <nav className="fixed bottom-0 w-full max-w-custom flex justify-between p-5 bg-white shadow-2xl z-10">
