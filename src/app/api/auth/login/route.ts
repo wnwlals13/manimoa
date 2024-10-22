@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       response.cookies.set('user', JSON.stringify(userInfo), {
         httpOnly: true,
       }); // 직렬화하여 저장
-
+      console.log('response =>', response);
       return response;
     } else {
       // 해당하는 이메일의 유저가 없다.
