@@ -19,7 +19,6 @@ export default function Navigation({
   const { user, setUser } = useAuthStore();
   useEffect(() => {
     if (cookies) setUser(cookies);
-    console.log(token);
   }, [cookies]);
   return (
     <nav className="fixed bottom-0 w-full max-w-custom flex justify-between p-5 bg-white shadow-2xl z-10">
