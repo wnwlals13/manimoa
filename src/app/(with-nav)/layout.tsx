@@ -1,19 +1,15 @@
 import Header from '@/components/common/header';
 import Navigation from '@/components/common/navigation';
-import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
-import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
 
 export default function Layout({ children }: { children: ReactNode }) {
-  const users = cookies().get('user') as RequestCookie;
-
   return (
-    <>
+    <div className="flex-1 flex flex-col justify-between">
       <Header />
-      <div className="w-full p-default pt-[70px] pb-[100px] max-w-custom">
+      <div className="flex-1 flex flex-col w-full p-default pt-[60px]">
         {children}
       </div>
-      <Navigation cookies={users ? JSON.parse(users.value) : ''} />
-    </>
+      <Navigation />
+    </div>
   );
 }

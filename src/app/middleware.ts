@@ -1,3 +1,4 @@
+import { decrypt } from '@/app/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 
 const allowedOrigins = ['https://acme.com', 'https://my-app.org'];
@@ -7,7 +8,8 @@ const corsOptions = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  console.log('middle ware start');
   // Check the origin from the request
   const origin = request.headers.get('origin') ?? '';
   const isAllowedOrigin = allowedOrigins.includes(origin);
@@ -21,6 +23,14 @@ export function middleware(request: NextRequest) {
       ...corsOptions,
     };
     return NextResponse.json({}, { headers: preflightHeaders });
+  }
+
+  // accessToken 확인
+  const token = request.cookies.get('accessToken')?.value;
+  const session = await decrypt(token);
+  console.log('? middleware session =>', session);
+  if (!session) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   // Handle simple requests
@@ -38,5 +48,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/:path*', '/api/:path*'],
 };

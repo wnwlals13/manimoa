@@ -24,43 +24,43 @@ export async function POST(req: Request) {
       const existingUser = rows[0] as RowDataPacket[];
 
       if (existingUser.length > 0) {
-        console.error('이미 등록된 이메일입니다.');
+        // 중복 사용자 리턴
         return NextResponse.json({
           status: 400,
           message: '이미 등록된 이메일입니다.',
         });
-      }
-
-      // 2. 비밀번호 해시
-      const salt = await bcrypt.genSalt(10);
-      const hashedPwd = await bcrypt.hash(password, salt);
-
-      // 3. 새로운 사용자 생성
-      const res: [QueryResult, FieldPacket[]] = await (
-        await db
-      ).query('INSERT INTO users (email, password, name) VALUES (?, ?, ?)', [
-        email,
-        hashedPwd,
-        name,
-      ]);
-
-      const newUser = res[0] as ResultSetHeader;
-      const now_insert_id = newUser.insertId;
-      if (goal && now_insert_id) {
-        await (
-          await db
-        ).query(
-          'INSERT INTO user_expense_goals (user_id, content) VALUES (?, ?)',
-          [now_insert_id, goal],
-        );
-      }
-
-      // 4. 성공 리턴
-      if (res) {
-        return NextResponse.json({ status: 201, message: '회원가입 성공' });
       } else {
-        console.error(`Failed during register user :`, res);
-        return NextResponse.json({ status: 500, message: '회원가입 실패' });
+        // 2. 비밀번호 해시
+        const salt = await bcrypt.genSalt(10);
+        const hashedPwd = await bcrypt.hash(password, salt);
+
+        // 3. 새로운 사용자 생성
+        const res: [QueryResult, FieldPacket[]] = await (
+          await db
+        ).query('INSERT INTO users (email, password, name) VALUES (?, ?, ?)', [
+          email,
+          hashedPwd,
+          name,
+        ]);
+
+        const newUser = res[0] as ResultSetHeader;
+        const now_insert_id = newUser.insertId;
+        if (goal && now_insert_id) {
+          await (
+            await db
+          ).query('INSERT INTO user_goals (user_id, content) VALUES (?, ?)', [
+            now_insert_id,
+            goal,
+          ]);
+        }
+
+        // 4. 성공 리턴
+        if (res) {
+          return NextResponse.json({ status: 201, message: '회원가입 성공' });
+        } else {
+          console.error(`Failed during register user :`, res);
+          return NextResponse.json({ status: 500, message: '회원가입 실패' });
+        }
       }
     }
   } catch (err) {

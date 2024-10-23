@@ -21,13 +21,14 @@ export default function Page() {
     register,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isLoading },
   } = useForm({
     defaultValues: { email: '', password: '', name: '', goal: '' },
   });
 
   const onSubmit = (data: RegisterFormInputs) => {
     userRegister(data).then((res) => {
+      console.log(res);
       if (res.status === 201) {
         router.push('/login');
       } else if (res.status === 400) {
@@ -65,6 +66,7 @@ export default function Page() {
         <label htmlFor="email">비밀번호</label>
         <div className="relative"></div>
         <Input
+          variant={`${errors.password ? 'error' : 'default'}`}
           placeholder="비밀번호를 입력해주세요."
           type="password"
           {...register('password', {
@@ -84,6 +86,7 @@ export default function Page() {
         <label htmlFor="email">이름</label>
         <div className="relative"></div>
         <Input
+          variant={`${errors.name ? 'error' : 'default'}`}
           placeholder="이름을 입력해주세요."
           {...register('name', { required: '이름을 입력해주세요.' })}
         />
@@ -99,7 +102,7 @@ export default function Page() {
           {...register('goal')}
         />
       </div>
-      <Button variant="default" size="full">
+      <Button variant="default" size="full" disabled={isLoading}>
         회원가입
       </Button>
     </form>
