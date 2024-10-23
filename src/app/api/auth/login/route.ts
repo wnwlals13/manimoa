@@ -8,6 +8,7 @@ export async function POST(req: Request) {
   const db = await conn();
   try {
     const data = await req.json();
+    console.log('user login post =>', req, data);
     const { email, password } = data;
 
     const rows: [QueryResult, FieldPacket[]] = await db.query(
@@ -36,8 +37,8 @@ export async function POST(req: Request) {
             email: user[0].email,
             name: user[0].name,
             profileImg: user[0].profile_img,
-            accessToken: accessToken,
           },
+          accessToken: accessToken,
         });
 
         // 쿠키 설정
@@ -45,6 +46,16 @@ export async function POST(req: Request) {
           httpOnly: true,
           expires: 1,
         });
+        response.cookies.set(
+          'user',
+          JSON.stringify({
+            uid: user[0].id,
+            email: user[0].email,
+            name: user[0].name,
+            profileImg: user[0].profile_img,
+            accessToken: accessToken,
+          }),
+        );
 
         return response;
       }

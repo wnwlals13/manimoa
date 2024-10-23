@@ -1,26 +1,30 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const db = await conn();
-    const data = new URL(request.url);
-    const id = data.searchParams.get('q');
+    const searchParams = request.nextUrl.searchParams;
+    const id = searchParams.get('q');
 
     const res: [QueryResult, FieldPacket[]] = await db.query(
-      `SELECT id, email, password, name, profile_img FROM users WHERE email = ?`,
+      `SELECT id, email, password, name, profile_img FROM users WHERE id = ?`,
       [id],
     );
     const rows = res[0] as RowDataPacket;
 
-    return NextResponse.json({
-      status: 201,
-      message: '조회 성공',
-      data: rows[0],
-    });
+    if (rows) {
+      return NextResponse.json({
+        status: 201,
+        message: '조회 성공',
+        data: rows[0],
+      });
+    } else {
+      return NextResponse.next();
+    }
   } catch (err) {
     console.error(err);
   }

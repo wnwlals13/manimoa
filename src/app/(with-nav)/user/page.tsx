@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { FiCheck } from 'react-icons/fi';
 
-async function UserInfo({ loginUser }: { loginUser: SessionPayload }) {
+async function UserInfo({ userId, email }: { userId: string; email: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/profile?q=${loginUser.uid}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/profile?q=${userId}`,
     {
       method: 'get',
       headers: {
@@ -17,9 +17,9 @@ async function UserInfo({ loginUser }: { loginUser: SessionPayload }) {
       },
     },
   );
-  const {
-    data: { followCnt, followingCnt },
-  } = await response.json();
+  const { data } = await response.json();
+  const followCnt = data.followCnt;
+  const followingCnt = data.followingCnt;
 
   return (
     <div className="flex flex-col gap-2 p-default">
@@ -33,7 +33,7 @@ async function UserInfo({ loginUser }: { loginUser: SessionPayload }) {
                 style={{ width: '50px', height: '50px' }}
               />
             </div>
-            <p>{loginUser.email}</p>
+            <p>{email}</p>
           </div>
           <div className="flex gap-2">
             <div className="flex">
@@ -57,18 +57,13 @@ async function UserInfo({ loginUser }: { loginUser: SessionPayload }) {
   );
 }
 
-async function ExpenseGoal({ loginUser }: { loginUser: SessionPayload }) {
+async function ExpenseGoal({ userId }: { userId: string }) {
+  // 소비 목표 금액 & 다짐 정보 조회
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal?q=${loginUser.uid}`,
-    {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal?q=${userId}`,
+    { cache: 'no-store' },
   );
-  const { goals } = await response.json();
-
+  const { goals, price } = await response.json();
   return (
     <>
       <Link
@@ -78,7 +73,7 @@ async function ExpenseGoal({ loginUser }: { loginUser: SessionPayload }) {
         <h3 className="font-bold mb-2">이번 달의 소비 목표!</h3>
         <div className="flex items-center gap-2">
           <div className="bg-white h-2 rounded-lg flex-1" />
-          <p>10/100</p>
+          <p>10/{price}</p>
         </div>
         <p>👏 당신은 절약왕! 아낀만큼 주변사람들과의 관계도 챙겨보세요!</p>
       </Link>
@@ -98,13 +93,16 @@ async function ExpenseGoal({ loginUser }: { loginUser: SessionPayload }) {
 export default async function Page() {
   const session = cookies().get('accessToken')?.value;
   const loginUser = (await decrypt(session)) as SessionPayload;
+
+  const { uid = '', email = '' } = loginUser;
+
   return (
     <>
       <Suspense fallback={<div>loading....</div>}>
-        <UserInfo loginUser={loginUser} />
+        <UserInfo userId={uid} email={email} />
       </Suspense>
       <Suspense fallback={<div>loading...</div>}>
-        <ExpenseGoal loginUser={loginUser} />
+        <ExpenseGoal userId={uid} />
       </Suspense>
       <div>{/* 월별 feed */}</div>
     </>

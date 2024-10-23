@@ -20,14 +20,18 @@ export default function Page() {
   const { user, setUser } = useAuthStore();
   const [tempName, setTempName] = useState<string>(user?.name || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imgUrl, setImgUrl] = useState('');
+
+  // const [imgUrl, setImgUrl] = useState('');
+  const [tempFile, setTempFile] = useState<File>();
+
   const { register, handleSubmit, setValue } = useForm<ProfileFormInputs>({
-    defaultValues: { profileImgUrl: '', name: user?.name, email: user?.email },
+    defaultValues: { name: user?.name, email: user?.email },
   });
 
   const { mutate: updateUser } = useMutation({
     mutationFn: updateUserProfile,
-    onSuccess: () => {
+    onSuccess: (res) => {
+      console.log(res);
       const userItem: UserData = {
         ...user,
         email: user?.email || '',
@@ -43,15 +47,24 @@ export default function Page() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const imgUrl = URL.createObjectURL(file);
-      setImgUrl(imgUrl);
-      setValue('profileImgUrl', imgUrl);
-    }
+
+    if (!file) return;
+    setTempFile(file); // state 설정
+
+    // 이미지 화면에 띄우기
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
   };
 
   const onSubmit = (data: ProfileFormInputs) => {
-    updateUser(data);
+    // const formData = new FormData();
+    // if (tempFile) {
+    //   // formdata 생성
+    //   formData.append('image', tempFile);
+    // }
+    console.log(data, tempFile);
+    if (data) updateUser(data);
   };
 
   useEffect(() => {
@@ -70,7 +83,7 @@ export default function Page() {
         <div className="h-[100px] w-full flex justify-center">
           <div className="profile-btn w-[100px] h-[100px] bg-gray-300 rounded-full absolute">
             <div className="profile-btn w-[100px] h-[100px] rounded-full border border-gray-200 absolute overflow-hidden flex justify-center">
-              <img style={{ width: '100%' }} src={imgUrl}></img>
+              <img style={{ width: '100%' }}></img>
             </div>
             <div className="absolute bottom-0 right-0 p-2 border border-gray-300 rounded-full bg-white cursor-pointer">
               <div onClick={handleClick}>

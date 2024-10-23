@@ -8,9 +8,13 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 
+export interface goalsArrayProps {
+  value: string;
+}
+
 interface ExpenseFormInputs {
   month_price: string;
-  month_goals: { value: string }[];
+  month_goals: goalsArrayProps[];
 }
 
 export default function Page() {
@@ -29,14 +33,11 @@ export default function Page() {
 
   const { mutate } = useMutation({
     mutationFn: async (data: ExpenseFormInputs) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal/edit`,
-        {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        },
-      );
+      const response = await fetch(`/api/user/goal/edit`, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
       return await response.json();
     },
   });
@@ -49,35 +50,28 @@ export default function Page() {
 
   useEffect(() => {
     const getGoals = async () => {
-      const result = await fetch(
+      // 소비 목표 금액 & 다짐 정보 조회
+      const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal?q=${user?.uid}`,
-        { method: 'get', headers: { 'Content-Type': 'application/json' } },
+        { cache: 'no-cache' },
       );
-      const data = await result.json();
+      const { goals, price } = await response.json();
 
-      if (data.goals) {
-        const datas = data.goals.map((item: GoalData) => {
-          return item.content;
-        });
-        const result_goals = data.goals.map((item: GoalData) => {
-          return { value: item.content };
-        });
-        setTempGoal(datas);
-        setValue('month_goals', datas);
-        console.log('data goals =>', result_goals);
-      }
-      if (data.price) {
-        // console.log(data.goals, data.price[0], tempPrice);
-        setTempPrice(data.price[0]);
-        setValue('month_price', data.price[0]);
-      }
+      // goals 형태 가공하기
+      const values = goals.map((item: GoalData) => {
+        return { value: item.content };
+      });
+
+      // tempGoal 형태 가공하기
+      const values_temp = goals.map((item: GoalData) => item.content);
+
+      setTempGoal(values_temp);
+      setTempPrice(price[0].price);
+      setValue('month_goals', values);
+      setValue('month_price', price[0].price);
     };
     getGoals();
   }, []);
-
-  useEffect(() => {
-    console.log('/expense-goals/', tempGoal, fields, tempPrice);
-  }, [tempGoal]);
 
   return (
     <form
@@ -88,6 +82,7 @@ export default function Page() {
         <div>
           <h3 className="mb-2">이번 달 목표 소비금액</h3>
           <Input
+            defaultValue={tempPrice}
             placeholder="예) 1,000,000"
             type="number"
             {...register('month_price')}
@@ -114,13 +109,14 @@ export default function Page() {
           <div>
             {fields &&
               fields.map((field, idx) => (
-                <Input
-                  key={idx}
-                  // value={field.value}
-                  defaultValue={field.value}
-                  className="mb-2 border"
-                  {...register(`month_goals.${idx}`)}
-                />
+                <li key={field.id} className="no-underline list-none">
+                  <Input
+                    // value={field.value}
+                    defaultValue={tempGoal[idx]}
+                    className="mb-2 border"
+                    {...register(`month_goals.${idx}.value`)}
+                  />
+                </li>
               ))}
           </div>
         </div>

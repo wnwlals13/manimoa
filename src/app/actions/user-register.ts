@@ -6,17 +6,14 @@ import { cookies } from 'next/headers';
 export async function userRegister(data: RegisterFormInputs) {
   try {
     // api 호출
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${cookies().get('token')}`,
-        },
-        body: JSON.stringify(data),
+    const response = await fetch(`/api/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${cookies().get('token')}`,
       },
-    );
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       console.error(`Error during register user : ${response.status}`);
