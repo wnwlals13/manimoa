@@ -23,8 +23,8 @@ export async function userLogin(data: LoginFormInputs) {
     const result = await response.json();
 
     if (result.user) {
-      cookies().set('accessToken', result.user.accessToken);
-      cookies().set('email', result.user.email);
+      cookies().set('accessToken', result.accessToken);
+      cookies().set('user', JSON.stringify(result.user));
     }
 
     return result;

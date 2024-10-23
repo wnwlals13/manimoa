@@ -25,22 +25,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
   // 유저 상태 체크
   checkLoginStatus: async () => {
     const token = Cookies.get('accessToken');
-    const email = Cookies.get('email');
-
-    if (token) {
-      try {
-        const resposne = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/info?q=${email}`,
+    const userCookie = Cookies.get('user');
+    const user = JSON.parse(userCookie as string);
+    try {
+      if (token) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/info?q=${user.uid}`,
         );
-        const info = await resposne.json();
-
-        if (info.data) {
+        const rows = await response.json();
+        if (rows && rows.data) {
           set({
             user: {
-              uid: info.data.id,
-              email: info.data.email,
-              name: info.data.name,
-              profileImg: info.data.profileImg,
+              uid: rows.data.id,
+              email: rows.data.email,
+              name: rows.data.name,
+              profileImg: rows.data.profileImg,
             },
             isLogin: true,
           });
@@ -48,10 +47,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
           set({ user: null, isLogin: false });
           console.error('유저 정보를 가져올 수 없습니다.');
         }
-      } catch (error) {
-        console.error('유저 정보를 가져오는 중 에러가 발생했습니다.', error);
-        set({ user: null, isLogin: false });
       }
+    } catch (err) {
+      console.error(err);
     }
   },
   setGoals: (goals: GoalData[]) => {
@@ -59,6 +57,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   logout: () => {
     Cookies.remove('accessToken');
+    Cookies.remove('user');
     set({ user: null, isLogin: false });
   },
 }));

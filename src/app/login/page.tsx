@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Cookies from 'js-cookie';
 
 export interface LoginFormInputs {
   email: string;
@@ -32,7 +31,6 @@ export default function Page() {
     const login = async () => {
       const res = await userLogin(data);
       if (res.status === 201) {
-        Cookies.set('accessToken', res.user.accessToken);
         setUser({
           uid: res.user.uid,
           email: res.user.email,
