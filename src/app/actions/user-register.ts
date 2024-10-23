@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 
 export async function userRegister(data: RegisterFormInputs) {
   try {
+    // api 호출
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`,
       {
@@ -21,10 +22,11 @@ export async function userRegister(data: RegisterFormInputs) {
       console.error(`Error during register user : ${response.status}`);
       throw new Error('회원가입 실패');
     }
+    const result = await response.json();
 
-    console.log(`회원가입 성공 : ${response.status}`);
-    return response.json();
+    return result;
   } catch (err) {
     console.error(err);
+    throw new Error('회원가입 실패');
   }
 }

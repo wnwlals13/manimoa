@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
 import { conn } from '@/utils/db';
 import bcrypt from 'bcrypt';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
+import { encrypt } from '@/app/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();
@@ -18,41 +18,43 @@ export async function POST(req: Request) {
     if (rows.length > 0) {
       const user = rows[0] as RowDataPacket[];
       const isMatch = await bcrypt.compare(password, user[0].password);
+
       if (!isMatch) {
-        throw new Error('비밀번호가 일치하지 않습니다.');
+        return NextResponse.json({
+          status: 401,
+          message: '비밀번호가 일치하지 않습니다.',
+        });
+      } else {
+        // 사용자 인증 성공 시 JWT 생성
+        const accessToken = await encrypt({ email, uid: user[0].id });
+
+        const response = NextResponse.json({
+          status: 201,
+          message: '로그인 성공',
+          user: {
+            uid: user[0].id,
+            email: user[0].email,
+            name: user[0].name,
+            profileImg: user[0].profile_img,
+            accessToken: accessToken,
+          },
+        });
+
+        // 쿠키 설정
+        response.cookies.set('accessToken', JSON.stringify(accessToken), {
+          httpOnly: true,
+          expires: 1,
+        });
+
+        return response;
       }
-
-      const userInfo = {
-        uid: user[0].id,
-        email: user[0].email,
-        name: user[0].name,
-        profileImg: user[0].profile_img,
-      };
-
-      // 사용자 인증 성공 시 JWT 생성
-      const token = jwt.sign(
-        { email },
-        `${process.env.NEXT_PUBLIC_JWT_TOKEN}`,
-        { expiresIn: '1h' },
-      );
-      const response = NextResponse.json({
-        status: 201,
-        message: '로그인 성공',
-        user: userInfo,
-      });
-
-      // 쿠키 설정
-      response.cookies.set('token', token, {
-        httpOnly: true,
-      });
-      response.cookies.set('user', JSON.stringify(userInfo), {
-        httpOnly: true,
-      }); // 직렬화하여 저장
-      console.log('response =>', response);
-      return response;
     } else {
       // 해당하는 이메일의 유저가 없다.
-      console.error('failed');
+      console.error('가입되지 않은 유저입니다.');
+      return NextResponse.json({
+        status: 401,
+        message: '가입되지 않은 유저입니다.',
+      });
     }
   } catch (err) {
     console.error('Failed to login', err);

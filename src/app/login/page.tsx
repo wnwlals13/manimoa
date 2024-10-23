@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import Cookies from 'js-cookie';
 
 export interface LoginFormInputs {
   email: string;
@@ -17,21 +18,30 @@ export interface LoginFormInputs {
 export default function Page() {
   const { setUser } = useAuthStore();
   const router = useRouter();
-  const { register, handleSubmit } = useForm({
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm({
     defaultValues: { email: '', password: '' },
   });
+
   const onSubmit = (data: LoginFormInputs) => {
     const login = async () => {
       const res = await userLogin(data);
-      console.log('login page =>', res);
       if (res.status === 201) {
-        router.push('/');
+        Cookies.set('accessToken', res.user.accessToken);
         setUser({
           uid: res.user.uid,
           email: res.user.email,
           name: res.user.name,
           profileImg: res.user.profileImg,
         });
+        router.push('/');
+      } else if (res.status === 401) {
+        setError('password', { message: res.message });
       }
     };
     login();
@@ -42,12 +52,27 @@ export default function Page() {
       onSubmit={handleSubmit(onSubmit)}
     >
       <img width={180} src={logo.src} alt="" />
-      <Input placeholder="이메일을 입력해주세요." {...register('email')} />
-      <Input
-        type="password"
-        placeholder="비밀번호를 입력해주세요."
-        {...register('password')}
-      />
+      <div className="w-full">
+        <label htmlFor="email">이메일</label>
+        <Input
+          variant={`${errors.email ? 'error' : 'default'}`}
+          placeholder="이메일을 입력해주세요."
+          {...register('email', { required: true })}
+        />
+        {errors.email && <p>{errors.email.message}</p>}
+      </div>
+      <div className="w-full">
+        <label htmlFor="password">비밀번호</label>
+        <Input
+          variant={`${errors.password ? 'error' : 'default'}`}
+          type="password"
+          placeholder="비밀번호를 입력해주세요."
+          {...register('password', { required: true })}
+        />
+        {errors.password && (
+          <p className="text-red-500 text-sm">{errors.password.message}</p>
+        )}
+      </div>
       <Button variant="default" size="full">
         로그인
       </Button>

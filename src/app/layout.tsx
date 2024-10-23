@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import QueryProviders from './provider';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,9 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <main className="relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
-          {children}
+      <body className="h-screen">
+        <main className="flex flex-col relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
+          <QueryProviders>{children}</QueryProviders>
         </main>
       </body>
     </html>

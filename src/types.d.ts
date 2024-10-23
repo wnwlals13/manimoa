@@ -9,10 +9,10 @@ export interface FeedData {
 }
 
 export interface UserData {
-  uid: number;
+  uid?: string;
   email: string;
-  name: string;
-  profileImg: string | null;
+  name?: string;
+  profileImg?: string | null;
 }
 
 export interface GoalData {
