@@ -43,14 +43,14 @@ export default function Page() {
             {!showPrice ? '금액 보이기' : '금액 숨기기'}
           </Toggle>
         </div>
-
-        <textarea
-          name="content"
-          id="content"
-          placeholder="오늘 당신의 소비내용을 기록해주세요."
-          className="min-h-44 h-44  resize-none"
-        ></textarea>
-
+        <div className="w-full">
+          <textarea
+            name="content"
+            id="content"
+            placeholder="오늘 당신의 소비내용을 기록해주세요."
+            className="min-h-44 h-44 resize-none w-full p-2"
+          ></textarea>
+        </div>
         {imgs && imgs.map((item, idx) => <div key={idx}>{item}</div>)}
         <div>
           <FiImage

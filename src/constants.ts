@@ -3,6 +3,6 @@ export const PASSWORD_PATTERN =
   /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}/i;
 export const CUSTOM_NAV_PATHS: Record<string, string> = {
   '/user/edit': '프로필 수정',
-  '/user/expense-goals/edit': '목표 설정',
+  '/user/edit-goals': '목표 설정',
   '/feed/add-new': '새 글쓰기',
 } as const;
