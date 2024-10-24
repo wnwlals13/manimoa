@@ -4,7 +4,7 @@ import logo from '@/styles/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
 // import { userRegister } from '@/app/actions/user-register';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
