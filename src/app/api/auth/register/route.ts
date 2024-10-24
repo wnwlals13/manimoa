@@ -13,6 +13,7 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
     const { email, password, name, goal } = data;
+    console.log('? : post request', email);
 
     // 1. 사용자 중복 확인
     const rows: [QueryResult, FieldPacket[]] = await db.query(
@@ -46,12 +47,17 @@ export async function POST(req: Request) {
         const newUser = res[0] as ResultSetHeader;
         const now_insert_id = newUser.insertId;
         if (goal && now_insert_id) {
-          await (
-            await db
-          ).query('INSERT INTO user_goals (user_id, content) VALUES (?, ?)', [
-            now_insert_id,
-            goal,
-          ]);
+          try {
+            await (
+              await db
+            ).query('INSERT INTO user_goals (user_id, content) VALUES (?, ?)', [
+              now_insert_id,
+              goal,
+            ]);
+          } catch (err) {
+            console.error('사용자의 목표 다짐을 추가하던 중 에러 발생', err);
+            throw new Error();
+          }
         }
 
         // 4. 성공 리턴
@@ -67,7 +73,7 @@ export async function POST(req: Request) {
       }
     }
   } catch (err) {
-    console.error(`Error during register user ${err}`);
+    console.error(`Error during register user, in api route : ${err}`);
     throw new Error();
   }
 }

@@ -21,6 +21,11 @@ export async function GET(request: NextRequest) {
         status: 201,
         message: '조회 성공',
         data: rows[0],
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
       });
     } else {
       return NextResponse.next();
