@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Cookies from 'js-cookie';
+import { userLogin } from '../actions/user-login';
 
 export interface LoginFormInputs {
   email: string;
@@ -30,30 +30,7 @@ export default function Page() {
   const onSubmit = (data: LoginFormInputs) => {
     const login = async () => {
       try {
-        const response = await fetch(
-          `${window.location.origin}/api/auth/login`,
-          {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          },
-        );
-
-        if (!response.ok) {
-          console.error('Error');
-          throw new Error();
-        }
-        const result = await response.json();
-
-        if (result.user) {
-          Cookies.set('accessToken', result.accessToken);
-          Cookies.set('user', JSON.stringify(result.user));
-        }
-
-        console.log('fetch user login', result);
-
+        const result = await userLogin(data);
         if (result.status === 201) {
           setUser({
             uid: result.user.uid,
