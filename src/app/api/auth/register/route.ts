@@ -55,10 +55,13 @@ export async function POST(req: Request) {
         }
 
         // 4. 성공 리턴
-        if (res) {
+        if (newUser) {
           return NextResponse.json({ status: 201, message: '회원가입 성공' });
         } else {
-          console.error(`Failed during register user :`, res);
+          console.error(
+            `사용자를 추가하는 과정에 문제가 발생했습니다. :`,
+            newUser,
+          );
           return NextResponse.json({ status: 500, message: '회원가입 실패' });
         }
       }

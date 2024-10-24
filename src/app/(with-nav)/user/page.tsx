@@ -64,6 +64,7 @@ async function ExpenseGoal({ userId }: { userId: string }) {
     { cache: 'no-store' },
   );
   const { goals, price } = await response.json();
+
   return (
     <>
       <Link
@@ -73,7 +74,7 @@ async function ExpenseGoal({ userId }: { userId: string }) {
         <h3 className="font-bold mb-2">이번 달의 소비 목표!</h3>
         <div className="flex items-center gap-2">
           <div className="bg-white h-2 rounded-lg flex-1" />
-          <p>10/{price}</p>
+          <p>10/{price[0].price}</p>
         </div>
         <p>👏 당신은 절약왕! 아낀만큼 주변사람들과의 관계도 챙겨보세요!</p>
       </Link>
@@ -94,15 +95,13 @@ export default async function Page() {
   const session = cookies().get('accessToken')?.value;
   const loginUser = (await decrypt(session)) as SessionPayload;
 
-  const { uid = '', email = '' } = loginUser;
-
   return (
     <>
       <Suspense fallback={<div>loading....</div>}>
-        <UserInfo userId={uid} email={email} />
+        <UserInfo userId={loginUser.uid || ''} email={loginUser.email || ''} />
       </Suspense>
       <Suspense fallback={<div>loading...</div>}>
-        <ExpenseGoal userId={uid} />
+        <ExpenseGoal userId={loginUser.uid || ''} />
       </Suspense>
       <div>{/* 월별 feed */}</div>
     </>
