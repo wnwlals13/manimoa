@@ -3,7 +3,8 @@
 import logo from '@/styles/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
-import { userRegister } from '@/app/actions/user-register';
+// import { userRegister } from '@/app/actions/user-register';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,15 +28,38 @@ export default function Page() {
   });
 
   const onSubmit = (data: RegisterFormInputs) => {
-    userRegister(data).then((res) => {
-      console.log(res);
-      if (res.status === 201) {
-        router.push('/login');
-      } else if (res.status === 400) {
-        setError('email', { message: res.message });
-        return;
+    const register = async () => {
+      try {
+        // api 호출
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          },
+        );
+
+        if (!response.ok) {
+          console.error(`Error during register user : ${response.status}`);
+          throw new Error('회원가입 실패');
+        }
+        const result = await response.json();
+
+        if (result.status === 201) {
+          router.push('/login');
+        } else if (result.status === 400) {
+          setError('email', { message: result.message });
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        throw new Error('회원가입 실패');
       }
-    });
+    };
+    register();
   };
   return (
     <form
