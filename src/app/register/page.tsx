@@ -8,6 +8,7 @@ import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { userRegister } from '../actions/user-register';
 
 export interface RegisterFormInputs {
   email: string;
@@ -30,23 +31,7 @@ export default function Page() {
   const onSubmit = (data: RegisterFormInputs) => {
     const register = async () => {
       try {
-        // api 호출
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          },
-        );
-
-        if (!response.ok) {
-          console.error(`Error during register user : ${response.status}`);
-          throw new Error('회원가입 실패');
-        }
-        const result = await response.json();
+        const result = await userRegister(data);
 
         if (result.status === 201) {
           router.push('/login');
