@@ -4,6 +4,8 @@ import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
 import { encrypt } from '@/app/lib/session';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   const db = await conn();
   try {

@@ -3,11 +3,11 @@
 import logo from '@/styles/logo.png';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { userLogin } from '@/app/actions/user-login';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import Cookies from 'js-cookie';
 
 export interface LoginFormInputs {
   email: string;
@@ -29,17 +29,45 @@ export default function Page() {
 
   const onSubmit = (data: LoginFormInputs) => {
     const login = async () => {
-      const res = await userLogin(data);
-      if (res.status === 201) {
-        setUser({
-          uid: res.user.uid,
-          email: res.user.email,
-          name: res.user.name,
-          profileImg: res.user.profileImg,
-        });
-        router.push('/');
-      } else if (res.status === 401) {
-        setError('password', { message: res.message });
+      try {
+        const response = await fetch(
+          `${window.location.origin}/api/auth/login`,
+          {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          },
+        );
+
+        if (!response.ok) {
+          console.error('Error');
+          throw new Error();
+        }
+        const result = await response.json();
+
+        if (result.user) {
+          Cookies.set('accessToken', result.accessToken);
+          Cookies.set('user', JSON.stringify(result.user));
+        }
+
+        console.log('fetch user login', result);
+
+        if (result.status === 201) {
+          setUser({
+            uid: result.user.uid,
+            email: result.user.email,
+            name: result.user.name,
+            profileImg: result.user.profileImg,
+          });
+          router.push('/');
+        } else if (result.status === 401) {
+          setError('password', { message: result.message });
+        }
+      } catch (err) {
+        console.error('Error', err);
+        throw new Error();
       }
     };
     login();
