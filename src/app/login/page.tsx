@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
+import { userLoginTest } from '../actions/user-login';
 
 export interface LoginFormInputs {
   email: string;
@@ -15,34 +16,34 @@ export interface LoginFormInputs {
 }
 
 // [function] 사용자 로그인
-const userLogin = async (data: LoginFormInputs) => {
-  const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  try {
-    const response = await fetch(`${apiUrl}/api/auth/login`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+// const userLogin = async (data: LoginFormInputs) => {
+//   const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+//   try {
+//     const response = await fetch(`${apiUrl}/api/auth/login`, {
+//       method: 'post',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(data),
+//     });
 
-    if (!response.ok) {
-      console.error('Error');
-      throw new Error();
-    }
-    const result = await response.json();
+//     if (!response.ok) {
+//       console.error('Error');
+//       throw new Error();
+//     }
+//     const result = await response.json();
 
-    if (result.user) {
-      Cookies.set('accessToken', result.accessToken);
-      Cookies.set('user', JSON.stringify(result.user));
-    }
+//     if (result.user) {
+//       Cookies.set('accessToken', result.accessToken);
+//       Cookies.set('user', JSON.stringify(result.user));
+//     }
 
-    return result;
-  } catch (err) {
-    console.error('Error', err);
-    throw new Error();
-  }
-};
+//     return result;
+//   } catch (err) {
+//     console.error('Error', err);
+//     throw new Error();
+//   }
+// };
 
 export default function Page() {
   const { setUser } = useAuthStore();
@@ -60,7 +61,7 @@ export default function Page() {
   // 로그인 제출
   const onSubmit = (data: LoginFormInputs) => {
     const login = async () => {
-      const result = await userLogin(data);
+      const result = await userLoginTest(data);
       if (result.status === 201) {
         setUser({
           uid: result.user.uid,

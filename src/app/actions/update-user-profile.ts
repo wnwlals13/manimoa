@@ -1,39 +1,29 @@
-'use server';
+// 'use server';
 
-import { cookies } from 'next/headers';
+// import { cookies } from 'next/headers';
 import { ProfileFormInputs } from '../(with-nav)/user/edit/page';
 
 export async function updateUserProfile(data: ProfileFormInputs) {
   try {
-    console.log(data);
-    const token = cookies().get('accessToken');
-    // const response = await fetch(
-    //   `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/profile/edit`,
-    //   {
-    //     method: 'post',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(data),
-    //   },
-    // );
-    const uploads = await fetch(`/api/imgupload`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`,
+    console.log('env =>', process.env.NEXT_PUBLIC_BASE_URL);
+    const fileResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/profile/edit`,
+      {
+        method: 'post',
+        body: JSON.stringify(data),
+        // next: { tags: ['profile'] },
       },
-      body: JSON.stringify(data),
-    });
-    return uploads;
-    // if (!response.ok) {
-    //   console.error('failed to update profile', response.statusText);
-    //   throw new Error();
-    // }
-    // const result = await response.json();
-    // console.log('server actions : ', result);
-    // return result;
+    );
+
+    if (!fileResponse.ok) {
+      console.error('[client] 프로필 데이터 저장 싪패!');
+      throw new Error();
+    }
+    const result = await fileResponse.json();
+
+    return result;
   } catch (err) {
-    console.error(err);
+    console.error('[client] 프로필 업데이트 fetch 도중 에러 발생!', err);
+    throw new Error();
   }
 }

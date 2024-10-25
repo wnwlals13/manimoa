@@ -3,67 +3,202 @@
 import { Input } from '@/components/ui/input';
 import InteractiveButton from '@/components/ui/interactiveButton';
 import { Toggle } from '@/components/ui/toggle';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { FiImage } from 'react-icons/fi';
+import { FiX, FiImage } from 'react-icons/fi';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { useFeedStore } from '@/store/feed/useFeedStore';
+import 'swiper/swiper-bundle.css';
+import { createSupabaseClient } from '@/utils/supabase-client';
+import { useAuthStore } from '@/store/auth/useAuthStore';
+import { useRouter } from 'next/navigation';
+
+interface feedFormInputs {
+  date: string;
+  price: string;
+  priceOption: boolean;
+  content: string;
+}
 
 export default function Page() {
-  const { handleSubmit } = useForm({ defaultValues: {} });
+  const { user } = useAuthStore();
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [showPrice, setShowPrice] = useState<boolean>(false);
-  const [today, setToday] = useState<string>('');
-  const [imgs] = useState<string[]>([]);
+  const { previewImage, showPrice, date, setPreviewImage, setShowPrice } =
+    useFeedStore();
 
-  const onSubmit = () => {};
+  const { register, setValue, handleSubmit } = useForm({
+    defaultValues: {
+      date: date.toLocaleString(),
+      price: '',
+      priceOption: showPrice,
+      content: '',
+    },
+  });
+
+  const uploadImgs = async () => {
+    const supabase = await createSupabaseClient();
+    try {
+      // 이미지 저장
+      const result = await Promise.all(
+        previewImage.map(async (previews) => {
+          const file = previews;
+          const fileExt = file.name.split('.').pop();
+          const filePath = `feed/${user?.uid}/${Math.random()}.${fileExt}`;
+
+          const { data, error } = await supabase.storage
+            .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
+            .upload(filePath, file);
+
+          if (error) {
+            console.error('Failed to insert image to storage : ', error);
+            throw new Error('[client] 이미지 저장 도중 에러가 발생했습니다.');
+          }
+
+          return data.path;
+        }),
+      );
+
+      return result;
+    } catch (err) {
+      console.error('[client] 이미지 저장 실패', err);
+    }
+  };
+
+  const onSubmit = (data: feedFormInputs) => {
+    const upload = async () => {
+      // 1. 저장소에 이미지 저장
+      const paths = await uploadImgs();
+
+      // 2. db에 url 저장
+      const contentData = {
+        ...data,
+        paths: paths,
+      };
+
+      const fileResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/upload`,
+        {
+          method: 'post',
+          body: JSON.stringify(contentData),
+        },
+      );
+
+      if (!fileResponse.ok) {
+        console.error('[client] 게시글 저장 중 에러가 발생했습니다.');
+        throw new Error();
+      }
+
+      router.push('/');
+    };
+    upload();
+  };
   const handleClick = () => {
     fileInputRef.current?.click();
   };
 
+  const handleUploadImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files;
+    if (file && file.length > 0) {
+      const fileArray = Array.from(file);
+      setPreviewImage(fileArray);
+    }
+  };
+
+  const handleDelPrevieImg = (e: React.MouseEvent, index: number) => {
+    const deletedImg = previewImage.filter((item, idx) => idx !== index);
+    setPreviewImage(deletedImg);
+  };
+
   useEffect(() => {
-    setToday(new Date().toLocaleString());
-  }, []);
+    setValue('priceOption', showPrice);
+  }, [showPrice]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex-1 flex flex-col">
       <div className="flex-1">
         <div className="flex pt-5 pb-5 border-b">
           <div className="min-w-[100px]">소비 일자</div>
-          <div>{today}</div>
+          <div>
+            {date.getFullYear() +
+              '년 ' +
+              date.getMonth() +
+              '월 ' +
+              date.getDate() +
+              '일'}
+          </div>
         </div>
-        <div className="flex gap-5 pt-5 pb-5 border-b mb-5">
+        <div className="flex gap-5 pt-5 pb-5 border-b mb-5 items-center">
           <div className="flex-1 flex items-center">
             <div className="min-w-[100px]">오늘 소비</div>
-            <Input type="number" />
+            <Input
+              type="number"
+              {...register('price', { required: true })}
+              onChange={(e) => {
+                console.log(e.target.value);
+              }}
+            />
           </div>
-          <Toggle
-            variant="outline"
-            size="sm"
-            onClick={() => setShowPrice((prev) => !prev)}
-          >
+          <Toggle variant="outline" size="sm" onClick={setShowPrice}>
             {!showPrice ? '금액 보이기' : '금액 숨기기'}
           </Toggle>
         </div>
         <div className="w-full">
           <textarea
-            name="content"
             id="content"
             placeholder="오늘 당신의 소비내용을 기록해주세요."
             className="min-h-44 h-44 resize-none w-full p-2"
+            {...register('content')}
           ></textarea>
         </div>
-        {imgs && imgs.map((item, idx) => <div key={idx}>{item}</div>)}
-        <div>
-          <FiImage
-            size="25"
-            className="mt-2 mb-5 cursor-pointer"
-            onClick={handleClick}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-          />
+        <div className="flex-1 flex gap-2 mt-2">
+          <div>
+            <FiImage
+              size="25"
+              className="mb-5 cursor-pointer"
+              onClick={handleClick}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              multiple
+              ref={fileInputRef}
+              onChange={handleUploadImage}
+            />
+          </div>
+          <div className="flex-1 flex overflow-hidden ">
+            <Swiper
+              direction="horizontal"
+              slidesPerView={2}
+              spaceBetween={20}
+              pagination={{ clickable: true }}
+              className="flex-1 w-full h-[200px]"
+            >
+              {previewImage &&
+                previewImage.map((item, idx) => (
+                  <SwiperSlide
+                    key={idx}
+                    className="w-[253px] h-[200px] bg-yellow-200"
+                  >
+                    <button
+                      className="absolute p-1 right-1 top-1 bg-white rounded-full shadow-xl"
+                      onClick={(e) => handleDelPrevieImg(e, idx)}
+                    >
+                      <FiX size={20} />
+                    </button>
+                    <img
+                      src={URL.createObjectURL(previewImage[idx])}
+                      style={{
+                        objectFit: 'cover',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                    />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
+          </div>
         </div>
       </div>
       <InteractiveButton name="add_feed" type="submit">

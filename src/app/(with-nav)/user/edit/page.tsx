@@ -4,40 +4,38 @@ import { updateUserProfile } from '@/app/actions/update-user-profile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { UserData } from '@/types';
+import { createSupabaseClient } from '@/utils/supabase-client';
 import { useMutation } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit2 } from 'react-icons/fi';
 
 export interface ProfileFormInputs {
-  profileImgUrl: string;
   name: string;
-  email: string;
+  path?: string;
 }
 
 export default function Page() {
   const { user, setUser } = useAuthStore();
   const [tempName, setTempName] = useState<string>(user?.name || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // const [imgUrl, setImgUrl] = useState('');
-  const [tempFile, setTempFile] = useState<File>();
+  const [previewImg, setPreviewImg] = useState<File>();
 
   const { register, handleSubmit, setValue } = useForm<ProfileFormInputs>({
-    defaultValues: { name: user?.name, email: user?.email },
+    defaultValues: { name: user?.name },
   });
 
   const { mutate: updateUser } = useMutation({
     mutationFn: updateUserProfile,
     onSuccess: (res) => {
-      console.log(res);
-      const userItem: UserData = {
-        ...user,
-        email: user?.email || '',
-        name: tempName,
-      };
-      setUser(userItem);
+      console.log('mutate', res, res.updated);
+      setUser({
+        ...user!,
+        name: res.updated.name,
+        profileImg: res.updated.profileImg,
+      });
+      // router.back();
     },
   });
 
@@ -47,31 +45,54 @@ export default function Page() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
-    setTempFile(file); // state 설정
-
-    // 이미지 화면에 띄우기
-    const reader = new FileReader();
-
-    reader.readAsDataURL(file);
+    setPreviewImg(file); // state 설정
   };
 
-  const onSubmit = (data: ProfileFormInputs) => {
-    // const formData = new FormData();
-    // if (tempFile) {
-    //   // formdata 생성
-    //   formData.append('image', tempFile);
-    // }
-    console.log(data, tempFile);
-    if (data) updateUser(data);
+  const uploadImg = async () => {
+    const supabase = await createSupabaseClient();
+    try {
+      // 해당 id 폴더의 기존 데이서 삭제..
+      const profile = user?.profileImg;
+      if (profile) {
+        await supabase.storage
+          .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
+          .remove([profile]);
+      }
+
+      const file = previewImg as File;
+      const fileExt = file.name.split('.').pop();
+      const filePath = `profile/${user?.uid}/${Math.random()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
+        .upload(filePath, file);
+
+      if (error) {
+        console.error('Failed to insert image to storage : ', error);
+        throw new Error('[client] 프로필 이미지가 정상적으로 저장되지 않음');
+      }
+      // console.log('profile Img =>', data);
+      return data.path;
+    } catch (err) {
+      console.error('[client] 프로필 이미지 저장 에러', err);
+    }
+  };
+
+  const onSubmit = async (data: ProfileFormInputs) => {
+    let path = '';
+    if (previewImg) {
+      // 1. 이미지 스토리지 저장
+      path = (await uploadImg()) as string;
+    }
+    // 2. 이미지 path 가져와 db에 저장
+    const props = { name: data.name, path };
+    updateUser(props);
   };
 
   useEffect(() => {
     setTempName(user?.name || '');
     setValue('name', tempName || '');
-    setValue('email', user?.email || '');
-    console.log(user);
   }, [user]);
 
   return (
@@ -83,7 +104,28 @@ export default function Page() {
         <div className="h-[100px] w-full flex justify-center">
           <div className="profile-btn w-[100px] h-[100px] bg-gray-300 rounded-full absolute">
             <div className="profile-btn w-[100px] h-[100px] rounded-full border border-gray-200 absolute overflow-hidden flex justify-center">
-              <img style={{ width: '100%' }}></img>
+              {user?.profileImg ? (
+                <Image
+                  width={100}
+                  height={100}
+                  style={{ width: '100%' }}
+                  alt="프로필 이미지"
+                  src={
+                    previewImg
+                      ? URL.createObjectURL(previewImg)
+                      : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${user?.profileImg}`
+                  }
+                ></Image>
+              ) : (
+                previewImg && (
+                  <Image
+                    width={100}
+                    height={100}
+                    alt="프로필 이미지"
+                    src={URL.createObjectURL(previewImg)}
+                  ></Image>
+                )
+              )}
             </div>
             <div className="absolute bottom-0 right-0 p-2 border border-gray-300 rounded-full bg-white cursor-pointer">
               <div onClick={handleClick}>
@@ -93,7 +135,6 @@ export default function Page() {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                {...register('profileImgUrl')}
                 ref={fileInputRef}
                 onChange={handleImageChange}
               />

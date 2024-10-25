@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
       [id],
     );
     const rows = res[0] as RowDataPacket;
+    console.log('user info =>', rows);
 
     if (rows) {
       return NextResponse.json({

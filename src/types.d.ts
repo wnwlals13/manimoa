@@ -1,15 +1,21 @@
 export interface FeedData {
   id: number;
   userId: number;
+  userName: string;
+  profileImg?: string;
   content: string;
   price: number;
   priceOption: number;
+  images?: string;
+  likeCount: number;
+  commentCount: number;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }
 
 export interface UserData {
-  uid?: string;
+  uid: string;
   email: string;
   name?: string;
   profileImg?: string | null;
