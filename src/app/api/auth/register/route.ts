@@ -7,6 +7,7 @@ import {
   RowDataPacket,
 } from 'mysql2';
 import bcrypt from 'bcrypt';
+import { encrypt } from '@/app/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();
@@ -60,9 +61,48 @@ export async function POST(req: Request) {
           }
         }
 
-        // 4. 성공 리턴
-        if (newUser) {
-          return NextResponse.json({ status: 201, message: '회원가입 성공' });
+        // 4. 사용자 조회
+        const rows: [QueryResult, FieldPacket[]] = await (
+          await db
+        ).query(
+          'SELECT id, email, password, name, profile_img FROM users WHERE id = ?',
+          [now_insert_id],
+        );
+        const row = rows[0] as RowDataPacket;
+
+        // 사용자 인증 성공 시 JWT 생성
+        const accessToken = await encrypt({ email, uid: row.id });
+        console.log('row ?=>', row[0]);
+        // 5. 성공 리턴
+        if (newUser && row) {
+          const response = NextResponse.json({
+            status: 201,
+            message: '회원가입 성공',
+            data: {
+              uid: row[0].id,
+              email: row[0].email,
+              name: row[0].name,
+              profileImg: row[0].profile_img,
+            },
+            accessToken: accessToken,
+          });
+
+          // 쿠키 설정
+          response.cookies.set('accessToken', JSON.stringify(accessToken), {
+            httpOnly: true,
+            expires: 1,
+          });
+          response.cookies.set(
+            'user',
+            JSON.stringify({
+              uid: row[0].id,
+              email: row[0].email,
+              name: row[0].name,
+              profileImg: row[0].profile_img,
+              accessToken: accessToken,
+            }),
+          );
+          return response;
         } else {
           console.error(
             `사용자를 추가하는 과정에 문제가 발생했습니다. :`,

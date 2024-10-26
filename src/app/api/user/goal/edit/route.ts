@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
-import { goalsArrayProps } from '@/app/(with-nav)/user/expense-goals/edit/page';
+import { goalsArrayProps } from '@/app/(with-nav)/user/edit-goals/page';
 
 export async function POST(request: Request) {
   try {

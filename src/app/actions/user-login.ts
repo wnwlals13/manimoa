@@ -1,10 +1,11 @@
 'use server';
 
-import { LoginFormInputs } from '@/app/login/page';
 import { cookies } from 'next/headers';
+import { LoginFormInputs } from '../login/page';
 
-export async function userLogin(data: LoginFormInputs) {
+export async function userLoginTest(data: LoginFormInputs) {
   const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  console.log('apiUrl', apiUrl);
   try {
     const response = await fetch(`${apiUrl}/api/auth/login`, {
       method: 'post',
@@ -28,6 +29,6 @@ export async function userLogin(data: LoginFormInputs) {
     return result;
   } catch (err) {
     console.error('Error', err);
-    throw new Error('userLogin API 호출 실패');
+    throw new Error();
   }
 }

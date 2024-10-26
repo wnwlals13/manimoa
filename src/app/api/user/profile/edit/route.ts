@@ -1,26 +1,41 @@
 import { NextResponse } from 'next/server';
 import { conn } from '@/utils/db';
-import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
+import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
+import { cookies } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(req: Request) {
   try {
     const db = await conn();
     const data = await req.json();
-    const { name, profileImgUrl, email } = data;
-    console.log('?', name, profileImgUrl, email, data);
+    const cookieStore = cookies().get('user')?.value;
+
+    console.log('handlers =>', data, cookieStore);
+    const user = JSON.parse(cookieStore as string);
+    // const { name, profileImgUrl, email } = data;
+    console.log('?', data, 'cookie', cookieStore, 'user', user);
 
     const result: [QueryResult, FieldPacket[]] = await db.query(
-      'UPDATE users SET name = ? WHERE email = ?',
-      [name, email],
+      'UPDATE users SET name = ?, profile_img = ? WHERE users.id = ?',
+      [data.name, data.path, user.uid],
     );
 
-    const rows = result[0] as RowDataPacket;
-    console.log('rows', rows);
+    const rows = result[0] as ResultSetHeader;
+    console.log('rows', rows, result);
     if (!rows) {
-      return NextResponse.json({ status: 400, message: '실패' });
+      return NextResponse.json({
+        status: 400,
+        message: '실패',
+      });
     }
     // 성공
-    return NextResponse.json({ status: 201, message: '성공' });
+    revalidateTag('profile');
+
+    return NextResponse.json({
+      status: 201,
+      message: '성공',
+      updated: { name: data.name, profileImg: data.path },
+    });
   } catch (err) {
     console.error(err);
   }

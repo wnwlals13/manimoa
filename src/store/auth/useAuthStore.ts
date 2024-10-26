@@ -8,6 +8,7 @@ export interface AuthStore {
   isLogin: boolean;
   user: UserData | null;
   goals: GoalData[];
+
   setUser: (data: UserData) => void;
   checkLoginStatus: () => void;
   setGoals: (goals: GoalData[]) => void;
@@ -31,6 +32,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
       if (token) {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/info?q=${user.uid}`,
+          {
+            cache: 'no-store',
+          },
         );
         const rows = await response.json();
         if (rows && rows.data) {
@@ -39,7 +43,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
               uid: rows.data.id,
               email: rows.data.email,
               name: rows.data.name,
-              profileImg: rows.data.profileImg,
+              profileImg: rows.data.profile_img,
             },
             isLogin: true,
           });

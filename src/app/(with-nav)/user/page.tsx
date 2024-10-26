@@ -1,8 +1,7 @@
-import { SessionPayload } from '@/app/lib/definitions';
-import { decrypt } from '@/app/lib/session';
 import InteractiveButton from '@/components/ui/interactiveButton';
 import { GoalData } from '@/types';
 import { cookies } from 'next/headers';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { FiCheck } from 'react-icons/fi';
@@ -15,23 +14,32 @@ async function UserInfo({ userId, email }: { userId: string; email: string }) {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { tags: ['profile'] },
     },
   );
   const { data } = await response.json();
   const followCnt = data.followCnt;
   const followingCnt = data.followingCnt;
+  const cookieStore = cookies().get('user');
+  const user = JSON.parse(cookieStore?.value as string);
 
   return (
     <div className="flex flex-col gap-2 p-default">
       <div className="relative flex  justify-between items-center">
         <div className="flex gap-10 justify-start items-center">
           <div className="flex gap-2 items-center">
-            <div className="w-[50px] h-[50px] rounded-full flex justify-center items-center">
-              <img
-                // src={`${userData.profileImg}`}
-                alt=""
-                style={{ width: '50px', height: '50px' }}
-              />
+            <div className="w-[50px] h-[50px] rounded-full flex justify-center items-center ">
+              {user.profileImg ? (
+                <Image
+                  width={50}
+                  height={50}
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${user?.profileImg}`}
+                  alt=""
+                  style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+                />
+              ) : (
+                <div className="w-[50px] h-[50px] bg-gray-200 rounded-full"></div>
+              )}
             </div>
             <p>{email}</p>
           </div>
@@ -61,20 +69,22 @@ async function ExpenseGoal({ userId }: { userId: string }) {
   // 소비 목표 금액 & 다짐 정보 조회
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal?q=${userId}`,
-    { cache: 'no-store' },
+    {
+      // next: { tags: ['goals'] },
+    },
   );
   const { goals, price } = await response.json();
 
   return (
     <>
       <Link
-        href={`/user/expense-goals/edit`}
+        href={`/user/edit-goals`}
         className="inline-block w-full bg-main p-default rounded-xl"
       >
         <h3 className="font-bold mb-2">이번 달의 소비 목표!</h3>
         <div className="flex items-center gap-2">
           <div className="bg-white h-2 rounded-lg flex-1" />
-          <p>10/{price[0].price}</p>
+          <p>10/{price[0]?.price}</p>
         </div>
         <p>👏 당신은 절약왕! 아낀만큼 주변사람들과의 관계도 챙겨보세요!</p>
       </Link>
@@ -92,8 +102,8 @@ async function ExpenseGoal({ userId }: { userId: string }) {
 }
 
 export default async function Page() {
-  const session = cookies().get('accessToken')?.value;
-  const loginUser = (await decrypt(session)) as SessionPayload;
+  const cookieStore = cookies().get('user')?.value as string;
+  const loginUser = JSON.parse(cookieStore);
 
   return (
     <>

@@ -18,7 +18,7 @@ interface ExpenseFormInputs {
 }
 
 export default function Page() {
-  const { user } = useAuthStore();
+  const { user, setGoals } = useAuthStore();
   const [tempGoal, setTempGoal] = useState<string[]>([]);
   const [tempPrice, setTempPrice] = useState<string>('');
 
@@ -33,19 +33,23 @@ export default function Page() {
 
   const { mutate } = useMutation({
     mutationFn: async (data: ExpenseFormInputs) => {
-      const response = await fetch(`/api/user/goal/edit`, {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal/edit`,
+        {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        },
+      );
       return await response.json();
     },
   });
 
   // function : 제출하기
   const onsubmit = (data: ExpenseFormInputs) => {
-    // [TODO] 빈칸인 인풋은 삭제할 수 있도록
-    mutate(data);
+    // 빈칸인 인풋은 삭제
+    const filtered = data.month_goals.filter((item) => item.value != '');
+    mutate({ ...data, month_goals: filtered });
   };
 
   useEffect(() => {
@@ -66,9 +70,10 @@ export default function Page() {
       const values_temp = goals.map((item: GoalData) => item.content);
 
       setTempGoal(values_temp);
-      setTempPrice(price[0].price);
+      setTempPrice(price[0]?.price);
       setValue('month_goals', values);
-      setValue('month_price', price[0].price);
+      setValue('month_price', price[0]?.price);
+      setGoals(values_temp);
     };
     getGoals();
   }, []);

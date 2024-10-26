@@ -17,9 +17,9 @@ export async function POST(req: Request) {
       'SELECT id, email, password, name, profile_img FROM users WHERE email = ?',
       [email],
     );
+    const user = rows[0] as RowDataPacket[];
 
-    if (rows.length > 0) {
-      const user = rows[0] as RowDataPacket[];
+    if (user.length > 0) {
       const isMatch = await bcrypt.compare(password, user[0].password);
 
       if (!isMatch) {
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       // 해당하는 이메일의 유저가 없다.
       console.error('가입되지 않은 유저입니다.');
       return NextResponse.json({
-        status: 401,
+        status: 409,
         message: '가입되지 않은 유저입니다.',
       });
     }
