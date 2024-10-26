@@ -10,24 +10,20 @@ export async function POST(req: Request) {
     const data = await req.json();
     const cookieStore = cookies().get('user')?.value;
 
-    console.log('handlers =>', data, cookieStore);
     const user = JSON.parse(cookieStore as string);
-    // const { name, profileImgUrl, email } = data;
-    console.log('?', data, 'cookie', cookieStore, 'user', user);
 
     const result: [QueryResult, FieldPacket[]] = await db.query(
       'UPDATE users SET name = ?, profile_img = ? WHERE users.id = ?',
       [data.name, data.path, user.uid],
     );
-
     const rows = result[0] as ResultSetHeader;
-    console.log('rows', rows, result);
     if (!rows) {
       return NextResponse.json({
         status: 400,
         message: '실패',
       });
     }
+
     // 성공
     revalidateTag('profile');
 
