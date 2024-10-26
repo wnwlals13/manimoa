@@ -1,6 +1,3 @@
-// 'use server';
-
-// import { cookies } from 'next/headers';
 import { ProfileFormInputs } from '../(with-nav)/user/edit/page';
 
 export async function updateUserProfile(data: ProfileFormInputs) {
@@ -11,7 +8,6 @@ export async function updateUserProfile(data: ProfileFormInputs) {
       {
         method: 'post',
         body: JSON.stringify(data),
-        // next: { tags: ['profile'] },
       },
     );
 

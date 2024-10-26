@@ -5,7 +5,8 @@ import { LoginFormInputs } from '../login/page';
 
 export async function userLoginTest(data: LoginFormInputs) {
   const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  console.log('apiUrl', apiUrl);
+  console.log('[TEST] apiUrl :', apiUrl);
+  console.log('[TEST] data :', data);
   try {
     const response = await fetch(`${apiUrl}/api/auth/login`, {
       method: 'post',
@@ -14,13 +15,13 @@ export async function userLoginTest(data: LoginFormInputs) {
       },
       body: JSON.stringify(data),
     });
-
+    console.log('[TEST] result :', response);
     if (!response.ok) {
       console.error('Error');
       throw new Error();
     }
     const result = await response.json();
-
+    console.log('[TEST] result :', result, result.user);
     if (result.user) {
       cookies().set('accessToken', result.accessToken);
       cookies().set('user', JSON.stringify(result.user));

@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { createSupabaseClient } from '@/utils/supabase-client';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit2 } from 'react-icons/fi';
@@ -17,6 +18,7 @@ export interface ProfileFormInputs {
 }
 
 export default function Page() {
+  const router = useRouter();
   const { user, setUser } = useAuthStore();
   const [tempName, setTempName] = useState<string>(user?.name || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -35,7 +37,7 @@ export default function Page() {
         name: res.updated.name,
         profileImg: res.updated.profileImg,
       });
-      // router.back();
+      router.back();
     },
   });
 
