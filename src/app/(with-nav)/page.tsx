@@ -5,7 +5,7 @@ import { FiPlus } from 'react-icons/fi';
 import { FeedData } from '@/types';
 import { Suspense, useEffect } from 'react';
 import InteractiveButton from '@/components/ui/interactiveButton';
-import { useFetchFeeds } from '../lib/hook/useSearchFeedQuery';
+import { useFetchFeeds } from '../lib/feed/hook/useFetchFeeds';
 import { useInView } from 'react-intersection-observer';
 
 const ROWS_PER_PAGE = 20;
