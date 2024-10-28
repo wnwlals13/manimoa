@@ -1,4 +1,3 @@
-import { MyFeedsList } from '@/components/feed/my-feed-list';
 import InteractiveButton from '@/components/ui/interactiveButton';
 import { GoalData } from '@/types';
 import { cookies } from 'next/headers';
@@ -105,7 +104,7 @@ async function ExpenseGoal({ userId }: { userId: string }) {
 export default async function Page() {
   const cookieStore = cookies().get('user')?.value as string;
   const loginUser = JSON.parse(cookieStore);
-  console.log('/?pagge=====user mypage', loginUser);
+
   return (
     <>
       <Suspense fallback={<div>loading....</div>}>
@@ -114,9 +113,7 @@ export default async function Page() {
       <Suspense fallback={<div>loading...</div>}>
         <ExpenseGoal userId={loginUser.uid || ''} />
       </Suspense>
-      <Suspense fallback={<div>loading...</div>}>
-        <MyFeedsList />
-      </Suspense>
+      <div>{/* 월별 feed */}</div>
     </>
   );
 }

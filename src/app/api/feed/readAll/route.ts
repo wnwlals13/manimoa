@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
           GROUP_CONCAT(b.image_url) AS images,
           a.like_count AS likeCount, 
           a.comment_count AS commentCount,
-          DATE_FORMAT(a.created_at, '%Y-%m-%d') AS createdAt,
+          a.created_at AS createdAt,
           a.updated_at AS updatedAt,
           a.deleted_at AS deletedAt
       FROM feeds a 
@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
         ON a.id = b.feed_id 
       LEFT JOIN users c
         ON a.user_id = c.id 
-      WHERE a.deleted_at is NULL 
       GROUP BY a.id 
       ORDER BY a.created_at DESC`);
 

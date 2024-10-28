@@ -4,5 +4,5 @@ export const PASSWORD_PATTERN =
 export const CUSTOM_NAV_PATHS: Record<string, string> = {
   '/user/edit': '프로필 수정',
   '/user/edit-goals': '목표 설정',
-  '/feed/form': '글 작성',
+  '/feed/add-new': '새 글쓰기',
 } as const;
