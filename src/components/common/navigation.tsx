@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 export default function Navigation() {
   const pathname = usePathname();
-  const { checkLoginStatus } = useAuthStore();
+  const { user, checkLoginStatus } = useAuthStore();
 
   useEffect(() => {
     checkLoginStatus();
