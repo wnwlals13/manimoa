@@ -1,6 +1,6 @@
 export interface FeedData {
   id: number;
-  userId: number;
+  userId: string;
   userName: string;
   profileImg?: string;
   content: string;
@@ -25,6 +25,8 @@ export interface UserData {
   email: string;
   name?: string;
   profileImg?: string | null;
+  followCount?: number; // 유저가 팔로우하는 유저의 수
+  followingCount?: number; // 유저를 팔로우하는 유저의 수
 }
 
 export interface GoalData {

@@ -5,4 +5,5 @@ export const CUSTOM_NAV_PATHS: Record<string, string> = {
   '/mypage/edit': '프로필 수정',
   '/mypage/edit-goals': '목표 설정',
   '/feed/form': '글 작성',
+  '/user/': '',
 } as const;

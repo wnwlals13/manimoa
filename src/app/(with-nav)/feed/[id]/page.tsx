@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { CarouselComponent } from '@/components/ui/carousel';
+import { FollowButton } from '@/components/ui/FollowButton';
 import InteractiveButton from '@/components/ui/interactiveButton';
 import Profile from '@/components/ui/profile';
 import { FeedData } from '@/types';
@@ -21,9 +22,13 @@ async function FeedDetail({ feedId }: { feedId: string }) {
   return (
     <div>
       <div className="flex items-center p-default gap-2">
-        <Profile profileImg={feedInfo.profileImg} />
-        <div className="flex-1">{feedInfo.userName}</div>
-        <Button variant="outline">팔로우</Button>
+        <div className="flex-1 flex justify-start items-center gap-2">
+          <Profile profileImg={feedInfo.profileImg} />
+          <div className="flex-1">{feedInfo.userName}</div>
+        </div>
+        <div>
+          <FollowButton targetId={feedInfo.userId} />
+        </div>
       </div>
       {imagesArray && <CarouselComponent images={imagesArray} />}
       <div className="flex gap-2 mt-4">
