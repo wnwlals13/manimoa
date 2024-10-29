@@ -11,10 +11,11 @@ import dynamic from 'next/dynamic';
 import { useForm } from 'react-hook-form';
 import { useAddComment } from '@/app/lib/comment/hook/useAddComment';
 import { useFetchComments } from '@/app/lib/comment/hook/useFetchComments';
-import { QueryClient } from '@tanstack/react-query';
+import { InfiniteData, QueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
 import { useUpdateComment } from '@/app/lib/comment/hook/useUpdateComment';
+
 const Modal = dynamic(() => import('@/components/ui/modal'), { ssr: false });
 
 interface commentInputs {
@@ -54,7 +55,7 @@ export default function Page() {
 
   const resetInfiniteQueryPagination = (): void => {
     const queryClient = new QueryClient();
-    queryClient.setQueryData(['comment'], (data: any) => {
+    queryClient.setQueryData(['comment'], (data: InfiniteData<[], []>) => {
       if (!data) return undefined;
 
       return {

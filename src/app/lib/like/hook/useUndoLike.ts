@@ -1,9 +1,4 @@
-import {
-  QueryClient,
-  QueryObserverResult,
-  useMutation,
-} from '@tanstack/react-query';
-import { usePathname, useRouter } from 'next/navigation';
+import { QueryObserverResult, useMutation } from '@tanstack/react-query';
 import { undoLike } from '../api';
 
 export interface likeDto {
@@ -11,8 +6,6 @@ export interface likeDto {
 }
 
 export function useUnLike(refetch: () => Promise<QueryObserverResult>) {
-  const queryClient = new QueryClient();
-
   return useMutation<Promise<void>, Error, likeDto>({
     mutationFn: undoLike,
     onSuccess: () => {

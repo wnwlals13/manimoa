@@ -1,4 +1,3 @@
-import { CommentList } from '@/components/comment/comment-list';
 import { Button } from '@/components/ui/button';
 import { CarouselComponent } from '@/components/ui/carousel';
 import InteractiveButton from '@/components/ui/interactiveButton';

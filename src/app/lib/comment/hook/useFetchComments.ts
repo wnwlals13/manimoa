@@ -7,7 +7,7 @@ interface UseFetchCommentsProps {
   pageSize: number;
 }
 
-interface PaginatedCommentDto {
+export interface PaginatedCommentDto {
   comments: CommentData[];
   hasNextPage: boolean;
   totalCount: number;

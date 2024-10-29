@@ -7,13 +7,7 @@ import InteractiveButton from '../ui/interactiveButton';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import {
-  updateCommentDto,
-  useUpdateComment,
-} from '@/app/lib/comment/hook/useUpdateComment';
 import { deleteComment } from '@/app/lib/comment/api';
-import { useRouter } from 'next/navigation';
-import { UseMutateFunction } from '@tanstack/react-query';
 
 interface CommentItemProps {
   comments: CommentData;
@@ -27,9 +21,8 @@ export function CommentItem({
   mutateFn,
 }: CommentItemProps) {
   const { nowEdit, setNowEdit } = useAuthStore();
-  const router = useRouter();
   const { id, userId, userName, content, profileImg, feedId } = comments;
-  // const { mutate } = useUpdateComment(feedId);
+
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 

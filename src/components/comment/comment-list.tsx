@@ -2,13 +2,7 @@
 
 import { CommentData } from '@/types';
 import { CommentItem } from './comment-item';
-import { useFetchComments } from '@/app/lib/comment/hook/useFetchComments';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useEffect } from 'react';
-import { UseMutateFunction } from '@tanstack/react-query';
-import { updateCommentDto } from '@/app/lib/comment/hook/useUpdateComment';
-
-const ROWS_PER_PAGE = 20;
 
 export function CommentList({
   comments,
