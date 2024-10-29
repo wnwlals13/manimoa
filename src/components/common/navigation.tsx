@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiHome } from 'react-icons/fi';
-import { FiSearch } from 'react-icons/fi';
+// import { FiSearch } from 'react-icons/fi';
 import { FiMessageCircle } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 import { CUSTOM_NAV_PATHS } from '@/constants';
@@ -26,9 +26,9 @@ export default function Navigation() {
         <Link href={'/'}>
           <FiHome size="25" />
         </Link>
-        <Link href={'/search'}>
+        {/* <Link href={'/search'}>
           <FiSearch size="25" />
-        </Link>
+        </Link> */}
         <Link href={'/chat'}>
           <FiMessageCircle size="25" />
         </Link>

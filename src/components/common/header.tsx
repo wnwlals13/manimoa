@@ -10,7 +10,10 @@ export default function Header() {
   const pathname = usePathname() as string;
   const router = useRouter();
 
-  if (Object.keys(CUSTOM_NAV_PATHS).includes(pathname)) {
+  if (
+    Object.keys(CUSTOM_NAV_PATHS).includes(pathname) ||
+    pathname.startsWith('/user/')
+  ) {
     const title = CUSTOM_NAV_PATHS[pathname];
     return (
       <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
