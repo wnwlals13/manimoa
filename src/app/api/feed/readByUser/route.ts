@@ -1,7 +1,5 @@
-import { FeedData } from '@/types';
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +24,7 @@ export async function GET(request: NextRequest) {
             DATE_FORMAT(a.created_at, '%Y-%m-%d') AS createdAt,
             a.updated_at AS updatedAt,
             a.deleted_at AS deletedAt
-            FROM  feeds a
+        FROM  feeds a
         LEFT JOIN images b
             ON a.id = b.feed_id
         WHERE a.user_id = ?
@@ -40,6 +38,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ status: 200, message: '성공', data });
   } catch (err) {
     console.error('readById api call Failed : ', err);
-    throw new Error();
+    return NextResponse.json({ status: 500, message: '에러' });
   }
 }

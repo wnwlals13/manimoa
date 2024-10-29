@@ -34,7 +34,7 @@ export default function Page() {
   const { mutate } = useMutation({
     mutationFn: async (data: ExpenseFormInputs) => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal/edit`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal/edit`,
         {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
@@ -56,7 +56,7 @@ export default function Page() {
     const getGoals = async () => {
       // 소비 목표 금액 & 다짐 정보 조회
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal?q=${user?.uid}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal?q=${user?.uid}`,
         { cache: 'no-cache' },
       );
       const { goals, price } = await response.json();

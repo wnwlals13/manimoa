@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from './button';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { VariantProps } from 'class-variance-authority';
-import { useFeedStore } from '@/store/feed/useFeedStore';
 import { useDeleteFeed } from '@/app/lib/feed/hook/useDeleteFeed';
+import { useModalStore } from '@/store/modal/useModalStore';
 
 interface InteractiveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -26,12 +26,13 @@ export default function InteractiveButton({
 }: InteractiveButtonProps) {
   const router = useRouter();
   const { logout } = useAuthStore();
+  const { setIsOpen, setModalContent } = useModalStore();
 
   const { mutate, isPending: isLoading } = useDeleteFeed();
 
   const onClick = () => {
     if (name === 'edit_profile') {
-      router.push(`/user/edit`);
+      router.push(`/mypage/edit`);
     } else if (name === 'logout') {
       logout();
       router.push('/login');
@@ -46,6 +47,11 @@ export default function InteractiveButton({
       const feedId = name.split('.')[1];
       mutate(feedId);
       router.refresh();
+    } else if (name.startsWith('comments')) {
+      // 댓글 모달창
+      const feedId = name.split('.')[1];
+      setIsOpen(true);
+      setModalContent('comment', feedId);
     }
   };
   return (

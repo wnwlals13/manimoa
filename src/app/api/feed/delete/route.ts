@@ -1,5 +1,5 @@
 import { conn } from '@/utils/db';
-import { revalidateTag } from 'next/cache';
+import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -8,12 +8,14 @@ export async function POST(request: NextRequest) {
     const feedId = await request.json();
     console.log(feedId);
 
-    const res = await db.query(
+    const res: [QueryResult, FieldPacket[]] = await db.query(
       `UPDATE feeds set deleted_at = CURRENT_TIMESTAMP() WHERE id = ?`,
       [feedId],
     );
-
-    // revalidateTag('feed');
+    const result = res[0] as ResultSetHeader;
+    if (!result) {
+      console.error(`데이터 삭제 실패!`);
+    }
 
     return NextResponse.json({
       status: 200,

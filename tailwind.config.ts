@@ -82,6 +82,6 @@ const config: Config = {
     },
   },
   important: true,
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar-hide')],
 };
 export default config;

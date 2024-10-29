@@ -1,15 +1,12 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const db = await conn();
     const data = await request.json();
-    const cookieStore = cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
     const feedId = data.feedId;
     const delPaths = data.delPaths;
     const paths = data.paths;
@@ -19,7 +16,7 @@ export async function POST(request: NextRequest) {
     if (delPaths.length > 0) {
       Promise.all(
         delPaths.forEach(async (path: string) => {
-          const res: [QueryResult, FieldPacket[]] = await db.query(
+          await db.query(
             `DELETE FROM images WHERE image_url = ? and feed_id = ?`,
             [path, feedId],
           );

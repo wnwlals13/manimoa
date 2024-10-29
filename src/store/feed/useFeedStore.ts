@@ -35,7 +35,7 @@ export const useFeedStore = create<FeedSotre>((set, get) => ({
   },
   delPreviewImage: (state: string) => {
     const deleted = get().previewImage.filter((item) => item.name !== state);
-    set((state) => ({
+    set(() => ({
       previewImage: deleted,
     }));
   },

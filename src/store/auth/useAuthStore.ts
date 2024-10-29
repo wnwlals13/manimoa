@@ -9,12 +9,14 @@ export interface AuthStore {
   user: UserData | null;
   goals: GoalData[];
   userFeeds: FeedData[];
+  nowEdit: boolean;
 
   setUser: (data: UserData) => void;
   checkLoginStatus: () => void;
   setGoals: (goals: GoalData[]) => void;
   setUserFeeds: (feeds: FeedData[]) => void;
   logout: () => void;
+  setNowEdit: (state: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -22,6 +24,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   goals: [],
   userFeeds: [],
+  nowEdit: false,
 
   setUser: (user: UserData) => {
     set({ user: user, isLogin: true });
@@ -36,7 +39,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     //   if (token) {
     //     console.log('?is call');
     //     const response = await fetch(
-    //       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/info?q=${user.uid}`,
+    //       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/info?q=${user.uid}`,
     //       {
     //         cache: 'no-store',
     //       },
@@ -73,4 +76,5 @@ export const useAuthStore = create<AuthStore>((set) => ({
     Cookies.remove('user');
     set({ user: null, isLogin: false });
   },
+  setNowEdit: (state: boolean) => set({ nowEdit: state }),
 }));

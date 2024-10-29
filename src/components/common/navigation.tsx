@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 export default function Navigation() {
   const pathname = usePathname();
-  const { user, checkLoginStatus } = useAuthStore();
+  const { checkLoginStatus } = useAuthStore();
 
   useEffect(() => {
     checkLoginStatus();
@@ -32,7 +32,7 @@ export default function Navigation() {
         <Link href={'/chat'}>
           <FiMessageCircle size="25" />
         </Link>
-        <Link href={'/user'}>
+        <Link href={'/mypage'}>
           <FiUser size="25" />
         </Link>
       </nav>
