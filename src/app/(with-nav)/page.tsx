@@ -2,24 +2,23 @@
 
 import { FeedItem } from '@/components/feed/feed-item';
 import { FiPlus } from 'react-icons/fi';
-import { FeedData } from '@/types';
+import { IFeedWithLikeData } from '@/types';
 import { Suspense, useEffect } from 'react';
 import InteractiveButton from '@/components/ui/interactiveButton';
-import { useFetchFeeds } from '../lib/hook/useSearchFeedQuery';
+import { useFetchFeeds } from '../lib/feed/hook/useFetchFeeds';
 import { useInView } from 'react-intersection-observer';
 
 const ROWS_PER_PAGE = 20;
 
 export default function Home() {
-  const { data, fetchNextPage, isFetchingNextPage } = useFetchFeeds({
+  const { data, fetchNextPage, isFetchingNextPage, refetch } = useFetchFeeds({
     pageSize: ROWS_PER_PAGE,
   });
+  const feedsGroup = data ? data.pages.map((page) => page.feeds) : [];
+
   const { ref, inView } = useInView({
     threshold: 0.5, // 화면의 20%가 보일 때 감지
   });
-
-  const feedsGroup = data ? data.pages.map((page) => page.feeds) : [];
-
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -36,8 +35,8 @@ export default function Home() {
         <div>
           {feedsGroup.map((feeds, i) => (
             <div key={i}>
-              {feeds.map((feed: FeedData, idx) => (
-                <FeedItem key={idx} {...feed} />
+              {feeds.map((feed: IFeedWithLikeData, idx) => (
+                <FeedItem key={idx} refetch={refetch} {...feed} />
               ))}
             </div>
           ))}

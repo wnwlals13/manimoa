@@ -1,5 +1,6 @@
 import { FeedData } from '@/types';
 import { conn } from '@/utils/db';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -10,9 +11,12 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const cursor = Number(searchParams.get('cursor'));
     const pageSize = Number(searchParams.get('pageSize'));
-    console.log('cursor', cursor, 'pageSize', pageSize);
+    const cookieStore = cookies().get('user');
+    const user = JSON.parse(cookieStore?.value as string);
+    console.log('cursor', cursor, 'pageSize', pageSize, user);
 
-    const response = await db.query(`
+    const response = await db.query(
+      ` 
       SELECT
           a.id AS id, 
           a.user_id AS userId,
@@ -24,16 +28,22 @@ export async function GET(request: NextRequest) {
           GROUP_CONCAT(b.image_url) AS images,
           a.like_count AS likeCount, 
           a.comment_count AS commentCount,
-          a.created_at AS createdAt,
+          DATE_FORMAT(a.created_at, '%Y-%m-%d') AS createdAt,
           a.updated_at AS updatedAt,
-          a.deleted_at AS deletedAt
+          a.deleted_at AS deletedAt,
+          IF(count(d.id)>0, 1, 0 ) as isUserDoLike
       FROM feeds a 
       LEFT JOIN images b 
         ON a.id = b.feed_id 
       LEFT JOIN users c
         ON a.user_id = c.id 
+      LEFT JOIN likes d
+        on a.id  = d.feed_id AND d.user_id = ? 
+      WHERE a.deleted_at is NULL 
       GROUP BY a.id 
-      ORDER BY a.created_at DESC`);
+      ORDER BY a.created_at DESC`,
+      [user.uid],
+    );
 
     const feeds = response[0] as FeedData[];
 
@@ -55,6 +65,7 @@ export async function GET(request: NextRequest) {
       hasNextPage,
       totalCount,
       nextCursor,
+      currentPage: cursor,
     });
   } catch (err) {
     console.error('피드를 불러오는 도중 에러가 발생했습니다.', err);

@@ -32,7 +32,7 @@ export default function Navigation() {
         <Link href={'/chat'}>
           <FiMessageCircle size="25" />
         </Link>
-        <Link href={'/user'}>
+        <Link href={'/mypage'}>
           <FiUser size="25" />
         </Link>
       </nav>

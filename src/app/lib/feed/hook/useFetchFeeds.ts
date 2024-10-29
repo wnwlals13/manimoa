@@ -1,4 +1,4 @@
-import { FeedData } from '@/types';
+import { IFeedWithLikeData } from '@/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 interface UseFetchFeedsProps {
@@ -6,11 +6,11 @@ interface UseFetchFeedsProps {
 }
 
 interface PaginatedFeedDto {
-  feeds: FeedData[];
+  feeds: IFeedWithLikeData[];
   hasNextPage: boolean;
   totalCount: number;
-
   nextCursor?: number;
+  currentPage: number;
 }
 
 export const useFetchFeeds = ({ pageSize }: UseFetchFeedsProps) => {
@@ -35,5 +35,4 @@ export const useFetchFeeds = ({ pageSize }: UseFetchFeedsProps) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
-  // return <></>;
 };

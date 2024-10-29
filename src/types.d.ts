@@ -14,6 +14,12 @@ export interface FeedData {
   deletedAt?: string;
 }
 
+export interface LikeData {
+  isUserDoLike: number;
+}
+
+export interface IFeedWithLikeData extends FeedData, LikeData {}
+
 export interface UserData {
   uid: string;
   email: string;
@@ -26,4 +32,17 @@ export interface GoalData {
   userId: number;
   content: string;
   createdAt: string;
+}
+
+export interface CommentData {
+  id: number;
+  feedId: number;
+  userId: number;
+  userName: string;
+  profileImg?: string;
+  content: string;
+  parentCommentId: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
 }

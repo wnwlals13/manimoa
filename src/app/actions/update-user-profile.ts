@@ -1,10 +1,10 @@
-import { ProfileFormInputs } from '../(with-nav)/user/edit/page';
+import { ProfileFormInputs } from '../(with-nav)/mypage/edit/page';
 
 export async function updateUserProfile(data: ProfileFormInputs) {
   try {
     console.log('env =>', process.env.NEXT_PUBLIC_BASE_URL);
     const fileResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/profile/edit`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile/edit`,
       {
         method: 'post',
         body: JSON.stringify(data),

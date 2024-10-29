@@ -18,6 +18,7 @@ export default function RootLayout({
         <main className="flex flex-col relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
           <QueryProviders>{children}</QueryProviders>
         </main>
+        <div id="modal-root" className=""></div>
       </body>
     </html>
   );

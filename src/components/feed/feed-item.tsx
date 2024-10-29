@@ -1,10 +1,14 @@
-import { FiHeart } from 'react-icons/fi';
+import { AiOutlineHeart } from 'react-icons/ai';
+import { AiFillHeart } from 'react-icons/ai';
 import { FiMessageCircle } from 'react-icons/fi';
 import { CarouselComponent } from '../ui/carousel';
-import { FeedData } from '@/types';
+import { FeedData, LikeData } from '@/types';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-import Image from 'next/image';
+import InteractiveButton from '../ui/interactiveButton';
+import Profile from '../ui/profile';
+import { LikeButton } from '../ui/likeButton';
+import { QueryObserverResult } from '@tanstack/react-query';
 
 export function UserInfoGroup({
   writer,
@@ -15,34 +19,15 @@ export function UserInfoGroup({
 }) {
   return (
     <div className="flex items-center p-default gap-2">
-      <div className="w-[40px] h-[40px] bg-gray-200 rounded-full leading-9 overflow-hidden">
-        {profileImg && (
-          <Image
-            width={60}
-            height={40}
-            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${profileImg}`}
-            alt="프로필 이미지입니다."
-            style={{ height: '100%' }}
-          ></Image>
-        )}
-      </div>
+      <Profile profileImg={profileImg} />
       <div className="flex-1">{writer}</div>
       <Button variant="outline">팔로우</Button>
     </div>
   );
 }
 
-export function IconGroup() {
-  return (
-    <div className="flex gap-2 mt-4">
-      <Button variant="main">
-        <FiHeart size="20" /> 10
-      </Button>
-      <Button variant="submain">
-        <FiMessageCircle size="20" /> 10
-      </Button>
-    </div>
-  );
+export interface FeedItemProps extends FeedData, LikeData {
+  refetch: () => Promise<QueryObserverResult>;
 }
 
 export function FeedItem({
@@ -51,14 +36,25 @@ export function FeedItem({
   profileImg,
   content,
   images,
-}: FeedData) {
+  commentCount,
+  likeCount,
+  isUserDoLike,
+  refetch,
+}: FeedItemProps) {
   const imagesArray = images?.split(',');
 
   return (
     <div className="border-b mb-4">
       <UserInfoGroup writer={userName} profileImg={profileImg!} />
       {imagesArray && <CarouselComponent images={imagesArray} />}
-      <IconGroup />
+      <div className="flex gap-2 mt-4">
+        <LikeButton feedId={id} isLiked={isUserDoLike > 0} refetch={refetch}>
+          {isUserDoLike > 0 ? <AiFillHeart /> : <AiOutlineHeart />} {likeCount}
+        </LikeButton>
+        <InteractiveButton variant="submain" name={`comments.${id}`}>
+          <FiMessageCircle size="20" /> {commentCount}
+        </InteractiveButton>
+      </div>
       <Link href={`/feed/${id}`}>
         <div className="max-w-[400px] overflow-hidden pt-default pb-default text-ellipsis">
           {content}

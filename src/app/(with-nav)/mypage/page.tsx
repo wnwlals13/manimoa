@@ -1,3 +1,4 @@
+import { MyFeedsList } from '@/components/feed/my-feed-list';
 import InteractiveButton from '@/components/ui/interactiveButton';
 import { GoalData } from '@/types';
 import { cookies } from 'next/headers';
@@ -8,7 +9,7 @@ import { FiCheck } from 'react-icons/fi';
 
 async function UserInfo({ userId, email }: { userId: string; email: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/profile?q=${userId}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
     {
       method: 'get',
       headers: {
@@ -68,7 +69,7 @@ async function UserInfo({ userId, email }: { userId: string; email: string }) {
 async function ExpenseGoal({ userId }: { userId: string }) {
   // 소비 목표 금액 & 다짐 정보 조회
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/goal?q=${userId}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal?q=${userId}`,
     {
       // next: { tags: ['goals'] },
     },
@@ -78,7 +79,7 @@ async function ExpenseGoal({ userId }: { userId: string }) {
   return (
     <>
       <Link
-        href={`/user/edit-goals`}
+        href={`/mypage/edit-goals`}
         className="inline-block w-full bg-main p-default rounded-xl"
       >
         <h3 className="font-bold mb-2">이번 달의 소비 목표!</h3>
@@ -113,7 +114,9 @@ export default async function Page() {
       <Suspense fallback={<div>loading...</div>}>
         <ExpenseGoal userId={loginUser.uid || ''} />
       </Suspense>
-      <div>{/* 월별 feed */}</div>
+      <Suspense fallback={<div>loading...</div>}>
+        <MyFeedsList />
+      </Suspense>
     </>
   );
 }
