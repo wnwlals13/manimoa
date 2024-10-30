@@ -3,51 +3,19 @@
 import logo from '@/styles/logo.png';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// import Cookies from 'js-cookie';
-import { userLoginTest } from '../actions/user-login';
+import { useLogin } from '../lib/auth/hook/useLogin';
+import { useEffect } from 'react';
+import { ResponseError } from '@/types';
 
 export interface LoginFormInputs {
   email: string;
   password: string;
 }
 
-// [function] 사용자 로그인
-// const userLogin = async (data: LoginFormInputs) => {
-//   const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-//   try {
-//     const response = await fetch(`${apiUrl}/api/auth/login`, {
-//       method: 'post',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(data),
-//     });
-
-//     if (!response.ok) {
-//       console.error('Error');
-//       throw new Error();
-//     }
-//     const result = await response.json();
-
-//     if (result.user) {
-//       Cookies.set('accessToken', result.accessToken);
-//       Cookies.set('user', JSON.stringify(result.user));
-//     }
-
-//     return result;
-//   } catch (err) {
-//     console.error('Error', err);
-//     throw new Error();
-//   }
-// };
-
 export default function Page() {
-  const { setUser } = useAuthStore();
-  const router = useRouter();
+  const { mutate, isError, isSuccess, failureReason } = useLogin();
 
   const {
     register,
@@ -58,26 +26,20 @@ export default function Page() {
     defaultValues: { email: '', password: '' },
   });
 
-  // 로그인 제출
   const onSubmit = (data: LoginFormInputs) => {
-    const login = async () => {
-      const result = await userLoginTest(data);
-      if (result.status === 201) {
-        setUser({
-          uid: result.user.uid,
-          email: result.user.email,
-          name: result.user.name,
-          profileImg: result.user.profileImg,
-        });
-        router.push('/');
-      } else if (result.status === 401) {
-        setError('password', { message: result.message });
-      } else if (result.status === 409) {
-        setError('email', { message: result.message });
-      }
-    };
-    login();
+    mutate(data);
   };
+
+  useEffect(() => {
+    if (!isError) return;
+    const err = failureReason as ResponseError;
+
+    if (err.status === 401) {
+      setError('password', { message: err.message });
+    } else if (err.status === 409) {
+      setError('email', { message: err.message });
+    }
+  }, [isError, isSuccess]);
   return (
     <form
       className="w-full h-full min-h-screen flex flex-col justify-center items-center gap-2 pl-8 pr-8"

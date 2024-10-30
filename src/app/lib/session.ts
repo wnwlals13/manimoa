@@ -7,7 +7,7 @@ const secretKey = process.env.NEXT_PUBLIC_JWT_TOKEN || '';
 export async function encrypt(payload: SessionPayload) {
   const token = jwt.sign(payload, secretKey, {
     algorithm: 'HS256',
-    expiresIn: '1h',
+    expiresIn: payload.expire,
   });
   return token;
 }
