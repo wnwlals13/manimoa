@@ -17,6 +17,7 @@ export const userFollow = async ({ targetId }: FollowProps) => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/doFollow`,
       { method: 'post', body: targetId },
     );
+
     return await resposne.json();
   } catch (err) {
     console.error(`팔로우 도중 에러 발생`, err);

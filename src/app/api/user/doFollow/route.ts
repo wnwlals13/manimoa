@@ -1,5 +1,6 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -22,6 +23,11 @@ export async function POST(request: NextRequest) {
     if (!rows) {
       throw new Error();
     }
+
+    const tag = request.nextUrl.searchParams.get('tag');
+    const tag2 = request.nextUrl.searchParams.get(`profile-${user.uid}`);
+    console.log('doFollow tag =>', tag, tag2, `profile-${user.uid}`);
+    revalidateTag(`profile-${user.uid}`);
 
     return NextResponse.json({
       status: 200,

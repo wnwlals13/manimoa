@@ -8,15 +8,11 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 import { CUSTOM_NAV_PATHS } from '@/constants';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useEffect } from 'react';
 
 export default function Navigation() {
   const pathname = usePathname();
-  const { checkLoginStatus } = useAuthStore();
-
-  useEffect(() => {
-    checkLoginStatus();
-  }, [checkLoginStatus]);
+  const { user } = useAuthStore();
+  console.log('in nav =>', user);
 
   if (Object.keys(CUSTOM_NAV_PATHS).includes(pathname)) {
     return <></>;

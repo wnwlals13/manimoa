@@ -1,16 +1,15 @@
 'use client';
 
-import { updateUserProfile } from '@/app/actions/update-user-profile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { createSupabaseClient } from '@/utils/supabase-client';
-import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit2 } from 'react-icons/fi';
+import { useUpdateInfo } from '@/app/lib/user/hook/useUpdateInfo';
+import { UserData } from '@/types';
 
 export interface ProfileFormInputs {
   name: string;
@@ -18,8 +17,7 @@ export interface ProfileFormInputs {
 }
 
 export default function Page() {
-  const router = useRouter();
-  const { user, setUser } = useAuthStore();
+  const { user } = useAuthStore();
   const [tempName, setTempName] = useState<string>(user?.name || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImg, setPreviewImg] = useState<File>();
@@ -27,19 +25,7 @@ export default function Page() {
   const { register, handleSubmit, setValue } = useForm<ProfileFormInputs>({
     defaultValues: { name: user?.name },
   });
-
-  const { mutate: updateUser } = useMutation({
-    mutationFn: updateUserProfile,
-    onSuccess: (res) => {
-      console.log('mutate', res, res.updated);
-      setUser({
-        ...user!,
-        name: res.updated.name,
-        profileImg: res.updated.profileImg,
-      });
-      router.back();
-    },
-  });
+  const { mutate } = useUpdateInfo(user as UserData);
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -54,7 +40,7 @@ export default function Page() {
   const uploadImg = async () => {
     const supabase = await createSupabaseClient();
     try {
-      // 해당 id 폴더의 기존 데이서 삭제..
+      // 해당 id 폴더의 기존 데이터 삭제..
       const profile = user?.profileImg;
       if (profile) {
         await supabase.storage
@@ -74,7 +60,7 @@ export default function Page() {
         console.error('Failed to insert image to storage : ', error);
         throw new Error('[client] 프로필 이미지가 정상적으로 저장되지 않음');
       }
-      // console.log('profile Img =>', data);
+
       return data.path;
     } catch (err) {
       console.error('[client] 프로필 이미지 저장 에러', err);
@@ -82,14 +68,16 @@ export default function Page() {
   };
 
   const onSubmit = async (data: ProfileFormInputs) => {
-    let path = '';
+    let path = user?.profileImg || undefined;
     if (previewImg) {
       // 1. 이미지 스토리지 저장
       path = (await uploadImg()) as string;
     }
     // 2. 이미지 path 가져와 db에 저장
     const props = { name: data.name, path };
-    updateUser(props);
+
+    // 3. 수정
+    mutate(props);
   };
 
   useEffect(() => {

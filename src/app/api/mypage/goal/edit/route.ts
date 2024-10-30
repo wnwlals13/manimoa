@@ -2,14 +2,13 @@ import { cookies } from 'next/headers';
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
-import { goalsArrayProps } from '@/app/(with-nav)/mypage/edit-goals/page';
 
 export async function POST(request: Request) {
   try {
     const db = await conn();
     const data = await request.json();
 
-    const month_goals = data.month_goals as goalsArrayProps[];
+    const month_goals = data.month_goals as { value: string }[];
     const month_price = data.month_price;
 
     const month = new Date().getMonth() + 1;
@@ -50,7 +49,9 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ status: 201, message: '성공' });
+    const result = { month_goals: month_goals, month_price: month_price };
+
+    return NextResponse.json({ status: 201, message: '성공', data: result });
   } catch (err) {
     console.error(err);
     throw new Error();

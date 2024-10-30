@@ -20,8 +20,6 @@ interface feedFormInputs {
   content: string;
 }
 
-export const dynamic = 'force-dynamic';
-
 const FeedForm = () => {
   const { user, userFeeds } = useAuthStore();
   const router = useRouter();

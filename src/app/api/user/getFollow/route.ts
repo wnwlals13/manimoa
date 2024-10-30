@@ -3,6 +3,8 @@ import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const db = await conn();

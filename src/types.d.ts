@@ -48,3 +48,7 @@ export interface CommentData {
   updatedAt: string;
   deletedAt: string;
 }
+
+export interface ResponseError extends Error {
+  status?: number;
+}

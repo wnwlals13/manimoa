@@ -3,11 +3,11 @@
 import logo from '@/styles/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/store/auth/useAuthStore';
-import Cookies from 'js-cookie';
+import { useRegister } from '../lib/auth/hook/useRegister';
+import { useEffect } from 'react';
+import { ResponseError } from '@/types';
 
 export interface RegisterFormInputs {
   email: string;
@@ -16,40 +16,8 @@ export interface RegisterFormInputs {
   goal?: string;
 }
 
-// [function] 사용자 회원가입
-const userRegister = async (data: RegisterFormInputs) => {
-  const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  try {
-    // api 호출
-    const response = await fetch(`${apiUrl}/api/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      console.error(`Error during register user : ${response.status}`);
-      throw new Error('회원가입 실패');
-    }
-    const result = await response.json();
-
-    if (result.data) {
-      Cookies.set('accessToken', result.accessToken);
-      Cookies.set('user', JSON.stringify(result.data));
-    }
-
-    return result;
-  } catch (err) {
-    console.error(err);
-    throw new Error('userRegister 회원가입 실패');
-  }
-};
-
 export default function Page() {
-  const { setUser } = useAuthStore();
-  const router = useRouter();
+  const { mutate, isError, failureReason } = useRegister();
   const {
     register,
     handleSubmit,
@@ -57,33 +25,32 @@ export default function Page() {
     formState: { errors, isLoading },
   } = useForm({
     defaultValues: { email: '', password: '', name: '', goal: '' },
+    mode: 'onChange',
   });
 
   // 회원가입 제출
-  const onSubmit = (data: RegisterFormInputs) => {
-    const register = async () => {
-      try {
-        const result = await userRegister(data);
-        console.log(result);
-        if (result.status === 201) {
-          setUser({
-            uid: result.data.uid,
-            email: result.data.email,
-            name: result.data.name,
-            profileImg: result.data.profileImg,
-          });
-          router.push('/');
-        } else if (result.status === 400) {
-          setError('email', { message: result.message });
-          return;
-        }
-      } catch (err) {
-        console.error(err);
-        throw new Error('회원가입 실패');
-      }
-    };
-    register();
+  const onSubmit = ({
+    email,
+    password,
+    name,
+    goal,
+  }: {
+    email: string;
+    password: string;
+    name: string;
+    goal?: string;
+  }) => {
+    mutate({ email, password, name, goal });
   };
+
+  useEffect(() => {
+    if (!isError) return;
+    const error = failureReason as ResponseError;
+    if (error.status === 400) {
+      setError('email', { message: error.message });
+    }
+  }, [isError]);
+
   return (
     <form
       className="w-full h-full min-h-screen flex flex-col justify-center items-center gap-2 pl-8 pr-8"

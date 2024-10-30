@@ -7,14 +7,12 @@ import {
   RowDataPacket,
 } from 'mysql2';
 import bcrypt from 'bcrypt';
-import { encrypt } from '@/app/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();
   try {
     const data = await req.json();
     const { email, password, name, goal } = data;
-    console.log('? : post request', email);
 
     // 1. 사용자 중복 확인
     const rows: [QueryResult, FieldPacket[]] = await db.query(
@@ -27,10 +25,10 @@ export async function POST(req: Request) {
 
       if (existingUser.length > 0) {
         // 중복 사용자 리턴
-        return NextResponse.json({
-          status: 400,
-          message: '이미 등록된 이메일입니다.',
-        });
+        return NextResponse.json(
+          { error: '이미 등록된 이메일입니다.' },
+          { status: 400 },
+        );
       } else {
         // 2. 비밀번호 해시
         const salt = await bcrypt.genSalt(10);
@@ -70,9 +68,6 @@ export async function POST(req: Request) {
         );
         const row = rows[0] as RowDataPacket;
 
-        // 사용자 인증 성공 시 JWT 생성
-        const accessToken = await encrypt({ email, uid: row.id });
-        console.log('row ?=>', row[0]);
         // 5. 성공 리턴
         if (newUser && row) {
           const response = NextResponse.json({
@@ -84,31 +79,18 @@ export async function POST(req: Request) {
               name: row[0].name,
               profileImg: row[0].profile_img,
             },
-            accessToken: accessToken,
           });
 
-          // 쿠키 설정
-          response.cookies.set('accessToken', JSON.stringify(accessToken), {
-            httpOnly: true,
-            expires: 1,
-          });
-          response.cookies.set(
-            'user',
-            JSON.stringify({
-              uid: row[0].id,
-              email: row[0].email,
-              name: row[0].name,
-              profileImg: row[0].profile_img,
-              accessToken: accessToken,
-            }),
-          );
           return response;
         } else {
           console.error(
             `사용자를 추가하는 과정에 문제가 발생했습니다. :`,
             newUser,
           );
-          return NextResponse.json({ status: 500, message: '회원가입 실패' });
+          return NextResponse.json(
+            { error: '회원가입에 실패했습니다.' },
+            { status: 500 },
+          );
         }
       }
     }
