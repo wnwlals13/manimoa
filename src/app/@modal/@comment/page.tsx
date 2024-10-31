@@ -1,22 +1,17 @@
 'use client';
 
-import { CommentList } from '@/components/comment/comment-list';
-import { Input } from '@/components/ui/input';
-import { useModalStore } from '@/store/modal/useModalStore';
-import { FiSend } from 'react-icons/fi';
-import InteractiveButton from '@/components/ui/interactiveButton';
-import Cookies from 'js-cookie';
-
-import dynamic from 'next/dynamic';
-import { useForm } from 'react-hook-form';
 import { useAddComment } from '@/app/lib/comment/hook/useAddComment';
 import { useFetchComments } from '@/app/lib/comment/hook/useFetchComments';
-import { InfiniteData, QueryClient } from '@tanstack/react-query';
-import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
 import { useUpdateComment } from '@/app/lib/comment/hook/useUpdateComment';
-
-const Modal = dynamic(() => import('@/components/ui/modal'), { ssr: false });
+import { useModalStore } from '@/store/modal/useModalStore';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useInView } from 'react-intersection-observer';
+import Cookies from 'js-cookie';
+import { CommentList } from '@/components/comment/comment-list';
+import { Input } from '@/components/ui/input';
+import InteractiveButton from '@/components/ui/interactiveButton';
+import { FiSend } from 'react-icons/fi';
 
 interface commentInputs {
   content: string;
@@ -27,7 +22,7 @@ const ROWS_PER_PAGE = 20;
 export default function Page() {
   const { id, isOpen } = useModalStore();
 
-  const { data, isPending, refetch, fetchNextPage, isFetchingNextPage } =
+  const { data, isPending, fetchNextPage, isFetchingNextPage } =
     useFetchComments({
       feedId: id,
       pageSize: ROWS_PER_PAGE,
@@ -39,6 +34,7 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { isValid },
   } = useForm({
     defaultValues: { content: '' },
@@ -53,19 +49,6 @@ export default function Page() {
     }
   }, [inView]);
 
-  const resetInfiniteQueryPagination = (): void => {
-    const queryClient = new QueryClient();
-    queryClient.setQueryData(['comment'], (data: InfiniteData<[], []>) => {
-      if (!data) return undefined;
-
-      return {
-        ...data,
-        pages: data.pages.slice(0, 1),
-        pageParams: data.pageParams.slice(0, 1),
-      };
-    });
-  };
-
   const onsubmit = (data: commentInputs) => {
     const cookieStore = Cookies.get('user') as string;
     const user = JSON.parse(cookieStore);
@@ -74,9 +57,7 @@ export default function Page() {
       writer: user.uid,
       feedId: id,
     });
-
-    resetInfiniteQueryPagination();
-    refetch();
+    setValue('content', '');
   };
 
   const handleMutate = (content: string, commentId: string) => {
@@ -88,7 +69,7 @@ export default function Page() {
   const commentsGroup = data ? data.pages.map((page) => page.comments) : [];
 
   return (
-    <Modal>
+    <>
       <div className="flex-1 flex flex-col justify-start items-center pb-[60px]">
         <h3 className="flex-1 absolute flex justify-center font-bold h-[50px] w-full max-w-custom bg-white p-3">
           댓글
@@ -107,10 +88,10 @@ export default function Page() {
         className="fixed bottom-0 w-full max-w-custom flex gap-2 pt-4 pb-5 p-default bg-white"
       >
         <Input type="text" {...register('content', { required: true })} />
-        <InteractiveButton name="add-comment" disabled={!isValid}>
+        <InteractiveButton type="submit" name="add-comment" disabled={!isValid}>
           <FiSend />
         </InteractiveButton>
       </form>
-    </Modal>
+    </>
   );
 }

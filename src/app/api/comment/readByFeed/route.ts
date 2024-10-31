@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
             ON a.user_id = b.id 
         WHERE feed_id = ?
           AND a.deleted_at is NULL 
+        ORDER BY a.created_at DESC
         `,
       [feedId],
     );

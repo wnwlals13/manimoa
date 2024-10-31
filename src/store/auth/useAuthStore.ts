@@ -39,6 +39,7 @@ export const useAuthStore = create(
       },
       logout: () => {
         Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
         Cookies.remove('user');
         set({ user: null, isLogin: false });
       },

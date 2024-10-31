@@ -1,6 +1,5 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -8,16 +7,15 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const db = await conn();
-    const cookieStore = cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
     const searchParams = request.nextUrl.searchParams;
     const targetId = searchParams.get('targetId');
+    const userId = searchParams.get('userId');
 
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
         SELECT * FROM follows WHERE follow_user_id = ? AND following_user_id = ?
     `,
-      [user.uid, targetId],
+      [userId, targetId],
     );
 
     const rows = result[0] as RowDataPacket;

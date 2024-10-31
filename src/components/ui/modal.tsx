@@ -4,7 +4,13 @@ import { useModalStore } from '@/store/modal/useModalStore';
 import { ReactNode, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-export default function Modal({ children }: { children: ReactNode }) {
+export default function Modal({
+  type,
+  children,
+}: {
+  type: string;
+  children: ReactNode;
+}) {
   const { isOpen, setIsOpen } = useModalStore();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -31,7 +37,11 @@ export default function Modal({ children }: { children: ReactNode }) {
       }}
       ref={dialogRef}
     >
-      <div className="fixed w-[600px] h-[600px] bg-white  min-w-custom  bottom-0 rounded-tl-2xl rounded-tr-2xl flex flex-col justify-between overflow-hidden">
+      <div
+        className={`${
+          type == 'comment' ? `h-[600px]` : `h-[150px]`
+        } fixed w-[600px] bg-white  min-w-custom  bottom-0 rounded-tl-2xl rounded-tr-2xl flex flex-col justify-between overflow-hidden`}
+      >
         {children}
       </div>
     </section>,

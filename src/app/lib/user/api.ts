@@ -1,21 +1,27 @@
+'use server';
+import { cookies } from 'next/headers';
 import { GoalsRequestDto } from './hook/useUpdateGoals';
 import { InfoRequestDto } from './hook/useUpdateInfo';
+import { revalidateTag } from 'next/cache';
 
 export const updateInfo = async (data: InfoRequestDto) => {
   try {
-    console.log('env =>', process.env.NEXT_PUBLIC_BASE_URL);
+    console.log('[updateinfo] env =>', process.env.NEXT_PUBLIC_BASE_URL);
+    const cookieStore = await cookies().get('user');
+    const user = JSON.parse(cookieStore?.value as string);
     const fileResponse = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile/edit`,
       {
         method: 'post',
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, userId: user.uid }),
       },
     );
-
+    console.log('user/edit', fileResponse);
     if (!fileResponse.ok) {
       console.error('[client] 프로필 데이터 저장 싪패!');
       throw new Error();
     }
+    revalidateTag('profile');
     const result = await fileResponse.json();
 
     return result.updated;
@@ -27,14 +33,17 @@ export const updateInfo = async (data: InfoRequestDto) => {
 
 export const updateGoals = async (data: GoalsRequestDto) => {
   try {
+    const cookieStore = await cookies().get('user');
+    const user = JSON.parse(cookieStore?.value as string);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal/edit`,
       {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, userId: user.uid }),
       },
     );
+    revalidateTag('goals');
     const result = await response.json();
     return result.data;
   } catch (err) {
@@ -48,7 +57,7 @@ export const getInfoAndGoals = async (userId?: string) => {
     // 소비 목표 금액 & 다짐 정보 조회
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal?userId=${userId}`,
-      { method: 'get' },
+      { method: 'get', next: { tags: ['goals'] } },
     );
     if (!response.ok) {
       console.error(`소비 목표 금액 & 다짐 정보 조회 실패`);

@@ -1,4 +1,4 @@
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addComment } from '../api';
 import { CommentData } from '@/types';
 
@@ -8,13 +8,14 @@ export interface NewComment {
   feedId: string;
 }
 
-export function useAddComment(id: string) {
-  const queryClient = new QueryClient();
+export function useAddComment(feedId: string) {
+  const queryClient = useQueryClient();
   return useMutation<CommentData, Error, NewComment>({
     mutationFn: addComment,
-    onSuccess: (res) => {
-      console.log('update callback :', res);
-      queryClient.invalidateQueries({ queryKey: ['comment', id] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['comment', feedId],
+      });
     },
   });
 }

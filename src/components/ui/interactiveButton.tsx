@@ -10,7 +10,7 @@ import { useModalStore } from '@/store/modal/useModalStore';
 interface InteractiveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  variant?: 'default' | 'outline' | 'main' | 'submain';
+  variant?: 'default' | 'outline' | 'main' | 'submain' | 'none';
   size?: 'default' | 'full' | 'sm';
   className?: string;
   name: string;
@@ -51,8 +51,12 @@ export default function InteractiveButton({
     } else if (name.startsWith('comments')) {
       // 댓글 모달창
       const feedId = name.split('.')[1];
-      setIsOpen(true);
       setModalContent('comment', feedId);
+      setIsOpen(true);
+    } else if (name.startsWith('openModal')) {
+      const feedId = name.split('.')[1];
+      setIsOpen(true);
+      setModalContent('setting', feedId);
     }
   };
   return (

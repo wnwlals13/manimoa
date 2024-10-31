@@ -24,7 +24,7 @@ export function useUpdateInfo(user: UserData) {
       };
       setUser(updated);
       Cookies.set('user', JSON.stringify(updated));
-      router.back();
+      router.replace('/mypage');
     },
   });
 }
