@@ -14,7 +14,10 @@ export const getAdditionalInfo = async (userId: string) => {
         next: { tags: [`profile-${userId}`] },
       },
     );
-
+    if (!response.ok) {
+      console.error(`팔로우/팔로잉 데이터 조회에 실패했습니다.`);
+      return;
+    }
     const result = await response.json();
     return result.data;
   } catch (err) {

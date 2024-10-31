@@ -8,17 +8,22 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
+  modal,
   children,
 }: Readonly<{
+  modal: React.ReactNode;
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body className="h-screen">
-        <main className="flex flex-col relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
-          <QueryProviders>{children}</QueryProviders>
-        </main>
-        <div id="modal-root" className=""></div>
+        <QueryProviders>
+          <main className="flex flex-col relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
+            {children}
+          </main>
+          {modal}
+          <div id="modal-root" className=""></div>
+        </QueryProviders>
       </body>
     </html>
   );

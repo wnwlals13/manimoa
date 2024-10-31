@@ -34,7 +34,7 @@ export default function Page() {
     });
 
   const addCommentHook = useAddComment(id);
-  const updateCommentHook = useUpdateComment(id, refetch);
+  const updateCommentHook = useUpdateComment(id);
 
   const {
     register,

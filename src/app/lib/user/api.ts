@@ -50,6 +50,11 @@ export const getInfoAndGoals = async (userId?: string) => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal?userId=${userId}`,
       { method: 'get' },
     );
+    if (!response.ok) {
+      console.error(`소비 목표 금액 & 다짐 정보 조회 실패`);
+      throw new Error();
+    }
+    console.log(`getInfo and Goals =>`, response);
     const result = await response.json();
 
     // const goalArr = result.goals.map((item: GoalData) => item.content);
@@ -57,7 +62,7 @@ export const getInfoAndGoals = async (userId?: string) => {
 
     return { goals: result.goals, price: result.price };
   } catch (err) {
-    console.error('목표 업데이트 fetch 도중 에러 발생!', err);
+    console.error('소비 목표 금액 & 다짐 정보 조회 에러 발생!', err);
     throw new Error();
   }
 };

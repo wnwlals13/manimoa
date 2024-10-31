@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import InteractiveButton from '@/components/ui/interactiveButton';
 import { Toggle } from '@/components/ui/toggle';
 import { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +11,7 @@ import 'swiper/swiper-bundle.css';
 import { createSupabaseClient } from '@/utils/supabase-client';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 interface feedFormInputs {
   date: string;
@@ -41,7 +41,7 @@ const FeedForm = () => {
   const [willDeleteImgs, setWillDeleteImgs] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
-  const isEdit = searchParams.get('isEdit'); // 게시글 수정 여부
+  const isEdit = searchParams.get('isEdit') === 'true'; // 게시글 수정 여부
   const feedId = searchParams.get('feedId'); // 게시글 id
 
   const { register, setValue, handleSubmit } = useForm({
@@ -192,7 +192,7 @@ const FeedForm = () => {
       }
     }
   }, [isEdit, feedId, userFeeds]);
-
+  console.log('isEdit=>', isEdit);
   useEffect(() => {
     console.log(
       'is previewImage changed ? ->',
@@ -320,9 +320,7 @@ const FeedForm = () => {
           </div>
         </div>
       </div>
-      <InteractiveButton name="add_feed" type="submit">
-        {isEdit ? '게시글 수정' : '게시글 추가'}
-      </InteractiveButton>
+      <Button type="submit">{isEdit ? '게시글 수정' : '게시글 추가'}</Button>
     </form>
   );
 };
