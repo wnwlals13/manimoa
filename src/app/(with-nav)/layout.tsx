@@ -3,11 +3,11 @@ import Navigation from '@/components/common/navigation';
 import { ReactNode } from 'react';
 
 export default function Layout({
+  // modal,
   children,
-  modal,
 }: {
+  // modal: ReactNode;
   children: ReactNode;
-  modal: ReactNode;
 }) {
   return (
     <>
@@ -18,7 +18,7 @@ export default function Layout({
         </div>
         <Navigation />
       </div>
-      {modal}
+      {/* {modal} */}
     </>
   );
 }

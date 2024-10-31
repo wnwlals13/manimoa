@@ -1,21 +1,17 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const db = await conn();
-    const feedId = await request.json();
-    const cookieStore = cookies().get('user')?.value;
-    const user = JSON.parse(cookieStore as string);
-
+    const { feedId, userId } = await request.json();
     console.log(`feedId =>`, feedId);
 
     // 1.좋아요
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `INSERT INTO likes (feed_id, user_id) VALUES (?,?)`,
-      [feedId, user.uid],
+      [feedId, userId],
     );
     const rows = result[0] as ResultSetHeader;
 

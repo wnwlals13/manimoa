@@ -1,20 +1,17 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const db = await conn();
-    const targetId = await request.json();
-    const cookieStore = cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
+    const { targetId, userId } = await request.json();
 
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
          DELETE FROM follows WHERE follow_user_id = ? AND following_user_id = ?
         `,
-      [user.uid, targetId],
+      [userId, targetId],
     );
 
     const rows = result[0] as ResultSetHeader;

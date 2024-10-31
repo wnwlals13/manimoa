@@ -50,7 +50,7 @@ export default function Page() {
 
       const file = previewImg as File;
       const fileExt = file.name.split('.').pop();
-      const filePath = `profile/${user?.uid}/${Math.random()}.${fileExt}`;
+      const filePath = `profile/${user?.uid}/${Date.now()}.${fileExt}`;
 
       const { data, error } = await supabase.storage
         .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)

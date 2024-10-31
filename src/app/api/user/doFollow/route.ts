@@ -1,21 +1,17 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
-import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const db = await conn();
-    const targetId = await request.json();
-    const cookieStore = cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
+    const { targetId, userId } = await request.json();
 
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
         INSERT INTO follows (follow_user_id, following_user_id) VALUES (?,?) 
         `,
-      [user.uid, targetId],
+      [userId, targetId],
     );
 
     const rows = result[0] as ResultSetHeader;
@@ -23,11 +19,6 @@ export async function POST(request: NextRequest) {
     if (!rows) {
       throw new Error();
     }
-
-    const tag = request.nextUrl.searchParams.get('tag');
-    const tag2 = request.nextUrl.searchParams.get(`profile-${user.uid}`);
-    console.log('doFollow tag =>', tag, tag2, `profile-${user.uid}`);
-    revalidateTag(`profile-${user.uid}`);
 
     return NextResponse.json({
       status: 200,

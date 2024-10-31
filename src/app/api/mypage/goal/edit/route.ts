@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
@@ -9,16 +8,22 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     const month_goals = data.month_goals as { value: string }[];
-    const month_price = data.month_price;
-
+    const month_price = data.month_price[0].price;
+    const userId = data.userId;
+    console.log(
+      'userId',
+      userId,
+      'month_price',
+      month_price,
+      'month_goals',
+      month_goals,
+    );
     const month = new Date().getMonth() + 1;
-    const userCookie = cookies().get('user')?.value;
-    const user = JSON.parse(userCookie as string);
 
     if (month_goals) {
       const del_res: [QueryResult, FieldPacket[]] = await db.query(
         `DELETE FROM user_goals WHERE month(created_at) = ? AND user_id = ?`,
-        [month, user.uid],
+        [month, userId],
       );
       const rows = del_res[0] as RowDataPacket;
       if (rows) {
@@ -27,7 +32,7 @@ export async function POST(request: Request) {
             `
             INSERT INTO user_goals (user_id, content) VALUES (?,?)
             `,
-            [user.uid, goal.value],
+            [userId, goal.value],
           );
         });
       }
@@ -36,7 +41,7 @@ export async function POST(request: Request) {
     if (month_price) {
       const del_res: [QueryResult, FieldPacket[]] = await db.query(
         `DELETE FROM user_expenses WHERE month(created_at) = ? AND user_id = ?`,
-        [month, user.uid],
+        [month, userId],
       );
       const rows = del_res[0] as RowDataPacket;
       if (rows) {
@@ -44,7 +49,7 @@ export async function POST(request: Request) {
           `
             INSERT INTO user_expenses (user_id, price) VALUES (?,?)
             `,
-          [user.uid, month_price],
+          [userId, month_price],
         );
       }
     }

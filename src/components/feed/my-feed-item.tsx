@@ -1,6 +1,7 @@
 import { FeedData } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { FiMoreHorizontal } from 'react-icons/fi';
 import InteractiveButton from '../ui/interactiveButton';
 
 export default function MyFeedItem(feed: FeedData) {
@@ -28,20 +29,24 @@ export default function MyFeedItem(feed: FeedData) {
         </div>
       </Link>
       <div>
-        <InteractiveButton
-          variant={'outline'}
-          size={'sm'}
-          name={`edit_feed.${id}`}
+        <InteractiveButton variant="none" name={`openModal.${id}`}>
+          <FiMoreHorizontal />
+        </InteractiveButton>
+        {/* <Link
+          href={`/feed/form?isEdit=${true}&feedId=${id}`}
+          // variant={'outline'}
+          // size={'sm'}
+          // name={`edit_feed.${id}`}
         >
           수정하기
-        </InteractiveButton>
+        </Link>
         <InteractiveButton
           variant={'outline'}
           size={'sm'}
           name={`delete_feed.${id}`}
         >
           삭제하기
-        </InteractiveButton>
+        </InteractiveButton> */}
       </div>
     </div>
   );

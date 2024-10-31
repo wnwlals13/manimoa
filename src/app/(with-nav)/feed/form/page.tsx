@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import InteractiveButton from '@/components/ui/interactiveButton';
 import { Toggle } from '@/components/ui/toggle';
 import { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,9 +8,10 @@ import { FiX, FiImage } from 'react-icons/fi';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useFeedStore } from '@/store/feed/useFeedStore';
 import 'swiper/swiper-bundle.css';
-import { createSupabaseClient } from '@/utils/supabase-client';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { updateFeed, uploadFeed } from '@/app/lib/feed/api';
 
 interface feedFormInputs {
   date: string;
@@ -22,7 +22,6 @@ interface feedFormInputs {
 
 const FeedForm = () => {
   const { user, userFeeds } = useAuthStore();
-  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     image,
@@ -41,7 +40,7 @@ const FeedForm = () => {
   const [willDeleteImgs, setWillDeleteImgs] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
-  const isEdit = searchParams.get('isEdit'); // 게시글 수정 여부
+  const isEdit = searchParams.get('isEdit') === 'true'; // 게시글 수정 여부
   const feedId = searchParams.get('feedId'); // 게시글 id
 
   const { register, setValue, handleSubmit } = useForm({
@@ -53,94 +52,22 @@ const FeedForm = () => {
     },
   });
 
-  const uploadImgs = async () => {
-    const supabase = await createSupabaseClient();
-    try {
-      // 이미지 저장
-      const result = await Promise.all(
-        previewImage.map(async (previews) => {
-          const file = previews;
-          const fileExt = file.name.split('.').pop();
-          const filePath = `feed/${user?.uid}/${Math.random()}.${fileExt}`;
-
-          const { data, error } = await supabase.storage
-            .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
-            .upload(filePath, file);
-
-          if (error) {
-            console.error('Failed to insert image to storage : ', error);
-            throw new Error('[client] 이미지 저장 도중 에러가 발생했습니다.');
-          }
-
-          return data.path;
-        }),
-      );
-
-      return result;
-    } catch (err) {
-      console.error('[client] 이미지 저장 실패', err);
-    }
-  };
-
   const upload = async (data: feedFormInputs) => {
-    // 1. 저장소에 이미지 저장
-    const paths = await uploadImgs();
-
-    // 2. db에 url 저장
-    const contentData = {
+    await uploadFeed({
       ...data,
-      paths: paths,
-    };
-
-    const fileResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/upload`,
-      {
-        method: 'post',
-        body: JSON.stringify(contentData),
-      },
-    );
-
-    if (!fileResponse.ok) {
-      console.error('[client] 게시글 저장 중 에러가 발생했습니다.');
-      throw new Error();
-    }
-    router.push('/');
+      userId: user?.uid as string,
+      previewImage: previewImage,
+    });
   };
 
-  const update = async (inputs: feedFormInputs) => {
-    const supabase = await createSupabaseClient();
-    // 기존 이미지 (image) 삭제 시, 삭제
-    console.log(willDeleteImgs);
-    if (willDeleteImgs.length > 0) {
-      willDeleteImgs.forEach(async (img) => {
-        await supabase.storage
-          .from(`${process.env.NEXT_PUBLIC_STORAGE_BUCKET}`)
-          .remove([img]);
-      });
-    }
-    // 기존 이미지 (image) 유지 시 패스
-    // 새로운 이미지 (previewImage) 존재 시 추가
-    let paths;
-    if (previewImage.length > 0) {
-      paths = await uploadImgs();
-    }
-    // 2. db에 url 저장
-    const updateData = {
-      ...inputs,
-      paths: paths,
-      delPaths: willDeleteImgs,
-      feedId: feedId,
-    };
-    const resposne = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/update`,
-      { method: 'post', body: JSON.stringify(updateData) },
-    );
-
-    if (!resposne.ok) {
-      console.error('게시글 수정 도중 실패');
-      throw new Error();
-    }
-    router.push('/');
+  const update = async (data: feedFormInputs) => {
+    await updateFeed({
+      ...data,
+      userId: user?.uid as string,
+      willDeleteImgs: willDeleteImgs,
+      previewImage: previewImage,
+      feedId: feedId as string,
+    });
   };
 
   const onSubmit = (data: feedFormInputs) => {
@@ -176,11 +103,12 @@ const FeedForm = () => {
 
   useEffect(() => {
     // 게시글 수정 시 데이터 입력
+    console.log('isEdit =>', isEdit, '& feedId =>', feedId, userFeeds);
     if (isEdit && feedId) {
       const currentFeed = userFeeds.filter(
         (item) => item.id === Number(feedId),
       );
-
+      console.log('currentFeed', currentFeed);
       if (currentFeed && currentFeed[0]) {
         setContent(currentFeed[0].content);
         setValue('content', currentFeed[0].content);
@@ -192,7 +120,7 @@ const FeedForm = () => {
       }
     }
   }, [isEdit, feedId, userFeeds]);
-
+  console.log('isEdit=>', isEdit);
   useEffect(() => {
     console.log(
       'is previewImage changed ? ->',
@@ -320,9 +248,7 @@ const FeedForm = () => {
           </div>
         </div>
       </div>
-      <InteractiveButton name="add_feed" type="submit">
-        {isEdit ? '게시글 수정' : '게시글 추가'}
-      </InteractiveButton>
+      <Button type="submit">{isEdit ? '게시글 수정' : '게시글 추가'}</Button>
     </form>
   );
 };

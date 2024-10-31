@@ -17,13 +17,16 @@ interface ExpenseFormInputs {
 export default function Page() {
   const { setGoals } = useAuthStore();
   const [tempGoal, setTempGoal] = useState<string[]>([]);
-  const [tempPrice, setTempPrice] = useState<string>('');
   const { mutate } = useUpdateGoals();
   const { data, isLoading, isSuccess } = useInfoAndGoals();
+  const [tempPrice, setTempPrice] = useState<string>(data?.price[0].price);
 
   const { control, register, handleSubmit, setValue } =
     useForm<ExpenseFormInputs>({
-      defaultValues: { month_price: '', month_goals: [{ value: '' }] },
+      defaultValues: {
+        month_price: '',
+        month_goals: [{ value: '' }],
+      },
     });
   const { fields, append } = useFieldArray({
     control,
@@ -48,7 +51,7 @@ export default function Page() {
     setTempGoal(values_temp);
     setGoals(values_temp);
 
-    setTempPrice(data.price);
+    setTempPrice(data.price[0].price);
     setValue('month_price', data.price);
   }, [isLoading, isSuccess]);
 
