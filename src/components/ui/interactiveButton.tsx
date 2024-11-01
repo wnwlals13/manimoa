@@ -33,7 +33,7 @@ export default function InteractiveButton({
   const onClick = () => {
     console.log('button name', name);
     if (name === 'edit_profile') {
-      router.push(`http://localhost:3000/mypage/edit`);
+      router.push(`/mypage/edit`);
     } else if (name === 'logout') {
       logout();
       router.push('/login');
