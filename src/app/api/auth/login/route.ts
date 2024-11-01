@@ -1,11 +1,8 @@
-'use server';
-
 import { conn } from '@/utils/db';
 import bcrypt from 'bcrypt';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
 import { encrypt } from '@/app/lib/session';
-import { revalidateTag } from 'next/cache';
 
 export async function POST(req: Request) {
   const db = await conn();
@@ -54,7 +51,7 @@ export async function POST(req: Request) {
             refreshToken: refreshToken,
           },
         });
-        revalidateTag(`profile`);
+
         // 쿠키 설정
         response.cookies.set('accessToken', accessToken, {
           httpOnly: true,

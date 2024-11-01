@@ -7,6 +7,7 @@ import {
   RowDataPacket,
 } from 'mysql2';
 import bcrypt from 'bcrypt';
+import { encrypt } from '@/app/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();
@@ -68,18 +69,54 @@ export async function POST(req: Request) {
         );
         const row = rows[0] as RowDataPacket;
 
+        console.log('route/register row =>', row);
         // 5. 성공 리턴
         if (newUser && row) {
+          // 사용자 인증 성공 시 JWT 생성
+          const accessToken = await encrypt({
+            email,
+            uid: row[0].id,
+            expire: '1h',
+          });
+
+          // refreshToken 발급
+          const refreshToken = await encrypt({
+            email,
+            uid: row[0].id,
+            expire: '7d',
+          });
+
           const response = NextResponse.json({
             status: 201,
-            message: '회원가입 성공',
-            data: {
+            message: '로그인 성공',
+            user: {
               uid: row[0].id,
               email: row[0].email,
               name: row[0].name,
               profileImg: row[0].profile_img,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
             },
           });
+
+          // 쿠키 설정
+          response.cookies.set('accessToken', accessToken, {
+            httpOnly: true,
+            expires: 1,
+          });
+          response.cookies.set('refreshToken', refreshToken, {
+            httpOnly: true,
+          });
+          response.cookies.set(
+            'user',
+            JSON.stringify({
+              uid: row[0].id,
+              email: row[0].email,
+              name: row[0].name,
+              profileImg: row[0].profile_img,
+              accessToken: accessToken,
+            }),
+          );
 
           return response;
         } else {

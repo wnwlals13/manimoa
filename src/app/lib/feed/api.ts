@@ -184,6 +184,7 @@ export const updateFeed = async ({
       console.error('게시글 수정 도중 실패');
       throw new Error();
     }
+    return resposne;
   } catch (err) {
     console.error('feed 업데이트 도중 에러 발생', err);
   }

@@ -8,13 +8,13 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     const month_goals = data.month_goals as { value: string }[];
-    const month_price = data.month_price[0].price;
+    const month_price = data.month_price ? data.month_price : undefined;
     const userId = data.userId;
     console.log(
       'userId',
       userId,
       'month_price',
-      month_price,
+      data.month_price,
       'month_goals',
       month_goals,
     );

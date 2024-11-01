@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
     revalidateTag('feed');
 
-    return NextResponse.json({ status: 201, message: '조회 성공' });
+    return NextResponse.json({ status: 201, message: '추가 성공' });
   } catch (err) {
     console.error('upload api 과정 도중 에러 발생', err);
     throw new Error();

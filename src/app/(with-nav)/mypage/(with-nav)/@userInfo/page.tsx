@@ -1,7 +1,4 @@
-'use server';
-
 import InteractiveButton from '@/components/ui/interactiveButton';
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 
@@ -24,7 +21,6 @@ const getAdditionalInfo = async (userId: string) => {
 };
 
 export default async function Page() {
-  revalidatePath('/mypage/(with-layout)', 'layout');
   const cookieStore = cookies().get('user')?.value as string;
   const loginUser = JSON.parse(cookieStore);
   const { uid, email, name, profileImg } = loginUser;

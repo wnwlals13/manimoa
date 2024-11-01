@@ -4,7 +4,6 @@ import { useInfoAndGoals } from '@/app/lib/user/hook/useInfoAndGoals';
 import { useUpdateGoals } from '@/app/lib/user/hook/useUpdateGoals';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/store/auth/useAuthStore';
 import { GoalData } from '@/types';
 import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -15,11 +14,10 @@ interface ExpenseFormInputs {
 }
 
 export default function Page() {
-  const { setGoals } = useAuthStore();
-  const [tempGoal, setTempGoal] = useState<string[]>([]);
   const { mutate } = useUpdateGoals();
   const { data, isLoading, isSuccess } = useInfoAndGoals();
-  const [tempPrice, setTempPrice] = useState<string>(data?.price[0].price);
+  const [tempGoal, setTempGoal] = useState<string[]>([]);
+  const [tempPrice, setTempPrice] = useState<string>();
 
   const { control, register, handleSubmit, setValue } =
     useForm<ExpenseFormInputs>({
@@ -36,24 +34,31 @@ export default function Page() {
   const onsubmit = (data: ExpenseFormInputs) => {
     // 빈칸인 인풋은 삭제
     const filtered = data.month_goals.filter((item) => item.value != '');
-    mutate({ ...data, month_goals: filtered });
+    mutate({ ...data, month_goals: filtered, month_price: data.month_price });
   };
 
   useEffect(() => {
-    if (isLoading || !data) return;
+    if (isLoading) return;
 
-    const goalsArr = data.goals.map((item: GoalData) => {
-      return { value: item.content };
-    });
-    setValue('month_goals', goalsArr);
-    // tempGoal 형태 가공하기
-    const values_temp = data.goals.map((item: GoalData) => item.content);
-    setTempGoal(values_temp);
-    setGoals(values_temp);
+    // 목표 다짐이 있다면 설정
+    if (data && data?.goals.length > 0) {
+      // form 형태에 맞게 {value:string} 으로 설정해주어야 함
+      const goalsArr = data.goals.map((item: GoalData) => {
+        return { value: item.content };
+      });
+      const tempGoalsArr = data.goals.map((item: GoalData) => {
+        return item.content;
+      });
+      setTempGoal(tempGoalsArr);
+      setValue('month_goals', goalsArr);
+    }
 
-    setTempPrice(data.price[0].price);
-    setValue('month_price', data.price);
-  }, [isLoading, isSuccess]);
+    // 목표 소비 금액이 있다면 설정
+    if (data && data?.price.length > 0) {
+      setTempPrice(data.price[0].price);
+      setValue('month_price', data.price[0].price);
+    }
+  }, [isLoading, isSuccess, data]);
 
   return (
     <form
