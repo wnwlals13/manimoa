@@ -43,8 +43,8 @@ export const fetchOneFeed = async (feedId: string) => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/detail?id=${feedId}`,
       { method: 'get' },
     ).then((res) => res.json());
-
-    return response.data;
+    console.log('fetchOneFeed resposne =>', response);
+    return response.feed;
   } catch (err) {
     console.error('myfetch 에러 발생', err);
   }
@@ -80,16 +80,16 @@ export const uploadImgs = async (userId: string, previewImage: File[]) => {
 };
 
 export interface uploadFeedRequestDto {
-  date: string;
+  // date: string;
   price: string;
   priceOption: boolean;
   content: string;
   userId: string;
-  previewImage: File[];
+  previewImage?: File[];
 }
 
 export const uploadFeed = async ({
-  date,
+  // date,
   price,
   priceOption,
   content,
@@ -98,11 +98,14 @@ export const uploadFeed = async ({
 }: uploadFeedRequestDto) => {
   try {
     // 1. 저장소에 이미지 저장
-    const paths = await uploadImgs(userId, previewImage);
+    let paths: string[] = [];
+    if (previewImage && previewImage.length > 0) {
+      paths = (await uploadImgs(userId, previewImage)) as string[];
+    }
 
     // 2. db에 url 저장
     const contentData = {
-      date,
+      // date,
       price,
       priceOption,
       content,
@@ -129,18 +132,18 @@ export const uploadFeed = async ({
 };
 
 export interface updateFeedRequestDto {
-  date: string;
+  // date: string;
   price: string;
   priceOption: boolean;
   content: string;
   userId: string;
-  willDeleteImgs: string[];
-  previewImage: File[];
+  willDeleteImgs?: string[];
+  previewImage?: File[];
   feedId: string;
 }
 
 export const updateFeed = async ({
-  date,
+  // date,
   price,
   priceOption,
   content,
@@ -161,13 +164,13 @@ export const updateFeed = async ({
     }
     // 기존 이미지 (image) 유지 시 패스
     // 새로운 이미지 (previewImage) 존재 시 추가
-    let paths;
+    let paths: string[] = [];
     if (previewImage && previewImage.length > 0) {
-      paths = await uploadImgs(userId, previewImage);
+      paths = (await uploadImgs(userId, previewImage)) as string[];
     }
     // 2. db에 url 저장
     const updateData = {
-      date,
+      // date,
       price,
       priceOption,
       content,

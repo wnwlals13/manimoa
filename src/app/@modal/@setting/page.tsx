@@ -1,4 +1,5 @@
 'use client';
+import { useDeleteFeed } from '@/app/lib/feed/hook/useDeleteFeed';
 import { Button } from '@/components/ui/button';
 import { useModalStore } from '@/store/modal/useModalStore';
 import { useRouter } from 'next/navigation';
@@ -6,6 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function Page() {
   const { id, setIsOpen } = useModalStore();
   const router = useRouter();
+  const { mutate } = useDeleteFeed();
 
   const handleMove = () => {
     router.push(`/feed/form?isEdit=${true}&feedId=${id}`);
@@ -13,6 +15,7 @@ export default function Page() {
   };
 
   const handleDelete = () => {
+    mutate(id);
     setIsOpen(false);
   };
 

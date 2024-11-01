@@ -1,6 +1,5 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
-import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -25,7 +24,7 @@ export async function POST(request: NextRequest) {
         console.error('이미지 다중 삭제 도중 에러 발생', err);
       });
     }
-
+    console.log('[update img] delPaths=>', delPaths, 'paths=>', paths);
     // 이미지 추가
     if (paths.length > 0) {
       Promise.all(
@@ -51,8 +50,6 @@ export async function POST(request: NextRequest) {
     if (!first) {
       console.error('콘텐츠 수정 도중 에러 발생', first);
     }
-
-    revalidateTag('feed');
 
     return NextResponse.json({ status: 200, message: '성공' });
   } catch (err) {
