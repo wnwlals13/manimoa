@@ -1,3 +1,5 @@
+import MyFeedItem from '@/components/feed/my-feed-item';
+import { FeedData } from '@/types';
 import { cookies } from 'next/headers';
 
 const getMyFeeds = async (userId: string) => {
@@ -28,12 +30,12 @@ export default async function Page() {
   console.log('[MYPAGE] feeds2 => ', feeds);
   return (
     <div className="">
-      {/* <div className="w-full border-t"></div>
+      <div className="w-full border-t"></div>
       <h1 className="mt-4 mb-4 font-bold ">내글 보기</h1>
       {feeds &&
         feeds.map((item: FeedData, idx: number) => (
           <MyFeedItem key={idx} {...item} />
-        ))} */}
+        ))}
     </div>
   );
 }
