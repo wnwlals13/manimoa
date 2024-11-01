@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const db = await conn();
     const searchParams = request.nextUrl.searchParams;
     const userId = searchParams.get('userId');
-
+    console.log('user/getFeeds/rout.ts =>', userId);
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
       SELECT 
