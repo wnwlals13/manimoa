@@ -13,10 +13,12 @@ const getAdditionalInfo = async (userId: string) => {
       next: { tags: [`profile`] },
     },
   );
+  console.log('[MYPAGE] profile => ', response);
   if (!response.ok) {
     return { error: `팔로우/팔로잉 데이터 조회에 실패했습니다.` };
   }
   const result = await response.json();
+  console.log('[MYPAGE] feeds2 => ', result);
   return result.data;
 };
 
