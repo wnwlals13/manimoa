@@ -1,6 +1,6 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
