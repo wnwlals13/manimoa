@@ -9,7 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { useFeedStore } from '@/store/feed/useFeedStore';
 import 'swiper/swiper-bundle.css';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { updateFeed, uploadFeed } from '@/app/lib/feed/api';
 
@@ -21,6 +21,7 @@ interface feedFormInputs {
 }
 
 const FeedForm = () => {
+  const router = useRouter();
   const { user, userFeeds } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
@@ -58,6 +59,8 @@ const FeedForm = () => {
       userId: user?.uid as string,
       previewImage: previewImage,
     });
+    console.log(' upload feed ?? in');
+    router.push('/');
   };
 
   const update = async (data: feedFormInputs) => {
@@ -68,6 +71,7 @@ const FeedForm = () => {
       previewImage: previewImage,
       feedId: feedId as string,
     });
+    router.push('/');
   };
 
   const onSubmit = (data: feedFormInputs) => {

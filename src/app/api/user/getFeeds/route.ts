@@ -1,15 +1,16 @@
 import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const db = await conn();
-    const searchParams = request.nextUrl.searchParams;
-    const userId = searchParams.get('userId');
-
+    const data = new URL(request.url);
+    console.log('user/getFeeds/rout.ts data is? =>', data);
+    const userId = data.searchParams.get('userId');
+    console.log('user/getFeeds/rout.ts =>', userId);
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
       SELECT 
@@ -36,11 +37,7 @@ export async function GET(request: NextRequest) {
     );
 
     const rows = result[0] as RowDataPacket;
-
-    if (!rows) {
-      throw new Error();
-    }
-
+    console.log('user/getFeeds/rout.ts row? =>', rows);
     return NextResponse.json({
       status: 200,
       message: '유저 게시글 조회 성공',

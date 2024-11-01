@@ -1,15 +1,18 @@
 export default function Layout({
   children,
-  userGoals,
+  userInfo,
   userFeeds,
+  userGoals,
 }: {
   children: React.ReactNode;
-  userGoals: React.ReactNode;
+  userInfo: React.ReactNode;
   userFeeds: React.ReactNode;
+  userGoals: React.ReactNode;
 }) {
   return (
     <>
       {children}
+      {userInfo}
       {userGoals}
       {userFeeds}
     </>

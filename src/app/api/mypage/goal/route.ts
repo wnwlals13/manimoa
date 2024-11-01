@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
 
     // 1. 소비 다짐 조회
     const result: [QueryResult, FieldPacket[]] = await db.query(
-      `SELECT *
+      `SELECT 
+          content  as content
         FROM user_goals a
         WHERE a.user_id = ? and month(a.created_at) = ?`,
       [userId, now_month],
@@ -22,7 +23,8 @@ export async function GET(request: NextRequest) {
 
     // 2. 목표 소비액 조회
     const result_second: [QueryResult, FieldPacket[]] = await db.query(
-      `SELECT *
+      `SELECT 
+          price as price
         FROM user_expenses a
         WHERE a.user_id = ? and month(a.created_at) = ?`,
       [userId, now_month],

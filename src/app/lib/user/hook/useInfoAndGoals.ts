@@ -9,7 +9,6 @@ export interface InfoGoalsResponseDto {
 
 export function useInfoAndGoals() {
   const { user } = useAuthStore();
-  console.log('user', user);
   return useQuery({
     queryKey: ['infoAndGoals'],
     queryFn: () => getInfoAndGoals(user?.uid),
