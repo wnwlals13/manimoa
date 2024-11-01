@@ -5,27 +5,22 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 
-export const getAdditionalInfo = async (userId: string) => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        next: { tags: [`profile`] },
+const getAdditionalInfo = async (userId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
+    {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
-    if (!response.ok) {
-      console.error(`팔로우/팔로잉 데이터 조회에 실패했습니다.`);
-      return;
-    }
-    const result = await response.json();
-    return result.data;
-  } catch (err) {
-    console.error('팔로우/팔로잉 데이터 조회 도중 에러가 발생했습니다.', err);
+      next: { tags: [`profile`] },
+    },
+  );
+  if (!response.ok) {
+    return { error: `팔로우/팔로잉 데이터 조회에 실패했습니다.` };
   }
+  const result = await response.json();
+  return result.data;
 };
 
 export default async function Page() {
