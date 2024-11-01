@@ -13,5 +13,15 @@ export default function Error({
     // Log the error to an error reporting service
     console.error(error);
   }, [error]);
-  return <div>오류가 발생했습니다.</div>;
+  return (
+    <div>
+      오류가 발생했습니다.
+      <button
+        onClick={
+          // Attempt to recover by trying to re-render the segment
+          () => reset()
+        }
+      ></button>
+    </div>
+  );
 }
