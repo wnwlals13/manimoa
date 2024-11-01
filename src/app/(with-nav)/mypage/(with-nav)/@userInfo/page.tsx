@@ -1,14 +1,34 @@
-import { getAdditionalInfo } from '@/actions/get-profile.action';
 import InteractiveButton from '@/components/ui/interactiveButton';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
+
+const getAdditionalInfo = async (userId: string) => {
+  'use server';
+  console.log('process.env =>', process.env.NEXT_PUBLIC_BASE_URL, '/', userId);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
+    {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      next: { tags: [`profile`] },
+    },
+  );
+  console.log('[MYPAGE] profile => ', response);
+  if (!response.ok) {
+    return { error: `팔로우/팔로잉 데이터 조회에 실패했습니다.` };
+  }
+  const result = await response.json();
+  console.log('[MYPAGE] feeds2 => ', result);
+  return result.data;
+};
 
 export default async function Page() {
   const cookieStore = cookies().get('user')?.value as string;
   const loginUser = JSON.parse(cookieStore);
   const { uid, email, name, profileImg } = loginUser;
-  const { data } = await getAdditionalInfo(uid);
-  console.log('userInfo page : data=>', data);
+  const { followCnt, followingCnt } = await getAdditionalInfo(uid);
 
   return (
     <div className="flex flex-col gap-2 pt-default pb-default">
@@ -35,10 +55,10 @@ export default async function Page() {
           </div>
           <div className="flex-1 flex justify-center gap-2">
             <div className="flex">
-              팔로우 <p>{data.followCnt}</p>
+              팔로우 <p>{followCnt}</p>
             </div>
             <div className="flex">
-              팔로잉 <p>{data.followingCnt}</p>
+              팔로잉 <p>{followingCnt}</p>
             </div>
           </div>
         </div>

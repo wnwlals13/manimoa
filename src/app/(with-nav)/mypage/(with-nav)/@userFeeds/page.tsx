@@ -1,5 +1,24 @@
-import { getMyFeeds } from '@/actions/get-myfeeds.action';
 import { cookies } from 'next/headers';
+
+const getMyFeeds = async (userId: string) => {
+  'use server';
+  console.log('process.env =>', process.env.NEXT_PUBLIC_BASE_URL, '/', userId);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getFeeds?userId=${userId}`,
+    {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+  console.log('[MYPAGE] feeds => ', response);
+  if (!response.ok) {
+    return { error: `내 피드게시글 데이터 조회에 실패했습니다.` };
+  }
+  const { feeds } = await response.json();
+  return feeds;
+};
 
 export default async function Page() {
   const cookieStore = cookies().get('user')?.value as string;
