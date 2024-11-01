@@ -7,8 +7,9 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const db = await conn();
-    const searchParams = request.nextUrl.searchParams;
-    const userId = searchParams.get('userId');
+    const data = new URL(request.url);
+    console.log('user/getFeeds/rout.ts data is? =>', data);
+    const userId = data.searchParams.get('userId');
     console.log('user/getFeeds/rout.ts =>', userId);
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
