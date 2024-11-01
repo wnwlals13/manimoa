@@ -1,5 +1,3 @@
-import MyFeedItem from '@/components/feed/my-feed-item';
-import { FeedData } from '@/types';
 import { cookies } from 'next/headers';
 
 const getMyFeeds = async () => {
@@ -25,6 +23,7 @@ const getMyFeeds = async () => {
 
 export default async function Page() {
   const feeds = await getMyFeeds();
+  console.log('[MYPAGE] feeds2 => ', feeds);
   return (
     <div className="">
       {/* <div className="w-full border-t"></div>
