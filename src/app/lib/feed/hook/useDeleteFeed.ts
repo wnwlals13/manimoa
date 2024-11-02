@@ -7,7 +7,7 @@ export const useDeleteFeed = () => {
   return useMutation({
     mutationFn: deleteFeed,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['feed'] });
+      queryClient.invalidateQueries({ queryKey: ['feed', 'myfeeds'] });
     },
     onError: (err: Error) => {
       console.error(err);

@@ -4,80 +4,67 @@ import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
 import { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FiX, FiImage } from 'react-icons/fi';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { useFeedStore } from '@/store/feed/useFeedStore';
+import { FiImage } from 'react-icons/fi';
 import 'swiper/swiper-bundle.css';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { updateFeed, uploadFeed } from '@/app/lib/feed/api';
+import { useFetchOneFeed } from '@/app/lib/feed/hook/useFetchOneFeed';
+import { CarouselMultipleComponent } from '@/components/ui/carousel-multiple';
+import { useUploadFeed } from '@/app/lib/feed/hook/useUploadFeed';
+import { useUpdateFeed } from '@/app/lib/feed/hook/useUpdateFeed';
 
 interface feedFormInputs {
-  date: string;
   price: string;
-  priceOption: boolean;
   content: string;
+  priceOption: boolean;
 }
 
 const FeedForm = () => {
-  const router = useRouter();
-  const { user, userFeeds } = useAuthStore();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const {
-    image,
-    previewImage,
-    showPrice,
-    date,
-    setPreviewImage,
-    setShowPrice,
-    setImage,
-    setContent,
-    setDate,
-    resetPreviewImage,
-    delPreviewImage,
-  } = useFeedStore();
-
-  const [willDeleteImgs, setWillDeleteImgs] = useState<string[]>([]);
-
   const searchParams = useSearchParams();
   const isEdit = searchParams.get('isEdit') === 'true'; // 게시글 수정 여부
   const feedId = searchParams.get('feedId'); // 게시글 id
 
-  const { register, setValue, handleSubmit } = useForm({
+  const result = useFetchOneFeed(feedId || '');
+  const editFeed = result?.data && result?.data[0];
+  const editFeedInfo = { ...editFeed, feedId };
+  console.log('??????', editFeed, feedId);
+
+  const fileInputRef = useRef<HTMLInputElement>(null); // 이미지 등록 input
+  const [oldImages, setOldImages] = useState<string[]>(); // 이미 추가된 이미지들
+  const [previewImages, setPreviewImages] = useState<File[]>(); //새롭게 추가할 이미지들
+  const [willDeleteImgs, setWillDeleteImgs] = useState<string[]>([]); // 삭제할 이미지 이름들
+
+  const uploadFn = useUploadFeed();
+  const updateFn = useUpdateFeed();
+  const { user } = useAuthStore();
+
+  const { register, setValue, getValues, watch, handleSubmit } = useForm({
     defaultValues: {
-      date: isEdit ? date.toLocaleString() : new Date().toLocaleString(),
-      price: '',
-      priceOption: showPrice,
+      price: '0',
+      priceOption: false,
       content: '',
     },
   });
 
-  const upload = async (data: feedFormInputs) => {
-    await uploadFeed({
-      ...data,
-      userId: user?.uid as string,
-      previewImage: previewImage,
-    });
-    console.log(' upload feed ?? in');
-    router.push('/');
-  };
-
-  const update = async (data: feedFormInputs) => {
-    await updateFeed({
-      ...data,
-      userId: user?.uid as string,
-      willDeleteImgs: willDeleteImgs,
-      previewImage: previewImage,
-      feedId: feedId as string,
-    });
-    router.push('/');
-  };
-
   const onSubmit = (data: feedFormInputs) => {
-    if (!isEdit) upload(data);
-    else update(data);
+    if (!isEdit) {
+      uploadFn.mutate({
+        ...data,
+        userId: user?.uid as string,
+        previewImage: previewImages || [],
+      });
+    } else {
+      updateFn.mutate({
+        ...data,
+        userId: user?.uid as string,
+        willDeleteImgs: willDeleteImgs ? willDeleteImgs : [],
+        previewImage: previewImages ? previewImages : [],
+        feedId: editFeedInfo.feedId as string,
+      });
+    }
   };
+
   const handleClick = () => {
     fileInputRef.current?.click();
   };
@@ -86,73 +73,50 @@ const FeedForm = () => {
     const file = e.target.files;
     if (file && file.length > 0) {
       const fileArray = Array.from(file);
-      setPreviewImage(fileArray);
+      setPreviewImages(fileArray);
     }
   };
-
-  // 이미지 x 버튼 클릭
-  const handleDelImg = (e: React.MouseEvent, item: string, index: number) => {
-    const deletedImg = image.filter((item, idx) => idx !== index);
+  // 기존 이미지 x 버튼 클릭
+  const handleDelImg = (index: number, item: string) => {
+    console.log(index, oldImages);
+    if (!oldImages) return;
+    const deletedImg = oldImages.filter((_, idx) => idx !== index);
+    console.log(oldImages, deletedImg);
     setWillDeleteImgs([...willDeleteImgs, item]);
-    setImage(deletedImg);
+    setOldImages(deletedImg);
   };
-  const handleDelPreviewImg = (e: React.MouseEvent, name: string) => {
-    // e.preventDefault();
-    delPreviewImage(name);
+  // 새 이미지 x 버튼 클릭
+  const handleDelPreviewImg = (index: number, name: string) => {
+    console.log('del img name', name);
+    const deletedImg = previewImages?.filter((_, idx) => idx !== index);
+    setPreviewImages(deletedImg);
   };
 
   useEffect(() => {
-    setValue('priceOption', showPrice);
-  }, [showPrice]);
-
-  useEffect(() => {
-    // 게시글 수정 시 데이터 입력
-    console.log('isEdit =>', isEdit, '& feedId =>', feedId, userFeeds);
-    if (isEdit && feedId) {
-      const currentFeed = userFeeds.filter(
-        (item) => item.id === Number(feedId),
-      );
-      console.log('currentFeed', currentFeed);
-      if (currentFeed && currentFeed[0]) {
-        setContent(currentFeed[0].content);
-        setValue('content', currentFeed[0].content);
-        setValue('price', currentFeed[0].price.toString());
-        setDate(new Date(currentFeed[0].createdAt));
-
-        const imagesArray = currentFeed[0].images?.split(',');
-        if (imagesArray) setImage(imagesArray);
-      }
+    if (isEdit && editFeedInfo) {
+      setValue('price', editFeedInfo.price?.toString());
+      setValue('content', editFeedInfo.content);
     }
-  }, [isEdit, feedId, userFeeds]);
-  console.log('isEdit=>', isEdit);
-  useEffect(() => {
-    console.log(
-      'is previewImage changed ? ->',
-      previewImage,
-      'image => ',
-      image,
-    );
-  }, [previewImage, image]);
+  }, [isEdit, editFeedInfo]);
 
   useEffect(() => {
-    return () => {
-      resetPreviewImage();
-    };
-  }, []);
+    const imgUrls = editFeedInfo.images?.split(',');
+    setOldImages(imgUrls);
+  }, [editFeedInfo?.images]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex-1 flex flex-col">
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <div className="flex pt-5 pb-5 border-b">
           <div className="min-w-[100px]">소비 일자</div>
-          <div>
-            {date.getFullYear() +
+          {isEdit
+            ? editFeedInfo.createdAt
+            : new Date().getFullYear() +
               '년 ' +
-              (date.getMonth() + 1) +
+              (new Date().getMonth() + 1) +
               '월 ' +
-              date.getDate() +
+              new Date().getDate() +
               '일'}
-          </div>
         </div>
         <div className="flex gap-5 pt-5 pb-5 border-b mb-5 items-center">
           <div className="flex-1 flex items-center">
@@ -165,20 +129,26 @@ const FeedForm = () => {
               }}
             />
           </div>
-          <Toggle variant="outline" size="sm" onClick={setShowPrice}>
-            {!showPrice ? '금액 보이기' : '금액 숨기기'}
+          <input type="hidden" {...register('priceOption')}></input>
+          <Toggle
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const prev = getValues('priceOption');
+              setValue('priceOption', !prev);
+            }}
+          >
+            {!watch('priceOption') ? '금액 보이기' : '금액 숨기기'}
           </Toggle>
         </div>
-        <div className="w-full">
+        <div className="flex-1 flex flex-col w-full gap-2">
           <textarea
             id="content"
             placeholder="오늘 당신의 소비내용을 기록해주세요."
             className="min-h-44 h-44 resize-none w-full p-2"
             {...register('content', { required: true })}
           ></textarea>
-        </div>
-        <div className="flex-1 flex gap-2 mt-2">
-          <div>
+          <div className="flex gap-2">
             <FiImage
               size="25"
               className="mb-5 cursor-pointer"
@@ -192,74 +162,27 @@ const FeedForm = () => {
               ref={fileInputRef}
               onChange={handleUploadImage}
             />
-          </div>
-          <div className="flex-1 flex overflow-hidden ">
-            <Swiper
-              direction="horizontal"
-              slidesPerView={2}
-              spaceBetween={20}
-              pagination={{ clickable: true }}
-              className="flex-1 w-full h-[200px]"
-            >
-              {image &&
-                image.map((item, idx) => (
-                  <SwiperSlide
-                    key={idx}
-                    className="w-[253px] h-[200px] bg-yellow-200"
-                  >
-                    <button
-                      type="button"
-                      className="absolute p-1 right-1 top-1 bg-white rounded-full shadow-xl"
-                      onClick={(e) => handleDelImg(e, item, idx)}
-                    >
-                      <FiX size={20} />
-                    </button>
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${item}`}
-                      style={{
-                        objectFit: 'cover',
-                        width: '100%',
-                        height: '100%',
-                      }}
-                      alt=""
-                    />
-                  </SwiperSlide>
-                ))}
-              {previewImage &&
-                previewImage.map((item, idx) => (
-                  <SwiperSlide
-                    key={idx}
-                    className="w-[253px] h-[200px] bg-yellow-200"
-                  >
-                    <button
-                      type="button"
-                      className="absolute p-1 right-1 top-1 bg-white rounded-full shadow-xl"
-                      onClick={(e) => handleDelPreviewImg(e, item.name)}
-                    >
-                      <FiX size={20} />
-                    </button>
-                    <img
-                      src={URL.createObjectURL(previewImage[idx])}
-                      style={{
-                        objectFit: 'cover',
-                        width: '100%',
-                        height: '100%',
-                      }}
-                    />
-                  </SwiperSlide>
-                ))}
-            </Swiper>
+            <CarouselMultipleComponent
+              images={oldImages}
+              previewImages={previewImages}
+              handleDelImg={handleDelImg}
+              handleDelPreviewImg={handleDelPreviewImg}
+            />
           </div>
         </div>
+        <div className=" flex overflow-hidden ">
+          <Button size="full" type="submit">
+            {isEdit ? '게시글 수정' : '게시글 추가'}
+          </Button>
+        </div>
       </div>
-      <Button type="submit">{isEdit ? '게시글 수정' : '게시글 추가'}</Button>
     </form>
   );
 };
 
 export default function Page() {
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
       <FeedForm />
     </Suspense>
   );
