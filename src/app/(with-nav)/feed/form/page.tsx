@@ -141,7 +141,7 @@ const FeedForm = () => {
             {!watch('priceOption') ? '금액 보이기' : '금액 숨기기'}
           </Toggle>
         </div>
-        <div className="w-full">
+        <div className="flex-1 flex flex-col w-full gap-2">
           <textarea
             id="content"
             placeholder="오늘 당신의 소비내용을 기록해주세요."
@@ -170,7 +170,7 @@ const FeedForm = () => {
             />
           </div>
         </div>
-        <div className="flex-1 flex overflow-hidden ">
+        <div className=" flex overflow-hidden ">
           <Button size="full" type="submit">
             {isEdit ? '게시글 수정' : '게시글 추가'}
           </Button>
