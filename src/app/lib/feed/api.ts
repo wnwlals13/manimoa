@@ -1,4 +1,5 @@
 import { createSupabaseClient } from '@/utils/supabase-client';
+import Cookies from 'js-cookie';
 
 export const deleteFeed = async (feedId: string) => {
   try {
@@ -190,5 +191,26 @@ export const updateFeed = async ({
     return resposne;
   } catch (err) {
     console.error('feed 업데이트 도중 에러 발생', err);
+  }
+};
+
+export const fetchFeeds = async (pageParam: number, pageSize: number) => {
+  try {
+    const cookieStore = Cookies.get('user') as string;
+    const user = JSON.parse(cookieStore);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/readAll?cursor=` +
+        pageParam +
+        `&pageSize=` +
+        pageSize +
+        `&userid=` +
+        user?.uid,
+      { cache: 'no-store' },
+    ).then((res) => res.json());
+
+    return response;
+  } catch (err) {
+    console.error('게시글 fetch 실패', err);
+    throw new Error();
   }
 };

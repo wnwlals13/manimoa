@@ -38,6 +38,7 @@ export default function Header() {
           width={80}
           height={100}
           alt="마니모아의 메인 로고입니다."
+          priority={true}
         />
         <div>
           <FiBell size="25" />

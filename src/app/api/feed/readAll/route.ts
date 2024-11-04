@@ -1,6 +1,5 @@
 import { FeedData } from '@/types';
 import { conn } from '@/utils/db';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -11,9 +10,8 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const cursor = Number(searchParams.get('cursor'));
     const pageSize = Number(searchParams.get('pageSize'));
-    const cookieStore = cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
-    console.log('cursor', cursor, 'pageSize', pageSize, user);
+    const userId = Number(searchParams.get('userId'));
+    console.log('cursor', cursor, 'pageSize', pageSize, userId);
 
     const response = await db.query(
       ` 
@@ -42,7 +40,7 @@ export async function GET(request: NextRequest) {
       WHERE a.deleted_at is NULL 
       GROUP BY a.id 
       ORDER BY a.created_at DESC`,
-      [user.uid],
+      [userId],
     );
 
     const feeds = response[0] as FeedData[];
