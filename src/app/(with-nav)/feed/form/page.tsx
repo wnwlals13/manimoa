@@ -105,7 +105,10 @@ const FeedForm = () => {
   }, [editFeedInfo?.images]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex-1 flex flex-col">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex-1 flex flex-col p-default pt-[60px]"
+    >
       <div className="flex-1 flex flex-col">
         <div className="flex pt-5 pb-5 border-b">
           <div className="min-w-[100px]">소비 일자</div>

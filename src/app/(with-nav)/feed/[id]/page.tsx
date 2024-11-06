@@ -20,7 +20,7 @@ async function FeedDetail({ feedId }: { feedId: string }) {
 
   const imagesArray = feedInfo.images?.split(',');
   return (
-    <div>
+    <div className="p-default pt-[60px]">
       <div className="flex items-center p-default gap-2">
         <div className="flex-1 flex justify-start items-center gap-2">
           <Profile profileImg={feedInfo.profileImg} />

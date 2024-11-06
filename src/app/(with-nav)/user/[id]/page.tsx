@@ -18,7 +18,7 @@ async function UserInfo({ userId }: { userId: string }) {
   const { user } = await response.json();
 
   return (
-    <div className="flex flex-col gap-2 p-default">
+    <div className="flex flex-col gap-2 p-default pt-[60px]">
       <div className="relative flex  justify-between items-center">
         <div className="flex gap-10 justify-start items-center">
           <div className="flex gap-2 items-center">

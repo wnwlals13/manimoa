@@ -8,7 +8,14 @@ import { Button } from '@/components/ui/button';
 import { debounce } from '@/lib/debounce';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { IMsg } from '@/types';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  KeyboardEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { FiSend } from 'react-icons/fi';
 import SocketIoClient, { Socket } from 'socket.io-client';
 
@@ -19,7 +26,9 @@ export default function Page({ params }: { params: { id: string } }) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false); // 채팅 연결 여부
   const [roomId, setRoomId] = useState<string>(params.id); // 연결된 채팅 방
+
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const ulRef = useRef<HTMLUListElement | null>(null);
 
   const { mutate } = useSendMessage(params.id);
   const { data } = useFetchAllMessages(params.id);
@@ -29,6 +38,15 @@ export default function Page({ params }: { params: { id: string } }) {
     setMsg(e.target.value);
   });
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == 'Enter') {
+      e.preventDefault();
+      if (msg) {
+        handleSendMessage();
+      }
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!socket || !inputRef.current) return;
     const message: IMsg = {
@@ -37,6 +55,7 @@ export default function Page({ params }: { params: { id: string } }) {
       date: new Date().toString(),
       roomId: roomId,
     };
+    console.log('msg', message);
     socket.emit(`chatting`, message);
     setMsg(''); // 메세지 내용 초기화
     inputRef.current.value = '';
@@ -48,10 +67,8 @@ export default function Page({ params }: { params: { id: string } }) {
   const connectToChatServer = () => {
     setIsConnected(true);
     const _socket = SocketIoClient(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
-      autoConnect: false,
       query: { chatRoomId: params.id },
     });
-    _socket.connect();
     setSocket(_socket);
     _socket?.emit('joinChatRoom', user?.uid);
   };
@@ -74,10 +91,9 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   useEffect(() => {
-    setRoomId(params.id);
-
     if (!socket?.connected) {
       connectToChatServer();
+      setRoomId(params.id);
     }
     socket?.on('connect', connectToChatServer);
     return () => {
@@ -99,12 +115,15 @@ export default function Page({ params }: { params: { id: string } }) {
     if (messageList) {
       setChat([...messageList]);
     }
-    console.log('isConnected', isConnected);
+    console.log('isConnected', isConnected, messageList, user?.uid);
   }, [messageList]);
 
   return (
     <>
-      <ul className="flex-1 bg-gray-200 p-default flex flex-col gap-2 overflow-scroll">
+      <ul
+        ref={ulRef}
+        className="flex-1 h-screen max-h-full bg-gray-200 p-default pt-[80px] pb-[100px] flex flex-col gap-2 overflow-y-scroll"
+      >
         {chat.map((item, idx) =>
           item.author == user?.uid ? (
             <MyMessage key={idx} {...item} />
@@ -113,11 +132,12 @@ export default function Page({ params }: { params: { id: string } }) {
           ),
         )}
       </ul>
-      <div className="flex gap-2 bg-white pt-[20px] p-default">
+      <div className="fixed bottom-0 min-w-custom w-custom flex gap-2 bg-white pt-[20px] p-default">
         <input
           ref={inputRef}
-          className="border flex-1"
+          className="border flex-1 pl-2 pr-2 outline-none rounded-sm"
           onChange={handleSetMsg}
+          onKeyDown={handleKeyDown}
         ></input>
         <Button
           variant={!msg ? `outline` : 'submain'}

@@ -62,7 +62,7 @@ function EditGoalsForm() {
 
   return (
     <form
-      className="flex-1 flex flex-col gap-5 justify-between h-full"
+      className="flex-1 flex flex-col gap-5 justify-between h-full p-default pt-[60px]"
       onSubmit={handleSubmit(onsubmit)}
     >
       <div className="flex flex-col gap-10">

@@ -49,7 +49,13 @@ export default function Header() {
 
   // 채팅방 삭제 버튼
   const handleRemoveChats = () => {
-    mutate({ willRemoveRooms });
+    if (
+      confirm(
+        '채팅방에 나가면 채팅 내용이 모두 사라집니다. \n 정말 나가시겠습니까?',
+      )
+    ) {
+      mutate({ willRemoveRooms });
+    }
   };
 
   if (

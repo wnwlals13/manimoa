@@ -24,7 +24,7 @@ export default async function Home() {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div className="p-default">
+    <div className="p-default pt-[60px]">
       <div className="p-3 mb-4 rounded-md border">
         <div className="font-bold mb-1">👏 오늘도 manimoa 봐요!</div>
         <div className="text-gray-600">새로운 소식이 있나요?</div>

@@ -73,6 +73,7 @@ export interface IChatUser {
 export interface IChatRoom {
   roomId: string;
   createdAt: string;
-  otherUserId: string;
-  otherUserEmail: string;
+  participantIds: string[];
+  participantEmails: { id: string; email: string }[];
+  participantProfiles: { id: string; profileImg: string }[];
 }

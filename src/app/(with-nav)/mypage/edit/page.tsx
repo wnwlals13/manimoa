@@ -88,7 +88,7 @@ export default function Page() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex flex-col justify-between items-center gap-5"
+      className="flex-1 flex flex-col justify-between items-center gap-5 p-default pt-[60px]"
     >
       <div className="w-full flex flex-col">
         <div className="h-[100px] w-full flex justify-center">
