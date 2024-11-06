@@ -1,14 +1,33 @@
 'use client';
 
-import { FiChevronLeft, FiBell } from 'react-icons/fi';
-import logo from '@/styles/logo.png';
+import { FiChevronLeft, FiBell, FiUserPlus, FiSettings } from 'react-icons/fi';
+import logo from '@/assets/logo.png';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CUSTOM_NAV_PATHS } from '@/constants';
+import { useChatStore } from '@/store/chat/useChatStore';
+import { useRemoveChat } from '@/app/lib/chat/hook/useRemoveChat';
 
 export default function Header() {
   const pathname = usePathname() as string;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { willRemoveRoomCnt, willRemoveRooms } = useChatStore();
+  const { mutate } = useRemoveChat();
+
+  const handleAddChatRoom = () => {
+    router.push('/chat/addChat');
+  };
+
+  // 채팅방 더보기 버튼
+  const handleMore = () => {
+    router.push('/chat/editRoom');
+  };
+
+  // 채팅방 삭제 버튼
+  const handleRemoveChats = () => {
+    mutate({ willRemoveRooms });
+  };
 
   if (
     Object.keys(CUSTOM_NAV_PATHS).includes(pathname) ||
@@ -28,6 +47,52 @@ export default function Header() {
           />
         </div>
         <div className="flex-1 flex justify-center">{title}</div>
+      </header>
+    );
+  } else if (pathname.startsWith('/chat/room')) {
+    const otherUserEmail = searchParams.get('otherUserEmail');
+    const otherUserEmailId = otherUserEmail?.split('@')[0];
+
+    return (
+      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
+        <div className="absolute">
+          <FiChevronLeft
+            size="25"
+            className="cursor-pointer"
+            onClick={() => {
+              // [TODO] 경고 문구
+              router.replace('/chat');
+            }}
+          />
+        </div>
+        <div className="flex-1 flex justify-center">{otherUserEmailId}</div>
+      </header>
+    );
+  } else if (pathname === '/chat') {
+    return (
+      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
+        <h1 className="flex-1 font-bold">채팅</h1>
+        <div className="flex gap-2">
+          <FiUserPlus
+            style={{ cursor: 'pointer' }}
+            size={25}
+            onClick={handleAddChatRoom}
+          />
+          <FiSettings
+            style={{ cursor: 'pointer' }}
+            size={25}
+            onClick={handleMore}
+          />
+        </div>
+      </header>
+    );
+  } else if (pathname == '/chat/editRoom') {
+    return (
+      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-between items-center bg-white z-10">
+        <div onClick={() => router.back()}>완료</div>
+        <div onClick={handleRemoveChats}>
+          {willRemoveRoomCnt > 0 ? `${willRemoveRoomCnt} 나가기` : ''}
+        </div>
       </header>
     );
   } else

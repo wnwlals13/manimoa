@@ -1,6 +1,6 @@
 'use client';
 
-import logo from '@/styles/logo.png';
+import logo from '@/assets/logo.png';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';

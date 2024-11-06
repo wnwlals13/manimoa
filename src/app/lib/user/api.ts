@@ -65,3 +65,18 @@ export const getInfoAndGoals = async (userId?: string) => {
 
   return { goals: result.goals, price: result.price };
 };
+
+export const getUserList = async () => {
+  // 소비 목표 금액 & 다짐 정보 조회
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getUserList`,
+    { method: 'get' },
+  );
+  console.log(response);
+  if (!response.ok) {
+    return { error: `유저 정보 조회` };
+  }
+  const result = await response.json();
+
+  return result;
+};

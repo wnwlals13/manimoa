@@ -10,7 +10,7 @@ export default function Layout({
   userGoals: React.ReactNode;
 }) {
   return (
-    <div className="pb-[60px]">
+    <div className="pb-[60px] p-default">
       {children}
       {userInfo}
       {userGoals}

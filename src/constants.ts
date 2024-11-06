@@ -6,4 +6,6 @@ export const CUSTOM_NAV_PATHS: Record<string, string> = {
   '/mypage/edit-goals': '목표 설정',
   '/feed/form': '글 작성',
   '/user/': '',
+  '/chat/addChat': '친구추가',
+  '/chat/room/': '',
 } as const;

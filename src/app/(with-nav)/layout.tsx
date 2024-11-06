@@ -13,9 +13,7 @@ export default function Layout({
     <>
       <div className="flex-1 flex flex-col justify-between">
         <Header />
-        <div className="flex-1 flex flex-col w-full p-default pt-[60px] ">
-          {children}
-        </div>
+        <div className="flex-1 flex flex-col w-full pt-[60px] ">{children}</div>
         <Navigation />
       </div>
       {/* {modal} */}
