@@ -42,8 +42,8 @@ export const fetchAllMessages = async (roomId: string) => {
 
 export const sendMessage = async (msg: IMsg) => {
   try {
-    const cookieStore = Cookies.get('user') as string;
-    const user = JSON.parse(cookieStore);
+    // const cookieStore = Cookies.get('user') as string;
+    // const user = JSON.parse(cookieStore);
     const result = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/message/send`,
       { method: 'post', body: JSON.stringify(msg) },

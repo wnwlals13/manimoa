@@ -28,13 +28,15 @@ export async function POST(request: NextRequest) {
     );
     console.log('allResult =>', allResult);
     if (!allResult) {
-      console.error('채팅방 참여자 추가 시 에러 발생');
+      console.error('채팅방 추가 실패');
     }
 
     return NextResponse.json({
       status: 200,
-      message: '조회 성공',
+      message: '채팅방 추가 성공',
       newChatRoomId,
     });
-  } catch (err) {}
+  } catch (err) {
+    console.error(`채팅방 추가 도중 에러 발생`, err);
+  }
 }

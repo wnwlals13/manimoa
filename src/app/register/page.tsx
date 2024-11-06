@@ -1,6 +1,6 @@
 'use client';
 
-import logo from '@/styles/logo.png';
+import logo from '@/assets/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
 import { Button } from '@/components/ui/button';

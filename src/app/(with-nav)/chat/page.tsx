@@ -2,8 +2,9 @@
 import { useFetchMyChatRooms } from '@/app/lib/chat/hook/useFetchMyChatRooms';
 import { IChatRoom } from '@/types';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
-export default function Page() {
+function ChatRooms() {
   const { data } = useFetchMyChatRooms();
   const rooms = data?.chatRooms;
   return (
@@ -30,5 +31,13 @@ export default function Page() {
           </Link>
         ))}
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatRooms />
+    </Suspense>
   );
 }

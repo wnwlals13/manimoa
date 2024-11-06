@@ -1,6 +1,8 @@
 import { conn } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const db = await conn();
@@ -24,5 +26,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ status: 200, messages: result[0] });
   } catch (err) {
     console.log(err);
+    return NextResponse.json({
+      status: 500,
+      message: 'message readAll 실패',
+    });
   }
 }

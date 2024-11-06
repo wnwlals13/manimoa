@@ -5,7 +5,7 @@ import { useUpdateGoals } from '@/app/lib/user/hook/useUpdateGoals';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { GoalData } from '@/types';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 
 interface ExpenseFormInputs {
@@ -13,7 +13,7 @@ interface ExpenseFormInputs {
   month_goals: { value: string }[];
 }
 
-export default function Page() {
+function EditGoalsForm() {
   const { mutate } = useUpdateGoals();
   const { data, isLoading, isSuccess } = useInfoAndGoals();
   const [tempGoal, setTempGoal] = useState<string[]>([]);
@@ -110,5 +110,13 @@ export default function Page() {
         저장하기
       </Button>
     </form>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditGoalsForm />
+    </Suspense>
   );
 }

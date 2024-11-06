@@ -3,9 +3,9 @@
 import { useFetchMyChatRooms } from '@/app/lib/chat/hook/useFetchMyChatRooms';
 import { useChatStore } from '@/store/chat/useChatStore';
 import { IChatRoom } from '@/types';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, Suspense, useEffect } from 'react';
 
-export default function Page() {
+function ChatRooms() {
   const { data } = useFetchMyChatRooms();
   const rooms = data?.chatRooms;
   const {
@@ -73,5 +73,13 @@ export default function Page() {
           </div>
         ))}
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatRooms />
+    </Suspense>
   );
 }

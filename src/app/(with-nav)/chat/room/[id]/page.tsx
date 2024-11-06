@@ -99,6 +99,7 @@ export default function Page({ params }: { params: { id: string } }) {
     if (messageList) {
       setChat([...messageList]);
     }
+    console.log('isConnected', isConnected);
   }, [messageList]);
 
   return (

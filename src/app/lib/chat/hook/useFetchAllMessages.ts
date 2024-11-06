@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { fetchAllMessages, fetchMyChatRooms } from '../api';
+import { fetchAllMessages } from '../api';
 
 export function useFetchAllMessages(roomId: string) {
   return useQuery({

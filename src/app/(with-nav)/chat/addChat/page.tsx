@@ -6,6 +6,7 @@ import UserItem from '@/components/chat/user-item';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { IChatUser } from '@/types';
 import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 
 function UserList({ q }: { q: string }) {
   const { user } = useAuthStore();
@@ -53,7 +54,9 @@ export default function Page({
   if (!searchParams.q) return <></>;
   return (
     <>
-      <UserList q={searchParams.q} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserList q={searchParams.q} />
+      </Suspense>
     </>
   );
 }

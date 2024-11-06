@@ -2,6 +2,8 @@ import { conn } from '@/utils/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const db = await conn();
@@ -62,5 +64,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (err) {
     console.error(`사용자 조회 실패 : ${err}`);
+    return NextResponse.json({
+      status: 500,
+      message: '사용자 조회 실패',
+    });
   }
 }

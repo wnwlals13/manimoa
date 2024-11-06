@@ -7,11 +7,34 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CUSTOM_NAV_PATHS } from '@/constants';
 import { useChatStore } from '@/store/chat/useChatStore';
 import { useRemoveChat } from '@/app/lib/chat/hook/useRemoveChat';
+import { Suspense } from 'react';
+
+function ChatRoomHeader() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const otherUserEmail = searchParams.get('otherUserEmail');
+  const otherUserEmailId = otherUserEmail?.split('@')[0];
+
+  return (
+    <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
+      <div className="absolute">
+        <FiChevronLeft
+          size="25"
+          className="cursor-pointer"
+          onClick={() => {
+            // [TODO] 경고 문구
+            router.replace('/chat');
+          }}
+        />
+      </div>
+      <div className="flex-1 flex justify-center">{otherUserEmailId}</div>
+    </header>
+  );
+}
 
 export default function Header() {
   const pathname = usePathname() as string;
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { willRemoveRoomCnt, willRemoveRooms } = useChatStore();
   const { mutate } = useRemoveChat();
 
@@ -50,23 +73,10 @@ export default function Header() {
       </header>
     );
   } else if (pathname.startsWith('/chat/room')) {
-    const otherUserEmail = searchParams.get('otherUserEmail');
-    const otherUserEmailId = otherUserEmail?.split('@')[0];
-
     return (
-      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
-        <div className="absolute">
-          <FiChevronLeft
-            size="25"
-            className="cursor-pointer"
-            onClick={() => {
-              // [TODO] 경고 문구
-              router.replace('/chat');
-            }}
-          />
-        </div>
-        <div className="flex-1 flex justify-center">{otherUserEmailId}</div>
-      </header>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ChatRoomHeader />
+      </Suspense>
     );
   } else if (pathname === '/chat') {
     return (

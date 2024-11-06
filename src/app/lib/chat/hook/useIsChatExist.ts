@@ -8,7 +8,7 @@ export interface RequestChatDto {
 export function useIsChatExist() {
   return useMutation({
     mutationFn: addNewChat,
-    onSuccess: (res: any) => {
+    onSuccess: (res: string) => {
       console.log('chat is already exist', res);
     },
   });

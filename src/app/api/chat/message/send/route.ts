@@ -17,6 +17,10 @@ export async function POST(request: Request) {
       [author, roomId, msg],
     );
 
+    if (!result) {
+      console.error(`메세지 전송 및 추가 실패!`);
+    }
+
     return NextResponse.json({
       status: 200,
       message: '메세지 전송 및 추가 성공',

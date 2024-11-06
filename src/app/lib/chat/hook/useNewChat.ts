@@ -6,11 +6,15 @@ export interface RequestChatDto {
   userIds: string[];
 }
 
+export interface ResponseChatDto {
+  newChatRoomId: string;
+}
+
 export function useNewChat() {
   const router = useRouter();
-  return useMutation<Promise<any>, Error, RequestChatDto>({
+  return useMutation<ResponseChatDto, Error, RequestChatDto>({
     mutationFn: addNewChat,
-    onSuccess: (res: any) => {
+    onSuccess: (res) => {
       console.log('add new chatroom success', res);
       const newChatRoomId = res.newChatRoomId;
       // 채팅 연결

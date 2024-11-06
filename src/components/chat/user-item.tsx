@@ -1,9 +1,6 @@
-import { IChatUser, UserData } from '@/types';
-import Image from 'next/image';
+import { IChatUser } from '@/types';
 import { Button } from '../ui/button';
 import { FiSend } from 'react-icons/fi';
-import { useNewChat } from '@/app/lib/chat/hook/useNewChat';
-import { useAuthStore } from '@/store/auth/useAuthStore';
 
 export interface IChatUserProps extends IChatUser {
   onHandleJoin: (

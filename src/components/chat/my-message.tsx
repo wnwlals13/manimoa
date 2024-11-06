@@ -1,6 +1,6 @@
 import { IMsg } from '@/types';
 
-export default function MyMessage<T>(item: IMsg) {
+export default function MyMessage(item: IMsg) {
   const dateFormatter = (date: string) => {
     const parseDate = new Date(date);
     let hours = parseDate.getHours();
