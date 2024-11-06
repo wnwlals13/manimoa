@@ -13,7 +13,7 @@ export default function Page() {
           <Link
             key={idx}
             href={{
-              pathname: `http://localhost:3000/chat/room/${item.roomId}`,
+              pathname: `/chat/room/${item.roomId}`,
               query: { otherUserEmail: item.otherUserEmail },
             }}
             className="flex border-b [&:not(:first-child)]:pt-default pb-default gap-2"

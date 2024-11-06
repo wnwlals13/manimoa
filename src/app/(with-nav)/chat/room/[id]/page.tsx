@@ -47,7 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const connectToChatServer = () => {
     setIsConnected(true);
-    const _socket = SocketIoClient('http://localhost:5000', {
+    const _socket = SocketIoClient(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
       autoConnect: false,
       query: { chatRoomId: params.id },
     });
