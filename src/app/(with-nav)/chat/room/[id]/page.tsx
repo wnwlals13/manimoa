@@ -8,14 +8,7 @@ import { Button } from '@/components/ui/button';
 import { debounce } from '@/lib/debounce';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { IMsg } from '@/types';
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  KeyboardEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
 import SocketIoClient, { Socket } from 'socket.io-client';
 
