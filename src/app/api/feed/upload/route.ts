@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -10,7 +10,6 @@ export async function POST(request: Request) {
     const req = await request.json();
     const cookieStore = cookies().get('user');
     const user = JSON.parse(cookieStore?.value as string);
-    console.log('datas =>', req, 'user=>', user);
 
     const option = !req.priceOption ? 0 : 1;
 

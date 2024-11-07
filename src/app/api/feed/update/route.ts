@@ -1,16 +1,15 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const db = await conn();
     const data = await request.json();
     const feedId = data.feedId;
     const delPaths = data.delPaths;
     const paths = data.paths;
-
-    console.log(data);
+    console.log('data', data);
     // 이미지 삭제
     if (delPaths.length > 0) {
       Promise.all(
@@ -51,7 +50,7 @@ export async function POST(request: NextRequest) {
       console.error('콘텐츠 수정 도중 에러 발생', first);
     }
 
-    return NextResponse.json({ status: 200, message: '성공' });
+    return NextResponse.json({ status: 200 });
   } catch (err) {
     console.error('게시글 수정 도중 에러 발생했습니다.', err);
     return NextResponse.json({ status: 500, message: '실패' });

@@ -2,12 +2,12 @@
 
 import { CommentData } from '@/types';
 import Profile from '../ui/profile';
-import { Button } from '../ui/button';
-import InteractiveButton from '../ui/interactiveButton';
+import { Button } from '../ui/button/button';
+import InteractiveButton from '../ui/button/interactive-button';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { deleteComment } from '@/app/lib/comment/api';
+import { useRemoveComment } from '@/app/lib/comment/hook/useRemoveComment';
 
 interface CommentItemProps {
   comments: CommentData;
@@ -25,6 +25,8 @@ export function CommentItem({
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const removeFn = useRemoveComment(String(feedId));
 
   useEffect(() => {
     return () => {
@@ -58,13 +60,11 @@ export function CommentItem({
               onClick={() => {
                 const content = inputRef.current?.value as string;
                 const commentId = id;
-                // mutate({ content, commentId });
+
                 mutateFn(content, commentId.toString());
                 setNowEdit(false);
                 setIsEdit(false);
-                // router.refresh();
               }}
-              // onClick={onhandlemutate}
               disabled={inputRef.current ? !inputRef.current.value : false}
             >
               저장
@@ -79,7 +79,7 @@ export function CommentItem({
             </Button>
           </div>
         ) : (
-          <div>
+          <div className="flex gap-1">
             <InteractiveButton
               variant="outline"
               name=""
@@ -94,9 +94,12 @@ export function CommentItem({
               수정
             </InteractiveButton>
             <Button
-              onClick={() => {
-                deleteComment(id, feedId);
-              }}
+              onClick={() =>
+                removeFn.mutate({
+                  commentId: String(id),
+                  feedId: String(feedId),
+                })
+              }
             >
               삭제
             </Button>

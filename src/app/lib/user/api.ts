@@ -1,14 +1,12 @@
-'use server';
-import { cookies } from 'next/headers';
+import { GoalData } from '@/types';
 import { GoalsRequestDto } from './hook/useUpdateGoals';
 import { InfoRequestDto } from './hook/useUpdateInfo';
-import { revalidateTag } from 'next/cache';
+import Cookies from 'js-cookie';
 
 export const updateInfo = async (data: InfoRequestDto) => {
   try {
-    console.log('[updateinfo] env =>', process.env.NEXT_PUBLIC_BASE_URL);
-    const cookieStore = await cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
+    const cookieStore = Cookies.get('user') as string;
+    const user = JSON.parse(cookieStore);
     const fileResponse = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile/edit`,
       {
@@ -21,7 +19,7 @@ export const updateInfo = async (data: InfoRequestDto) => {
       console.error('[client] 프로필 데이터 저장 싪패!');
       throw new Error();
     }
-    revalidateTag('profile');
+
     const result = await fileResponse.json();
 
     return result.updated;
@@ -33,14 +31,12 @@ export const updateInfo = async (data: InfoRequestDto) => {
 
 export const updateGoals = async (data: GoalsRequestDto) => {
   try {
-    const cookieStore = await cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal/edit`,
       {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, userId: user.uid }),
+        body: JSON.stringify({ ...data, userId: data.userId }),
       },
     );
     const result = await response.json();
@@ -51,7 +47,12 @@ export const updateGoals = async (data: GoalsRequestDto) => {
   }
 };
 
-export const getInfoAndGoals = async (userId?: string) => {
+export interface IExpenseInfo {
+  goals: GoalData[];
+  price: string;
+}
+
+export const getExpenseInfo = async (userId: string) => {
   // 소비 목표 금액 & 다짐 정보 조회
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal?userId=${userId}`,
@@ -61,7 +62,87 @@ export const getInfoAndGoals = async (userId?: string) => {
     return { error: `소비 목표 금액 & 다짐 정보 조회 실패` };
   }
   const result = await response.json();
-  console.log('resposne 입니다. ', result.goals, result.price);
+  return result.data as IExpenseInfo;
+};
 
-  return { goals: result.goals, price: result.price };
+export interface IMonthlyExpenseInfo {
+  expense: string;
+}
+
+export const getUserMonthExpense = async (userId: string) => {
+  // 이번 달 총 소비 금액
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/monthlyExpense?userId=${userId}`,
+    { method: 'get', next: { tags: ['expense'] } },
+  );
+  if (!response.ok) {
+    return { error: `이번 달 총 소비 금액 조회 실패` };
+  }
+  const result = await response.json();
+
+  return result.expenses as IMonthlyExpenseInfo;
+};
+
+export const getUserList = async () => {
+  // 소비 목표 금액 & 다짐 정보 조회
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getUserList`,
+    { method: 'get' },
+  );
+  console.log(response);
+  if (!response.ok) {
+    return { error: `유저 정보 조회` };
+  }
+  const result = await response.json();
+
+  return result;
+};
+
+export interface IFollow {
+  followCount: number;
+  followingCount: number;
+}
+
+export const getUserProfile = async (userId: string) => {
+  try {
+    console.log('getUserProfile userId', userId);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return { error: `팔로우/팔로잉 데이터 조회에 실패했습니다.` };
+    }
+    const result = await response.json();
+    return result.data as IFollow;
+  } catch (err) {
+    console.error(
+      `로그인 유저의 팔로우/팔로잉 데이터 조회 도중 에러 발생`,
+      err,
+    );
+  }
+};
+
+export const getMyFeeds = async (userId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getFeeds?userId=${userId}`,
+    {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      next: { tags: ['my-feeds'] },
+    },
+  );
+  if (!response.ok) {
+    return { error: `내 피드게시글 데이터 조회에 실패했습니다.` };
+  }
+  const { feeds } = await response.json();
+  return feeds;
 };

@@ -1,11 +1,13 @@
 'use client';
 
+import { IExpenseInfo } from '@/app/lib/user/api';
 import { useInfoAndGoals } from '@/app/lib/user/hook/useInfoAndGoals';
 import { useUpdateGoals } from '@/app/lib/user/hook/useUpdateGoals';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 import { GoalData } from '@/types';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 
 interface ExpenseFormInputs {
@@ -13,12 +15,16 @@ interface ExpenseFormInputs {
   month_goals: { value: string }[];
 }
 
-export default function Page() {
+function EditGoalsForm() {
+  const { user } = useAuthStore();
+
   const { mutate } = useUpdateGoals();
-  const { data, isLoading, isSuccess } = useInfoAndGoals();
+  const { data, isLoading, isSuccess } = useInfoAndGoals(user?.uid as string);
+  const expense = data as IExpenseInfo;
+
   const [tempGoal, setTempGoal] = useState<string[]>([]);
   const [tempPrice, setTempPrice] = useState<string>();
-
+  console.log('edit-goals', data);
   const { control, register, handleSubmit, setValue } =
     useForm<ExpenseFormInputs>({
       defaultValues: {
@@ -34,19 +40,24 @@ export default function Page() {
   const onsubmit = (data: ExpenseFormInputs) => {
     // 빈칸인 인풋은 삭제
     const filtered = data.month_goals.filter((item) => item.value != '');
-    mutate({ ...data, month_goals: filtered, month_price: data.month_price });
+    mutate({
+      ...data,
+      month_goals: filtered,
+      month_price: data.month_price,
+      userId: user?.uid as string,
+    });
   };
 
   useEffect(() => {
     if (isLoading) return;
 
     // 목표 다짐이 있다면 설정
-    if (data && data?.goals.length > 0) {
+    if (expense && expense.goals.length > 0) {
       // form 형태에 맞게 {value:string} 으로 설정해주어야 함
-      const goalsArr = data.goals.map((item: GoalData) => {
+      const goalsArr = expense.goals.map((item: GoalData) => {
         return { value: item.content };
       });
-      const tempGoalsArr = data.goals.map((item: GoalData) => {
+      const tempGoalsArr = expense.goals.map((item: GoalData) => {
         return item.content;
       });
       setTempGoal(tempGoalsArr);
@@ -54,15 +65,15 @@ export default function Page() {
     }
 
     // 목표 소비 금액이 있다면 설정
-    if (data && data?.price.length > 0) {
-      setTempPrice(data.price[0].price);
-      setValue('month_price', data.price[0].price);
+    if (expense && expense.price) {
+      setTempPrice(expense.price);
+      setValue('month_price', expense.price);
     }
   }, [isLoading, isSuccess, data]);
 
   return (
     <form
-      className="flex-1 flex flex-col gap-5 justify-between h-full"
+      className="flex-1 flex flex-col gap-5 justify-between h-full p-default pt-[60px]"
       onSubmit={handleSubmit(onsubmit)}
     >
       <div className="flex flex-col gap-10">
@@ -110,5 +121,13 @@ export default function Page() {
         저장하기
       </Button>
     </form>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditGoalsForm />
+    </Suspense>
   );
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 
 export async function POST(req: NextRequest) {

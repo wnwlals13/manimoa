@@ -1,9 +1,9 @@
 'use client';
 
-import logo from '@/styles/logo.png';
+import logo from '@/assets/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
 import { useRegister } from '../lib/auth/hook/useRegister';
 import { useEffect } from 'react';
@@ -109,9 +109,10 @@ export default function Page() {
         )}
       </div>
       <div className="w-full">
-        <label htmlFor="email">다짐</label>
+        <label htmlFor="email">소비 다짐</label>
         <div className="relative"></div>
         <Input
+          maxLength={100}
           placeholder="이루고 싶은 소비 다짐을 입력해주세요. (선택)"
           {...register('goal')}
         />

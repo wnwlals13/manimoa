@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       console.error('좋아요 db 처리에 실패했습니다.');
       throw new Error();
     }
-
+    console.log(rows, rows2);
     return NextResponse.json({ status: 200, message: '조아효 성공' });
   } catch (err) {
     console.error(err);

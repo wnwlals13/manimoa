@@ -1,15 +1,17 @@
-import { QueryObserverResult, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { doLike } from '../api';
 
 export interface likeDto {
   feedId: number;
+  userId: string;
 }
 
-export function useLike(refetch: () => Promise<QueryObserverResult>) {
+export function useLike() {
+  const queryClient = useQueryClient();
   return useMutation<Promise<void>, Error, likeDto>({
     mutationFn: doLike,
     onSuccess: () => {
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['feeds'] });
     },
   });
 }

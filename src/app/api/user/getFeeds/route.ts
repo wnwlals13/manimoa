@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
 
@@ -8,9 +8,8 @@ export async function GET(request: Request) {
   try {
     const db = await conn();
     const data = new URL(request.url);
-    console.log('user/getFeeds/rout.ts data is? =>', data);
     const userId = data.searchParams.get('userId');
-    console.log('user/getFeeds/rout.ts =>', userId);
+
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
       SELECT 
@@ -22,7 +21,7 @@ export async function GET(request: Request) {
         GROUP_CONCAT(b.image_url) AS images,
         a.like_count AS likeCount, 
         a.comment_count AS commentCount,
-        DATE_FORMAT(a.created_at, '%Y-%m-%d') AS createdAt,
+        a.created_at AS createdAt,
         a.updated_at AS updatedAt,
         a.deleted_at AS deletedAt
       FROM feeds a 
@@ -37,7 +36,7 @@ export async function GET(request: Request) {
     );
 
     const rows = result[0] as RowDataPacket;
-    console.log('user/getFeeds/rout.ts row? =>', rows);
+
     return NextResponse.json({
       status: 200,
       message: '유저 게시글 조회 성공',

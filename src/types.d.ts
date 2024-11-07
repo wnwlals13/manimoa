@@ -52,3 +52,28 @@ export interface CommentData {
 export interface ResponseError extends Error {
   status?: number;
 }
+
+export interface IMsg {
+  author: string;
+  msg: string;
+  date: string;
+  roomId: string;
+  read?: boolean;
+}
+
+export interface IChatUser {
+  uid: string;
+  name: string;
+  email: string;
+  profileImg?: string;
+  isChatExist: string;
+  chatRoomId: string;
+}
+
+export interface IChatRoom {
+  roomId: string;
+  createdAt: string;
+  participantIds: string[];
+  participantEmails: { id: string; email: string }[];
+  participantProfiles: { id: string; profileImg: string }[];
+}

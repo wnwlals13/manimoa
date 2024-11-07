@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import {
   FieldPacket,
   QueryResult,
@@ -69,7 +69,6 @@ export async function POST(req: Request) {
         );
         const row = rows[0] as RowDataPacket;
 
-        console.log('route/register row =>', row);
         // 5. 성공 리턴
         if (newUser && row) {
           // 사용자 인증 성공 시 JWT 생성

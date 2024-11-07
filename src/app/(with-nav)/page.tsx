@@ -1,52 +1,37 @@
-'use client';
-
-import { FeedItem } from '@/components/feed/feed-item';
 import { FiPlus } from 'react-icons/fi';
-import { IFeedWithLikeData } from '@/types';
-import { Suspense, useEffect } from 'react';
-import InteractiveButton from '@/components/ui/interactiveButton';
-import { useFetchFeeds } from '../lib/feed/hook/useFetchFeeds';
-import { useInView } from 'react-intersection-observer';
+import InteractiveButton from '@/components/ui/button/interactive-button';
+import FeedList from '@/components/feed/feed-list';
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
+import { cookies } from 'next/headers';
+import { fetchFeedsAction } from '@/actions/fetch-feeds.action';
 
-const ROWS_PER_PAGE = 20;
+export default async function Home() {
+  const cookieStore = cookies().get('user')?.value as string;
+  const user = JSON.parse(cookieStore);
 
-export default function Home() {
-  const { data, fetchNextPage, isFetchingNextPage, refetch } = useFetchFeeds({
-    pageSize: ROWS_PER_PAGE,
+  const queryClient = new QueryClient();
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['feeds'],
+    queryFn: ({ pageParam }) => fetchFeedsAction(pageParam, 10, user.uid),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    pages: 1,
   });
-  const feedsGroup = data ? data.pages.map((page) => page.feeds) : [];
-
-  const { ref, inView } = useInView({
-    threshold: 0.5, // 화면의 20%가 보일 때 감지
-  });
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView]);
+  const dehydratedState = dehydrate(queryClient);
 
   return (
-    <>
-      <div className="p-3 mb-4 mt-4 rounded-md border">
+    <div className="p-default pt-[60px]">
+      <div className="p-3 mb-4 rounded-md border">
         <div className="font-bold mb-1">👏 오늘도 manimoa 봐요!</div>
         <div className="text-gray-600">새로운 소식이 있나요?</div>
       </div>
-      <Suspense fallback={<div>loading...</div>}>
-        <div>
-          {feedsGroup.map((feeds, i) => (
-            <div key={i}>
-              {feeds.map((feed: IFeedWithLikeData, idx) => (
-                <FeedItem key={idx} refetch={refetch} {...feed} />
-              ))}
-            </div>
-          ))}
-          {isFetchingNextPage ? (
-            <div>Loading...</div>
-          ) : (
-            <div ref={ref} style={{ width: '100%', height: 80 }} />
-          )}
-        </div>
-      </Suspense>
+      <HydrationBoundary state={dehydratedState}>
+        <FeedList />
+      </HydrationBoundary>
       <InteractiveButton
         variant="default"
         className="fixed custom:right-[calc((100vw-570px)/2)] right-5 bottom-20 rounded-full flex justify-center items-center h-[50px] w-[50px] shadow-lg z-10"
@@ -54,6 +39,6 @@ export default function Home() {
       >
         <FiPlus color="white" size="25" />
       </InteractiveButton>
-    </>
+    </div>
   );
 }

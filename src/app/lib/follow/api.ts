@@ -28,7 +28,7 @@ export const userFollow = async ({ targetId }: FollowProps) => {
         body: JSON.stringify({ targetId: targetId, userId: user.uid }),
       },
     );
-    revalidateTag('profile');
+    revalidateTag(`profile-${targetId}`);
     return await resposne.json();
   } catch (err) {
     console.error(`팔로우 도중 에러 발생`, err);
@@ -46,7 +46,7 @@ export const userUnFollow = async ({ targetId }: FollowProps) => {
         body: JSON.stringify({ targetId: targetId, userId: user.uid }),
       },
     );
-    revalidateTag('profile');
+    revalidateTag(`profile-${targetId}`);
     return await resposne.json();
   } catch (err) {
     console.error(`팔로우 취소 도중 에러 발생`, err);

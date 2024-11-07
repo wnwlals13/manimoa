@@ -1,24 +1,29 @@
-import { FollowButton } from '@/components/ui/FollowButton';
-import InteractiveButton from '@/components/ui/interactiveButton';
+import { FollowButton } from '@/components/ui/button/follow-button';
+import { MessageButton } from '@/components/ui/button/message-button';
 import Profile from '@/components/ui/profile';
 import { FeedData } from '@/types';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 
 async function UserInfo({ userId }: { userId: string }) {
+  const cookieStore = cookies().get('user')?.value as string;
+  const loginUser = JSON.parse(cookieStore);
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getInfo?userId=${userId}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getInfo?userId=${userId}&loginId=${loginUser.uid}`,
     {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { tags: [`profile-${userId}`] },
     },
   );
   const { user } = await response.json();
 
   return (
-    <div className="flex flex-col gap-2 p-default">
+    <div className="flex flex-col gap-2 p-default pt-[60px]">
       <div className="relative flex  justify-between items-center">
         <div className="flex gap-10 justify-start items-center">
           <div className="flex gap-2 items-center">
@@ -38,10 +43,15 @@ async function UserInfo({ userId }: { userId: string }) {
         </div>
       </div>
       <div className="flex gap-2 mt-4">
-        <FollowButton targetId={user.id} />
-        <InteractiveButton size="full" name="message">
-          메시지
-        </InteractiveButton>
+        <FollowButton targetId={user.uid} />
+        <MessageButton
+          targetId={user.uid}
+          loginId={loginUser.uid}
+          isChatExist={user.isChatExist}
+          roomId={user.chatRoomId}
+        >
+          메세지
+        </MessageButton>
       </div>
     </div>
   );

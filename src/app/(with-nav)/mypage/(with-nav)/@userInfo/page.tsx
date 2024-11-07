@@ -1,34 +1,15 @@
-import InteractiveButton from '@/components/ui/interactiveButton';
-import { cookies } from 'next/headers';
+'use client';
+
+import { IFollow } from '@/app/lib/user/api';
+import { useFetchProfile } from '@/app/lib/user/hook/useFetchProfile';
+import InteractiveButton from '@/components/ui/button/interactive-button';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 import Image from 'next/image';
 
-const getAdditionalInfo = async (userId: string) => {
-  'use server';
-  console.log('process.env =>', process.env.NEXT_PUBLIC_BASE_URL, '/', userId);
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
-    {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      next: { tags: [`profile`] },
-    },
-  );
-  console.log('[MYPAGE] profile => ', response);
-  if (!response.ok) {
-    return { error: `팔로우/팔로잉 데이터 조회에 실패했습니다.` };
-  }
-  const result = await response.json();
-  console.log('[MYPAGE] feeds2 => ', result);
-  return result.data;
-};
-
-export default async function Page() {
-  const cookieStore = cookies().get('user')?.value as string;
-  const loginUser = JSON.parse(cookieStore);
-  const { uid, email, name, profileImg } = loginUser;
-  const { followCnt, followingCnt } = await getAdditionalInfo(uid);
+export default function Page() {
+  const { user } = useAuthStore();
+  const { data } = useFetchProfile(user?.uid as string);
+  const follwData = data as IFollow;
 
   return (
     <div className="flex flex-col gap-2 pt-default pb-default">
@@ -36,11 +17,11 @@ export default async function Page() {
         <div className="flex-1 flex gap-10 justify-start items-center">
           <div className="flex gap-2 items-center">
             <div className="w-[50px] h-[50px] rounded-full flex justify-center items-center ">
-              {profileImg ? (
+              {user && user.profileImg ? (
                 <Image
                   width={50}
                   height={50}
-                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${profileImg}`}
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${user.profileImg}`}
                   alt=""
                   style={{ width: '100%', height: '100%', borderRadius: '50%' }}
                 />
@@ -48,17 +29,23 @@ export default async function Page() {
                 <div className="w-[50px] h-[50px] bg-gray-200 rounded-full"></div>
               )}
             </div>
-            <div className="flex flex-col gap-1">
-              <p>{email}</p>
-              <p className="text-sm text-gray-500">{name}</p>
+            <div className="flex flex-col">
+              <h1 className="font-semibold text-lg">{user && user.email}</h1>
+              <p className="text-sm text-gray-500">{user && user.name}</p>
             </div>
           </div>
-          <div className="flex-1 flex justify-center gap-2">
-            <div className="flex">
-              팔로우 <p>{followCnt}</p>
+          <div className="flex-1 flex justify-center gap-5">
+            <div className="flex flex-col items-center">
+              <p className="font-bold text-sm">
+                {follwData && follwData.followCount}
+              </p>
+              <p>팔로우</p>
             </div>
-            <div className="flex">
-              팔로잉 <p>{followingCnt}</p>
+            <div className="flex flex-col items-center">
+              <p className="font-bold text-sm">
+                {follwData && follwData.followingCount}
+              </p>
+              <p>팔로잉</p>
             </div>
           </div>
         </div>

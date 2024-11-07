@@ -1,5 +1,5 @@
 import { FeedData } from '@/types';
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 

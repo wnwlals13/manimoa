@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { createSupabaseClient } from '@/utils/supabase-client';
+import { createSupabaseClient } from '@/config/supabase-client';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -88,7 +88,7 @@ export default function Page() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex flex-col justify-between items-center gap-5"
+      className="flex-1 flex flex-col justify-between items-center gap-5 p-default pt-[60px]"
     >
       <div className="w-full flex flex-col">
         <div className="h-[100px] w-full flex justify-center">

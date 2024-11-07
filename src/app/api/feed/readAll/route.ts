@@ -1,6 +1,5 @@
 import { FeedData } from '@/types';
-import { conn } from '@/utils/db';
-import { cookies } from 'next/headers';
+import { conn } from '@/config/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -11,9 +10,8 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const cursor = Number(searchParams.get('cursor'));
     const pageSize = Number(searchParams.get('pageSize'));
-    const cookieStore = cookies().get('user');
-    const user = JSON.parse(cookieStore?.value as string);
-    console.log('cursor', cursor, 'pageSize', pageSize, user);
+    const userId = searchParams.get('userId');
+    console.log('cursor', cursor, 'pageSize', pageSize, userId);
 
     const response = await db.query(
       ` 
@@ -28,7 +26,7 @@ export async function GET(request: NextRequest) {
           GROUP_CONCAT(b.image_url) AS images,
           a.like_count AS likeCount, 
           a.comment_count AS commentCount,
-          DATE_FORMAT(a.created_at, '%Y-%m-%d') AS createdAt,
+          a.created_at AS createdAt,
           a.updated_at AS updatedAt,
           a.deleted_at AS deletedAt,
           IF(count(d.id)>0, 1, 0 ) as isUserDoLike
@@ -42,11 +40,10 @@ export async function GET(request: NextRequest) {
       WHERE a.deleted_at is NULL 
       GROUP BY a.id 
       ORDER BY a.created_at DESC`,
-      [user.uid],
+      [userId],
     );
 
     const feeds = response[0] as FeedData[];
-
     //페이지네이션
     const totalCount = feeds.length;
     const startIndex = (cursor - 1) * pageSize;
@@ -55,8 +52,6 @@ export async function GET(request: NextRequest) {
 
     const hasNextPage = endIndex < totalCount;
     const nextCursor = hasNextPage ? cursor + 1 : undefined;
-
-    console.log(totalCount, startIndex, endIndex);
 
     return NextResponse.json({
       status: 200,

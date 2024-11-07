@@ -10,7 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import Cookies from 'js-cookie';
 import { CommentList } from '@/components/comment/comment-list';
 import { Input } from '@/components/ui/input';
-import InteractiveButton from '@/components/ui/interactiveButton';
+import InteractiveButton from '@/components/ui/button/interactive-button';
 import { FiSend } from 'react-icons/fi';
 
 interface commentInputs {
@@ -36,6 +36,7 @@ export default function Page() {
     handleSubmit,
     setValue,
     formState: { isValid },
+    reset,
   } = useForm({
     defaultValues: { content: '' },
   });
@@ -63,6 +64,12 @@ export default function Page() {
   const handleMutate = (content: string, commentId: string) => {
     updateCommentHook.mutate({ content, commentId });
   };
+
+  useEffect(() => {
+    return () => {
+      reset({ content: '' }); // 댓글창 나가면 인풋태그 초기화
+    };
+  }, [isOpen, reset]);
 
   if (!isOpen) return <></>;
   if (isPending) return <></>;
