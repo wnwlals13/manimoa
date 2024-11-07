@@ -1,29 +1,33 @@
 import { useLike } from '@/app/lib/like/hook/useDoLike';
 import { Button } from './button';
 import { useUnLike } from '@/app/lib/like/hook/useUndoLike';
-import { QueryObserverResult } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 
 export function LikeButton({
   feedId,
   isLiked,
-  refetch,
   children,
 }: {
   feedId: number;
   isLiked: boolean;
-  refetch: () => Promise<QueryObserverResult>;
   children: React.ReactNode;
 }) {
-  const like = useLike(refetch);
-  const unLike = useUnLike(refetch);
+  const like = useLike();
+  const unLike = useUnLike();
+  const cookieStore = Cookies.get('user') as string;
+  const user = JSON.parse(cookieStore);
 
   const handleLike = () => {
-    console.log('isLiked', isLiked);
+    if (!user) return;
     if (!isLiked) {
-      like.mutate({ feedId });
+      like.mutate({ feedId, userId: user.uid });
     } else {
-      unLike.mutate({ feedId });
+      unLike.mutate({ feedId, userId: user.uid });
     }
   };
-  return <Button onClick={handleLike}>{children}</Button>;
+  return (
+    <Button style={{ width: '65px' }} onClick={handleLike}>
+      {children}
+    </Button>
+  );
 }

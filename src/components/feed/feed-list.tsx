@@ -10,10 +10,9 @@ import FeedListSkeleton from '../ui/skeleton/feed-list-skeleton';
 const ROWS_PER_PAGE = 20;
 
 export default function FeedList() {
-  const { data, fetchNextPage, isFetchingNextPage, refetch, isLoading } =
-    useFetchFeeds({
-      pageSize: ROWS_PER_PAGE,
-    });
+  const { data, fetchNextPage, isFetchingNextPage, isLoading } = useFetchFeeds({
+    pageSize: ROWS_PER_PAGE,
+  });
   const feedsGroup = data ? data.pages.map((page) => page.feeds) : [];
 
   const { ref, inView } = useInView({
@@ -32,7 +31,7 @@ export default function FeedList() {
       {feedsGroup.map((feeds, i) => (
         <div key={i}>
           {feeds.map((feed: IFeedWithLikeData, idx) => (
-            <FeedItem key={idx} refetch={refetch} {...feed} />
+            <FeedItem key={idx} {...feed} />
           ))}
         </div>
       ))}

@@ -10,7 +10,7 @@ function ChatRooms() {
   if (isPending) return <div>Loading...</div>;
   return (
     <div className="p-default pt-[60px]">
-      {data &&
+      {data && data.length > 0 ? (
         data.map((item: IChatRoom, idx: number) => (
           <Link
             key={idx}
@@ -40,7 +40,13 @@ function ChatRooms() {
               }-${String(new Date(item.createdAt).getDate()).padStart(2, '0')}`}
             </div>
           </Link>
-        ))}
+        ))
+      ) : (
+        <div className="flex justify-center items-center mt-5">
+          <p>채팅이 없습니다.</p>
+          <p>채팅을 시작해보세요.</p>
+        </div>
+      )}
     </div>
   );
 }

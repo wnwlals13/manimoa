@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 

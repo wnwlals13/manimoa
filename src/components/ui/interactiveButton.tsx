@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from './button';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { VariantProps } from 'class-variance-authority';
-import { useDeleteFeed } from '@/app/lib/feed/hook/useDeleteFeed';
+import { useDeleteFeed } from '@/app/lib/feed/hook/useRemoveFeed';
 import { useModalStore } from '@/store/modal/useModalStore';
 
 interface InteractiveButtonProps

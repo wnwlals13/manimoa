@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -13,14 +13,14 @@ export async function GET(request: NextRequest) {
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
     select 
-        a.id ,
-        a.email ,
-        a.name ,
-        a.profile_img ,
+        a.id AS uid,
+        a.email AS email,
+        a.name AS name,
+        a.profile_img AS profileImg,
         (SELECT count(*) FROM follows b
-        WHERE a.id = b.follow_user_id LIMIT 1) as followCount ,
+        WHERE a.id = b.follow_user_id LIMIT 1) AS followCount ,
         (SELECT count(*) FROM follows b
-        WHERE a.id = b.following_user_id LIMIT 1) as followingCount 
+        WHERE a.id = b.following_user_id LIMIT 1) AS followingCount 
     from users a
     WHERE id = ?
     `,

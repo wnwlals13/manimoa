@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

@@ -7,8 +7,8 @@ import Link from 'next/link';
 import InteractiveButton from '../ui/interactiveButton';
 import Profile from '../ui/profile';
 import { LikeButton } from '../ui/likeButton';
-import { QueryObserverResult } from '@tanstack/react-query';
 import { FollowButton } from '../ui/FollowButton';
+import { formatDate } from '@/lib/formatDate';
 
 export function UserInfoGroup({
   writer,
@@ -20,7 +20,7 @@ export function UserInfoGroup({
   profileImg: string;
 }) {
   return (
-    <div className="flex p-default">
+    <div className="flex p-2">
       <div className="flex-1 flex items-center gap-2">
         <Profile profileImg={profileImg} />
         <Link href={`/user/${writerId}`} className="flex-1">
@@ -34,10 +34,6 @@ export function UserInfoGroup({
   );
 }
 
-export interface FeedItemProps extends FeedData, LikeData {
-  refetch: () => Promise<QueryObserverResult>;
-}
-
 export function FeedItem({
   id,
   userId,
@@ -48,9 +44,10 @@ export function FeedItem({
   commentCount,
   likeCount,
   isUserDoLike,
-  refetch,
-}: FeedItemProps) {
+  createdAt,
+}: FeedData & LikeData) {
   const imagesArray = images?.split(',');
+  const feedDisplayDate = formatDate(createdAt);
 
   return (
     <div className="border-b mb-4">
@@ -61,16 +58,20 @@ export function FeedItem({
       />
       {imagesArray && <CarouselComponent images={imagesArray} />}
       <div className="flex gap-2 mt-4">
-        <LikeButton feedId={id} isLiked={isUserDoLike > 0} refetch={refetch}>
-          {isUserDoLike > 0 ? <AiFillHeart /> : <AiOutlineHeart />} {likeCount}
+        <LikeButton feedId={id} isLiked={isUserDoLike > 0}>
+          {isUserDoLike > 0 ? <AiFillHeart color="red" /> : <AiOutlineHeart />}{' '}
+          {likeCount}
         </LikeButton>
         <InteractiveButton variant="submain" name={`comments.${id}`}>
           <FiMessageCircle size="20" /> {commentCount}
         </InteractiveButton>
       </div>
       <Link href={`/feed/${id}`}>
-        <div className="max-w-[400px] overflow-hidden pt-default pb-default text-ellipsis">
+        <div className="max-w-[400px] overflow-hidden pt-default text-ellipsis">
           {content}
+        </div>
+        <div className="pt-1 pb-default text-sm text-gray-500">
+          {feedDisplayDate}
         </div>
       </Link>
     </div>

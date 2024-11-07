@@ -6,12 +6,14 @@ import { useRouter } from 'next/navigation';
 export interface GoalsRequestDto {
   month_price: string;
   month_goals: { value: string }[];
+  userId: string;
 }
 
 export function useUpdateGoals() {
   const { setGoals } = useAuthStore();
   const router = useRouter();
   const queryClient = useQueryClient();
+
   return useMutation<GoalsRequestDto, Error, GoalsRequestDto>({
     mutationFn: updateGoals,
     onSuccess: (res) => {

@@ -57,11 +57,17 @@ export const updateComment = async (commentData: updateCommentDto) => {
   }
 };
 
-export const deleteComment = async (commentId: number, feedId: number) => {
+export const deleteComment = async ({
+  commentId,
+  feedId,
+}: {
+  commentId: string;
+  feedId: string;
+}) => {
   try {
     const propsData = {
-      commentId: commentId.toString(),
-      feedId: feedId.toString(),
+      commentId,
+      feedId,
     };
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/delete`,

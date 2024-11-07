@@ -15,7 +15,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   const { type } = useModalStore();
-  console.log('modal layour', type);
+
   return (
     <Modal type={type}>
       {type === 'comment' ? comment : setting}

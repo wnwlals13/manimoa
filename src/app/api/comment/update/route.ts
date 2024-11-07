@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { ResultSetHeader } from 'mysql2';
 import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';

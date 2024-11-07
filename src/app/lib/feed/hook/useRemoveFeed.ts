@@ -1,20 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateFeed } from '../api';
-import { useRouter } from 'next/navigation';
+import { removeFeed } from '../api';
 
-export const useUpdateFeed = () => {
-  const router = useRouter();
+export const useDeleteFeed = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateFeed,
+    mutationFn: removeFeed,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['feeds'] });
       queryClient.invalidateQueries({ queryKey: ['myfeeds'] });
       queryClient.invalidateQueries({ queryKey: ['expense'] });
       queryClient.invalidateQueries({ queryKey: ['month-expense'] });
-
-      router.push('/');
+    },
+    onError: (err: Error) => {
+      console.error(err);
     },
   });
 };

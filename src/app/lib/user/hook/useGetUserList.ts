@@ -24,7 +24,6 @@ export function useGetUserList(input: string) {
           return { error: `유저 정보 조회` };
         }
         const result = await response.json();
-        console.log('api', result);
         return result;
       } catch (err) {
         console.error('error', err);

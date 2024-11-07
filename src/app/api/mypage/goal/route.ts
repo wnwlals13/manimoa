@@ -1,4 +1,4 @@
-import { conn } from '@/utils/db';
+import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -9,13 +9,15 @@ export async function GET(request: NextRequest) {
     const db = await conn();
     const searchParams = request.nextUrl.searchParams;
     const userId = searchParams.get('userId');
-    console.log('cookie? 왜없지', userId);
     const now_month = new Date().getMonth() + 1; // 이번 달
 
     // 1. 소비 다짐 조회
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `SELECT 
-          content  as content
+          id,  
+          user_id as userId,
+          content, 
+          created_at as createdAt
         FROM user_goals a
         WHERE a.user_id = ? and month(a.created_at) = ?`,
       [userId, now_month],
@@ -32,12 +34,14 @@ export async function GET(request: NextRequest) {
 
     const rows = result[0] as RowDataPacket;
     const rows_second = result_second[0] as RowDataPacket;
-    console.log('goals', rows, 'price', rows_second);
+
     return NextResponse.json({
       status: 200,
       message: '성공',
-      goals: rows,
-      price: rows_second,
+      data: {
+        goals: rows,
+        price: rows_second[0].price,
+      },
     });
   } catch (err) {
     console.error(err);

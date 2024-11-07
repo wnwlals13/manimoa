@@ -1,37 +1,20 @@
+'use client';
+
+import { useFetchMyFeeds } from '@/app/lib/user/hook/useFetchMyFeeds';
 import MyFeedItem from '@/components/feed/my-feed-item';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 import { FeedData } from '@/types';
-import { cookies } from 'next/headers';
 
-const getMyFeeds = async (userId: string) => {
-  'use server';
-  console.log('process.env =>', process.env.NEXT_PUBLIC_BASE_URL, '/', userId);
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getFeeds?userId=${userId}`,
-    {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  );
-  console.log('[MYPAGE] feeds => ', response);
-  if (!response.ok) {
-    return { error: `내 피드게시글 데이터 조회에 실패했습니다.` };
-  }
-  const { feeds } = await response.json();
-  return feeds;
-};
+export default function Page() {
+  const { user } = useAuthStore();
+  const { data: feeds, isLoading } = useFetchMyFeeds(user?.uid as string);
 
-export default async function Page() {
-  const cookieStore = cookies().get('user')?.value as string;
-  const user = JSON.parse(cookieStore);
-  console.log('[MYPAGE] user2 => ', user, user.uid);
-  const feeds = await getMyFeeds(user.uid);
-  console.log('[MYPAGE] feeds2 => ', feeds);
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <div className="">
       <div className="w-full border-t"></div>
-      <h1 className="mt-4 mb-4 font-bold ">내글 보기</h1>
+      <h1 className="mt-4 mb-1 font-bold ">내글 보기</h1>
       {feeds &&
         feeds.map((item: FeedData, idx: number) => (
           <MyFeedItem key={idx} {...item} />

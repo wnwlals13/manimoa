@@ -1,12 +1,11 @@
-import { createSupabaseClient } from '@/utils/supabase-client';
-import Cookies from 'js-cookie';
+import { createSupabaseClient } from '@/config/supabase-client';
 
-export const deleteFeed = async (feedId: string) => {
+export const removeFeed = async (feedId: string) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/delete`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/remove`,
       {
-        method: 'post',
+        method: 'PATCH',
         body: feedId,
       },
     );
@@ -38,10 +37,10 @@ export const fetchMyFeeds = async (userId: string) => {
   }
 };
 
-export const fetchOneFeed = async (feedId: string) => {
+export const fetchOneFeed = async (feedId: string, userId: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/detail?id=${feedId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/detail?id=${feedId}&userId=${userId}`,
       { method: 'get' },
     ).then((res) => res.json());
     console.log('fetchOneFeed resposne =>', response);
@@ -181,30 +180,38 @@ export const updateFeed = async ({
     };
     const resposne = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/update`,
-      { method: 'post', body: JSON.stringify(updateData) },
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateData),
+      },
     );
 
     if (!resposne.ok) {
       console.error('게시글 수정 도중 실패');
       throw new Error();
     }
+    // revalidateTag('expense');
+    // revalidateTag('my-feeds');
     return resposne;
   } catch (err) {
     console.error('feed 업데이트 도중 에러 발생', err);
   }
 };
 
-export const fetchFeeds = async (pageParam: number, pageSize: number) => {
+export const fetchFeeds = async (
+  pageParam: number,
+  pageSize: number,
+  userId: string,
+) => {
   try {
-    const cookieStore = Cookies.get('user') as string;
-    const user = JSON.parse(cookieStore);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/readAll?cursor=` +
         pageParam +
         `&pageSize=` +
         pageSize +
-        `&userid=` +
-        user?.uid,
+        `&userId=` +
+        userId,
       { cache: 'no-store' },
     ).then((res) => res.json());
 

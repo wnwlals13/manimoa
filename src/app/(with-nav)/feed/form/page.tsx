@@ -28,7 +28,6 @@ const FeedForm = () => {
   const result = useFetchOneFeed(feedId || '');
   const editFeed = result?.data && result?.data[0];
   const editFeedInfo = { ...editFeed, feedId };
-  console.log('??????', editFeed, feedId);
 
   const fileInputRef = useRef<HTMLInputElement>(null); // 이미지 등록 input
   const [oldImages, setOldImages] = useState<string[]>(); // 이미 추가된 이미지들
@@ -68,7 +67,7 @@ const FeedForm = () => {
   const handleClick = () => {
     fileInputRef.current?.click();
   };
-
+  // 이미지 업로드 함수
   const handleUploadImage = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file && file.length > 0) {
@@ -78,16 +77,13 @@ const FeedForm = () => {
   };
   // 기존 이미지 x 버튼 클릭
   const handleDelImg = (index: number, item: string) => {
-    console.log(index, oldImages);
     if (!oldImages) return;
     const deletedImg = oldImages.filter((_, idx) => idx !== index);
-    console.log(oldImages, deletedImg);
     setWillDeleteImgs([...willDeleteImgs, item]);
     setOldImages(deletedImg);
   };
   // 새 이미지 x 버튼 클릭
-  const handleDelPreviewImg = (index: number, name: string) => {
-    console.log('del img name', name);
+  const handleDelPreviewImg = (index: number) => {
     const deletedImg = previewImages?.filter((_, idx) => idx !== index);
     setPreviewImages(deletedImg);
   };
@@ -107,13 +103,15 @@ const FeedForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex flex-col p-default pt-[60px]"
+      className="flex-1 flex flex-col p-default pt-[60px] h-screen"
     >
       <div className="flex-1 flex flex-col">
         <div className="flex pt-5 pb-5 border-b">
           <div className="min-w-[100px]">소비 일자</div>
           {isEdit
-            ? editFeedInfo.createdAt
+            ? `${new Date(editFeedInfo.createdAt).getFullYear()}년 ${new Date(
+                editFeedInfo.createdAt,
+              ).getMonth()}월 ${new Date(editFeedInfo.createdAt).getDate()}일`
             : new Date().getFullYear() +
               '년 ' +
               (new Date().getMonth() + 1) +

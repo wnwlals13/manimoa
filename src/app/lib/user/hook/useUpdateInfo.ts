@@ -16,7 +16,6 @@ export function useUpdateInfo(user: UserData) {
   return useMutation<InfoRequestDto, Error, InfoRequestDto>({
     mutationFn: updateInfo,
     onSuccess: (res) => {
-      console.log(res);
       const updated = {
         ...user!,
         name: res.name,

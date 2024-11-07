@@ -13,6 +13,7 @@ async function UserInfo({ userId }: { userId: string }) {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { tags: [`profile-${userId}`] },
     },
   );
   const { user } = await response.json();
@@ -38,7 +39,7 @@ async function UserInfo({ userId }: { userId: string }) {
         </div>
       </div>
       <div className="flex gap-2 mt-4">
-        <FollowButton targetId={user.id} />
+        <FollowButton targetId={user.uid} />
         <InteractiveButton size="full" name="message">
           메시지
         </InteractiveButton>

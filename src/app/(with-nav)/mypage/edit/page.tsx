@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { createSupabaseClient } from '@/utils/supabase-client';
+import { createSupabaseClient } from '@/config/supabase-client';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
