@@ -2,8 +2,8 @@
 
 import { CommentData } from '@/types';
 import Profile from '../ui/profile';
-import { Button } from '../ui/button';
-import InteractiveButton from '../ui/interactiveButton';
+import { Button } from '../ui/button/button';
+import InteractiveButton from '../ui/button/interactive-button';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';

@@ -1,5 +1,5 @@
 import { IChatUser } from '@/types';
-import { Button } from '../ui/button';
+import { Button } from '../ui/button/button';
 import { FiSend } from 'react-icons/fi';
 
 export interface IChatUserProps extends IChatUser {

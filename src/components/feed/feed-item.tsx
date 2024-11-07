@@ -1,13 +1,13 @@
 import { AiOutlineHeart } from 'react-icons/ai';
 import { AiFillHeart } from 'react-icons/ai';
 import { FiMessageCircle } from 'react-icons/fi';
-import { CarouselComponent } from '../ui/carousel';
+import { CarouselComponent } from '../ui/carousel/carousel';
 import { FeedData, LikeData } from '@/types';
 import Link from 'next/link';
-import InteractiveButton from '../ui/interactiveButton';
+import InteractiveButton from '../ui/button/interactive-button';
 import Profile from '../ui/profile';
-import { LikeButton } from '../ui/likeButton';
-import { FollowButton } from '../ui/FollowButton';
+import { LikeButton } from '../ui/button/like-button';
+import { FollowButton } from '../ui/button/follow-button';
 import { formatDate } from '@/lib/formatDate';
 
 export function UserInfoGroup({

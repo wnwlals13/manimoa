@@ -2,7 +2,7 @@
 
 import { IFollow } from '@/app/lib/user/api';
 import { useFetchProfile } from '@/app/lib/user/hook/useFetchProfile';
-import InteractiveButton from '@/components/ui/interactiveButton';
+import InteractiveButton from '@/components/ui/button/interactive-button';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import Image from 'next/image';
 

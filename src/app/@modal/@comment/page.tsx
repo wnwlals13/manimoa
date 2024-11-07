@@ -10,7 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import Cookies from 'js-cookie';
 import { CommentList } from '@/components/comment/comment-list';
 import { Input } from '@/components/ui/input';
-import InteractiveButton from '@/components/ui/interactiveButton';
+import InteractiveButton from '@/components/ui/button/interactive-button';
 import { FiSend } from 'react-icons/fi';
 
 interface commentInputs {

@@ -3,7 +3,7 @@
 import { IExpenseInfo } from '@/app/lib/user/api';
 import { useInfoAndGoals } from '@/app/lib/user/hook/useInfoAndGoals';
 import { useUpdateGoals } from '@/app/lib/user/hook/useUpdateGoals';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { GoalData } from '@/types';

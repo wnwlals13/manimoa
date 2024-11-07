@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { createSupabaseClient } from '@/config/supabase-client';

@@ -8,9 +8,9 @@ import { FiImage } from 'react-icons/fi';
 import 'swiper/swiper-bundle.css';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { useFetchOneFeed } from '@/app/lib/feed/hook/useFetchOneFeed';
-import { CarouselMultipleComponent } from '@/components/ui/carousel-multiple';
+import { CarouselMultipleComponent } from '@/components/ui/carousel/carousel-multiple';
 import { useUploadFeed } from '@/app/lib/feed/hook/useUploadFeed';
 import { useUpdateFeed } from '@/app/lib/feed/hook/useUpdateFeed';
 

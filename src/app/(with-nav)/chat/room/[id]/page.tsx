@@ -4,7 +4,7 @@ import { useFetchAllMessages } from '@/app/lib/chat/hook/useFetchAllMessages';
 import { useSendMessage } from '@/app/lib/chat/hook/useSendMessage';
 import MyMessage from '@/components/chat/my-message';
 import OtherMessage from '@/components/chat/other-message';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { debounce } from '@/lib/debounce';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { IMsg } from '@/types';

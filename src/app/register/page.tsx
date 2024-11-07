@@ -3,7 +3,7 @@
 import logo from '@/assets/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
 import { useRegister } from '../lib/auth/hook/useRegister';
 import { useEffect } from 'react';

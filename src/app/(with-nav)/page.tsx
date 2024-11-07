@@ -1,5 +1,5 @@
 import { FiPlus } from 'react-icons/fi';
-import InteractiveButton from '@/components/ui/interactiveButton';
+import InteractiveButton from '@/components/ui/button/interactive-button';
 import FeedList from '@/components/feed/feed-list';
 import {
   dehydrate,
