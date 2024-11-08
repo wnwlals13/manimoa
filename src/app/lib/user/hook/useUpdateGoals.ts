@@ -2,12 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateGoals } from '../api';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useRouter } from 'next/navigation';
-
-export interface GoalsRequestDto {
-  month_price: string;
-  month_goals: { value: string }[];
-  userId: string;
-}
+import { GoalsRequestDto } from '../type';
 
 export function useUpdateGoals() {
   const { setGoals } = useAuthStore();

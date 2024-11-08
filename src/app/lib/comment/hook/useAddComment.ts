@@ -1,12 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addComment } from '../api';
 import { CommentData } from '@/types';
-
-export interface NewComment {
-  content: string;
-  writer: string;
-  feedId: string;
-}
+import { NewComment } from '../type';
 
 export function useAddComment(feedId: string) {
   const queryClient = useQueryClient();

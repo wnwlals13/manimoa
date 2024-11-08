@@ -4,20 +4,7 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { ResponseError } from '@/types';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-
-export interface LoginResponseDto {
-  uid: string;
-  email: string;
-  name: string;
-  profileImg?: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface LoginRequestDto {
-  email: string;
-  password: string;
-}
+import { LoginRequestDto, LoginResponseDto } from '../type';
 
 export const useLogin = () => {
   const { setUser } = useAuthStore();

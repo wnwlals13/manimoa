@@ -31,8 +31,6 @@ export const undoLike = async ({
   userId: string;
 }) => {
   try {
-    // const cookieStore = await cookies().get('user');
-    // const user = JSON.parse(cookieStore?.value as string);
     const resposne = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/like/undoLike`,
       {
@@ -43,7 +41,7 @@ export const undoLike = async ({
     if (!resposne.ok) {
       console.error(`좋아요 해제가 실패했습니다.`);
     }
-    // revalidateTag('profile');
+
     return await resposne.json();
   } catch (err) {
     console.error(err);

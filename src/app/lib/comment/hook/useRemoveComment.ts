@@ -1,10 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteComment } from '../api';
-
-interface removeCommentDto {
-  commentId: string;
-  feedId: string;
-}
+import { removeCommentDto } from '../type';
 
 export function useRemoveComment(feedId: string) {
   const queryClient = useQueryClient();

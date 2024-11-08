@@ -1,18 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchComments } from '../api';
-import { CommentData } from '@/types';
-
-interface UseFetchCommentsProps {
-  feedId: string;
-  pageSize: number;
-}
-
-export interface PaginatedCommentDto {
-  comments: CommentData[];
-  hasNextPage: boolean;
-  totalCount: number;
-  nextCursor?: number;
-}
+import { PaginatedCommentDto, UseFetchCommentsProps } from '../type';
 
 export const useFetchComments = ({
   feedId,

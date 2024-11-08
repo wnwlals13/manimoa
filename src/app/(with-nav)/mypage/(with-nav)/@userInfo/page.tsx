@@ -8,7 +8,9 @@ import Image from 'next/image';
 
 export default function Page() {
   const { user } = useAuthStore();
-  const { data } = useFetchProfile(user?.uid as string);
+  const { data, isPending } = useFetchProfile(user?.uid as string);
+
+  if (isPending) return <div>Loading...</div>;
   const follwData = data as IFollow;
 
   return (

@@ -11,7 +11,7 @@ export function formatDate(date: string): string {
   const hours = minutes / 60;
   if (hours < 24) return `${Math.floor(hours)}시간 전`;
 
-  const days = hours / 60;
+  const days = hours / 24;
   if (days < 7) return `${Math.floor(days)}일 전`;
 
   return `${start.toLocaleDateString()}`;

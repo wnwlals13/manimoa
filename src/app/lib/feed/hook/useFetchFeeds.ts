@@ -1,27 +1,15 @@
-import { IFeedWithLikeData } from '@/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchFeeds } from '../api';
-import Cookies from 'js-cookie';
-
-interface UseFetchFeedsProps {
-  pageSize: number;
-}
-
-interface PaginatedFeedDto {
-  feeds: IFeedWithLikeData[];
-  hasNextPage: boolean;
-  totalCount: number;
-  nextCursor?: number;
-  currentPage: number;
-}
+import { useAuthStore } from '@/store/auth/useAuthStore';
+import { PaginatedFeedDto, UseFetchFeedsProps } from '../type';
 
 export const useFetchFeeds = ({ pageSize }: UseFetchFeedsProps) => {
-  const cookieStore = Cookies.get('user') as string;
-  const user = JSON.parse(cookieStore);
+  const { user } = useAuthStore();
+
   return useInfiniteQuery<PaginatedFeedDto, Error>({
     queryKey: ['feeds'],
     queryFn: async ({ pageParam = 1 }) =>
-      fetchFeeds(pageParam as number, pageSize, user.uid),
+      fetchFeeds(pageParam as number, pageSize, user?.uid as string),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });

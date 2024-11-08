@@ -1,6 +1,5 @@
 import { ResponseError } from './../../../types.d';
-import { LoginRequestDto } from './hook/useLogin';
-import { RegisterRequestDto } from './hook/useRegister';
+import { LoginRequestDto, RegisterRequestDto } from './type';
 
 export const userLogin = async (userInfo: LoginRequestDto) => {
   try {

@@ -4,22 +4,7 @@ import { userRegister } from '../api';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import Cookies from 'js-cookie';
-
-export interface RegisterResponseDto {
-  uid: string;
-  email: string;
-  name: string;
-  profileImg?: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface RegisterRequestDto {
-  email: string;
-  password: string;
-  name: string;
-  goal?: string;
-}
+import { RegisterRequestDto, RegisterResponseDto } from '../type';
 
 export const useRegister = () => {
   const { setUser } = useAuthStore();
