@@ -1,13 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage } from '../api';
 import { IMsg } from '@/types';
-
-export interface SendRequestDto {
-  author: string;
-  msg: string;
-  date: string;
-  roomId: string;
-}
+import { SendRequestDto } from '../type';
 
 export function useSendMessage(roomId: string) {
   const queryClient = useQueryClient();

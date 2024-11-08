@@ -65,10 +65,10 @@ export default function Page() {
         {expense.goals &&
           expense.goals.map((goal: GoalData, idx: number) => (
             <div key={idx} className="flex items-start gap-3 mb-2 mt-2">
-              <div className="flex-1">
+              <div className="min-w-[20px]">
                 <FiCheck color="blue" size={20} />
               </div>
-              <p className="h-[50px] text-ellipsis overflow-hidden break-words line-clamp-2">
+              <p className="flex-1 max-h-[50px] text-ellipsis overflow-hidden break-words line-clamp-2">
                 {goal.content}
               </p>
             </div>

@@ -68,13 +68,15 @@ export default function Page() {
   };
 
   const onSubmit = async (data: ProfileFormInputs) => {
+    if (!user) return;
+
     let path = user?.profileImg || undefined;
     if (previewImg) {
       // 1. 이미지 스토리지 저장
       path = (await uploadImg()) as string;
     }
     // 2. 이미지 path 가져와 db에 저장
-    const props = { name: data.name, path };
+    const props = { name: data.name, profileImg: path, userId: user?.uid };
 
     // 3. 수정
     mutate(props);

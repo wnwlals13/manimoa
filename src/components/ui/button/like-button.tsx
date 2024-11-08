@@ -1,32 +1,40 @@
 import { useLike } from '@/app/lib/like/hook/useDoLike';
 import { Button } from './button';
 import { useUnLike } from '@/app/lib/like/hook/useUndoLike';
-import Cookies from 'js-cookie';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 
 export function LikeButton({
   feedId,
   isLiked,
+  likeCount,
   children,
 }: {
   feedId: number;
-  isLiked: boolean;
-  children: React.ReactNode;
+  isLiked: number;
+  likeCount: number;
+  children?: React.ReactNode;
 }) {
-  const like = useLike();
-  const unLike = useUnLike();
-  const cookieStore = Cookies.get('user') as string;
-  const user = JSON.parse(cookieStore);
+  const { mutate: likeMutate, isPending: likePending } = useLike();
+  const { mutate: unlikeMutate, isPending: unlikePending } = useUnLike();
+  const { user } = useAuthStore();
 
   const handleLike = () => {
-    if (!user) return;
-    if (!isLiked) {
-      like.mutate({ feedId, userId: user.uid });
-    } else {
-      unLike.mutate({ feedId, userId: user.uid });
-    }
+    likeMutate({ feedId, userId: user?.uid as string, isLiked, likeCount });
   };
+
+  const handleUnLike = () => {
+    unlikeMutate({ feedId, userId: user?.uid as string, isLiked, likeCount });
+  };
+
   return (
-    <Button style={{ width: '65px' }} onClick={handleLike}>
+    <Button
+      style={{ width: '65px' }}
+      onClick={!isLiked ? handleLike : handleUnLike}
+      disabled={likePending || unlikePending}
+    >
+      {isLiked > 0 ? <AiFillHeart color="red" /> : <AiOutlineHeart />}
+      {likeCount}
       {children}
     </Button>
   );

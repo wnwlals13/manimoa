@@ -1,7 +1,6 @@
 import { GoalData } from '@/types';
-import { GoalsRequestDto } from './hook/useUpdateGoals';
-import { InfoRequestDto } from './hook/useUpdateInfo';
 import Cookies from 'js-cookie';
+import { GoalsRequestDto, InfoRequestDto } from './type';
 
 export const updateInfo = async (data: InfoRequestDto) => {
   try {
@@ -36,7 +35,7 @@ export const updateGoals = async (data: GoalsRequestDto) => {
       {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, userId: data.userId }),
+        body: JSON.stringify(data),
       },
     );
     const result = await response.json();

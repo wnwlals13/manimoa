@@ -4,11 +4,7 @@ import { UserData } from '@/types';
 import Cookies from 'js-cookie';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useRouter } from 'next/navigation';
-
-export interface InfoRequestDto {
-  name?: string;
-  profileImg?: string;
-}
+import { InfoRequestDto } from '../type';
 
 export function useUpdateInfo(user: UserData) {
   const { setUser } = useAuthStore();

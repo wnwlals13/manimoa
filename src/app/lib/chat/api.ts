@@ -1,6 +1,6 @@
 import { IMsg } from '@/types';
-import { RequestChatDto } from './hook/useNewChat';
 import Cookies from 'js-cookie';
+import { RequestChatDto } from './type';
 
 export const addNewChat = async (data: RequestChatDto) => {
   try {

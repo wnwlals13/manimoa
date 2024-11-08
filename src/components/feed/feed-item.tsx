@@ -58,10 +58,7 @@ export function FeedItem({
       />
       {imagesArray && <CarouselComponent images={imagesArray} />}
       <div className="flex gap-2 mt-4">
-        <LikeButton feedId={id} isLiked={isUserDoLike > 0}>
-          {isUserDoLike > 0 ? <AiFillHeart color="red" /> : <AiOutlineHeart />}{' '}
-          {likeCount}
-        </LikeButton>
+        <LikeButton feedId={id} isLiked={isUserDoLike} likeCount={likeCount} />
         <InteractiveButton variant="submain" name={`comments.${id}`}>
           <FiMessageCircle size="20" /> {commentCount}
         </InteractiveButton>

@@ -1,11 +1,7 @@
 import { updateComment } from './../api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CommentData } from '@/types';
-
-export interface updateCommentDto {
-  content: string;
-  commentId: string;
-}
+import { updateCommentDto } from '../type';
 
 export function useUpdateComment(feedId: string) {
   const queryClient = useQueryClient();
