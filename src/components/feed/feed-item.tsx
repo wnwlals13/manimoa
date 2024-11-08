@@ -1,5 +1,3 @@
-import { AiOutlineHeart } from 'react-icons/ai';
-import { AiFillHeart } from 'react-icons/ai';
 import { FiMessageCircle } from 'react-icons/fi';
 import { CarouselComponent } from '../ui/carousel/carousel';
 import { FeedData, LikeData } from '@/types';

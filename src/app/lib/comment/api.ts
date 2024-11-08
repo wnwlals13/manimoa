@@ -1,5 +1,4 @@
-import { NewComment } from './hook/useAddComment';
-import { updateCommentDto } from './hook/useUpdateComment';
+import { NewComment, updateCommentDto } from './type';
 
 export const fetchComments = async (
   feedId: string,
