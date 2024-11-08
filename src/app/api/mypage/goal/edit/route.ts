@@ -2,7 +2,7 @@ import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function PATCH(request: Request) {
   try {
     const db = await conn();
     const data = await request.json();
@@ -10,14 +10,6 @@ export async function POST(request: Request) {
     const month_goals = data.month_goals as { value: string }[];
     const month_price = data.month_price ? data.month_price : undefined;
     const userId = data.userId;
-    console.log(
-      'userId',
-      userId,
-      'month_price',
-      data.month_price,
-      'month_goals',
-      month_goals,
-    );
     const month = new Date().getMonth() + 1;
 
     if (month_goals) {

@@ -2,7 +2,7 @@ import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function DELETE(request: NextRequest) {
   try {
     const db = await conn();
     const { targetId, userId } = await request.json();

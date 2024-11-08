@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   try {
     const db = await conn();
     const { feedId, userId } = await request.json();
-    console.log(`feedId =>`, feedId);
 
     // 1.좋아요
     const result: [QueryResult, FieldPacket[]] = await db.query(
@@ -17,8 +16,10 @@ export async function POST(request: NextRequest) {
 
     // 2.카운트 1증가
     const result2: [QueryResult, FieldPacket[]] = await db.query(
-      `UPDATE feeds SET like_count = like_count + 1 WHERE id = ?`,
-      [feedId],
+      `UPDATE feeds 
+      SET like_count = (SELECT COUNT(*) FROM likes where feed_id = ?)
+      WHERE id = ?`,
+      [feedId, feedId],
     );
     const rows2 = result2[0] as ResultSetHeader;
 
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
       console.error('좋아요 db 처리에 실패했습니다.');
       throw new Error();
     }
-    console.log(rows, rows2);
+
     return NextResponse.json({ status: 200, message: '조아효 성공' });
   } catch (err) {
     console.error(err);

@@ -9,7 +9,7 @@ export const doLike = async ({
     const resposne = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/like/doLike`,
       {
-        method: 'post',
+        method: 'POST',
         body: JSON.stringify({ feedId: feedId.toString(), userId: userId }),
       },
     );
@@ -34,7 +34,7 @@ export const undoLike = async ({
     const resposne = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/like/undoLike`,
       {
-        method: 'post',
+        method: 'DELETE',
         body: JSON.stringify({ feedId: feedId, userId: userId }),
       },
     );

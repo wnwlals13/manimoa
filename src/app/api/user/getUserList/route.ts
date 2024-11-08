@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const db = await conn();
     const searchParams = request.nextUrl.searchParams;
-    console.log('searchParams', searchParams);
+
     const cursor = Number(searchParams.get('cursor'));
     const pageSize = Number(searchParams.get('pageSize'));
     const input = searchParams.get('input');
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       [userId, userId, `%${input}%`],
     );
     const users = result[0] as RowDataPacket;
-    console.log('input', input, 'row', users);
+
     //페이지네이션
     const totalCount = users.length;
     const startIndex = (cursor - 1) * pageSize;

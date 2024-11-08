@@ -6,7 +6,7 @@ import InteractiveButton from '../ui/button/interactive-button';
 import Profile from '../ui/profile';
 import { LikeButton } from '../ui/button/like-button';
 import { FollowButton } from '../ui/button/follow-button';
-import { formatDate } from '@/lib/formatDate';
+import { useEffect, useState } from 'react';
 
 export function UserInfoGroup({
   writer,
@@ -44,8 +44,17 @@ export function FeedItem({
   isUserDoLike,
   createdAt,
 }: FeedData & LikeData) {
-  const imagesArray = images?.split(',');
-  const feedDisplayDate = formatDate(createdAt);
+  const [imgsArr, setImgsArr] = useState<string[]>([]);
+  const [displayDate, setDisplayDate] = useState<string>();
+
+  useEffect(() => {
+    if (images) {
+      setImgsArr(images?.split(','));
+    }
+    if (createdAt) {
+      setDisplayDate(createdAt);
+    }
+  }, [images, createdAt]);
 
   return (
     <div className="border-b mb-4">
@@ -54,7 +63,7 @@ export function FeedItem({
         writerId={userId}
         profileImg={profileImg!}
       />
-      {imagesArray && <CarouselComponent images={imagesArray} />}
+      {imgsArr && <CarouselComponent images={imgsArr} />}
       <div className="flex gap-2 mt-4">
         <LikeButton feedId={id} isLiked={isUserDoLike} likeCount={likeCount} />
         <InteractiveButton variant="submain" name={`comments.${id}`}>
@@ -66,7 +75,7 @@ export function FeedItem({
           {content}
         </div>
         <div className="pt-1 pb-default text-sm text-gray-500">
-          {feedDisplayDate}
+          {displayDate}
         </div>
       </Link>
     </div>
