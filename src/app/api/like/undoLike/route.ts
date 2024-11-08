@@ -2,7 +2,7 @@ import { conn } from '@/config/db';
 import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function DELETE(request: NextRequest) {
   try {
     const db = await conn();
     const { feedId, userId } = await request.json();
@@ -16,8 +16,10 @@ export async function POST(request: NextRequest) {
 
     // 2.카운트 1 빼기
     const result2: [QueryResult, FieldPacket[]] = await db.query(
-      `UPDATE feeds SET like_count = like_count - 1 WHERE id = ?`,
-      [feedId],
+      `UPDATE feeds 
+      SET like_count = (SELECT COUNT(*) FROM likes where feed_id = ?)
+      WHERE id = ?`,
+      [feedId, feedId],
     );
     const rows2 = result2[0] as ResultSetHeader;
 

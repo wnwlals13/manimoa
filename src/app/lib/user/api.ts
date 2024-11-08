@@ -9,11 +9,11 @@ export const updateInfo = async (data: InfoRequestDto) => {
     const fileResponse = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile/edit`,
       {
-        method: 'post',
+        method: 'PATCH',
         body: JSON.stringify({ ...data, userId: user.uid }),
       },
     );
-    console.log('user/edit', fileResponse);
+
     if (!fileResponse.ok) {
       console.error('[client] 프로필 데이터 저장 싪패!');
       throw new Error();
@@ -33,7 +33,7 @@ export const updateGoals = async (data: GoalsRequestDto) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/goal/edit`,
       {
-        method: 'post',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       },
@@ -104,7 +104,6 @@ export interface IFollow {
 
 export const getUserProfile = async (userId: string) => {
   try {
-    console.log('getUserProfile userId', userId);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
       {

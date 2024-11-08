@@ -3,7 +3,7 @@ import { ResultSetHeader } from 'mysql2';
 import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const db = await conn();
     const { commentId, feedId } = await request.json();

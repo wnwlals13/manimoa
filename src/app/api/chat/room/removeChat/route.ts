@@ -1,11 +1,11 @@
 import { conn } from '@/config/db';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(reqeust: NextRequest) {
+export async function PATCH(reqeust: NextRequest) {
   try {
     const db = await conn();
     const willRemoveRooms = await reqeust.json();
-    console.log('is roomId correct', willRemoveRooms);
+
     const result = Promise.all(
       willRemoveRooms.map(async (roomId: string) => {
         await db.query(

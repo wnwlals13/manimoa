@@ -17,7 +17,7 @@ export const userFollow = async ({ targetId, userId }: FollowProps) => {
     const resposne = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/doFollow`,
       {
-        method: 'post',
+        method: 'POST',
         body: JSON.stringify({ targetId: targetId, userId: userId }),
       },
     );
@@ -33,7 +33,7 @@ export const userUnFollow = async ({ targetId, userId }: FollowProps) => {
     const resposne = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/undoFollow`,
       {
-        method: 'post',
+        method: 'DELETE',
         body: JSON.stringify({ targetId: targetId, userId: userId }),
       },
     );

@@ -105,11 +105,9 @@ export const removeChat = async ({
   willRemoveRooms: string[];
 }) => {
   try {
-    // const cookieStore = Cookies.get('user') as string;
-    // const user = JSON.parse(cookieStore);
     const result = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/room/removeChat`,
-      { method: 'post', body: JSON.stringify(willRemoveRooms) },
+      { method: 'PATCH', body: JSON.stringify(willRemoveRooms) },
     ).then((res) => res.json());
     return result;
   } catch (err) {

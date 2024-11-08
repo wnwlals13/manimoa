@@ -45,7 +45,7 @@ export const updateComment = async (commentData: updateCommentDto) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/update`,
       {
-        method: 'post',
+        method: 'PATCH',
         body: JSON.stringify(commentData),
         next: { tags: ['comment'] },
       },
@@ -71,7 +71,7 @@ export const deleteComment = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/delete`,
       {
-        method: 'post',
+        method: 'PATCH',
         body: JSON.stringify(propsData),
         next: { tags: ['comment'] },
       },
