@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import Cookies from 'js-cookie';
 import { RegisterRequestDto, RegisterResponseDto } from '../type';
+import { useToast } from '@/store/toast/useToast';
 
 export const useRegister = () => {
   const { setUser } = useAuthStore();
+  const { addToast } = useToast();
   const router = useRouter();
   return useMutation<RegisterResponseDto, Error, RegisterRequestDto>({
     mutationFn: userRegister,
     onSuccess: (userData) => {
-      console.log('register success?', userData);
       setUser({
         uid: userData.uid,
         email: userData.email,
@@ -20,6 +21,12 @@ export const useRegister = () => {
         profileImg: userData.profileImg,
       });
       Cookies.set('accessToken', userData.accessToken);
+
+      addToast({
+        message: '회원가입에 성공했습니다.',
+        type: 'info',
+      });
+
       router.replace('/');
     },
     onError: (err: ResponseError) => {

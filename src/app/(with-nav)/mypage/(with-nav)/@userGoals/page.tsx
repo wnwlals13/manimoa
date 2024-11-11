@@ -46,7 +46,7 @@ export default function Page() {
         className="inline-block w-full bg-main p-default rounded-xl"
       >
         <h3 className="font-bold mb-2 text-white">이번 달의 소비 목표!</h3>
-        {expense.price ? (
+        {expense && expense.price ? (
           <>
             <div className="flex items-center gap-2">
               <Progress className="bg-white" value={calculateProgress()} />

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       message: '성공',
       data: {
         goals: rows,
-        price: rows_second[0].price,
+        price: rows_second[0] ? rows_second[0].price : 0,
       },
     });
   } catch (err) {

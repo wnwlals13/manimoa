@@ -34,6 +34,7 @@ export default function FeedList() {
   const { ref, inView } = useInView({
     threshold: 0.5, // 화면의 20%가 보일 때 감지
   });
+
   useEffect(() => {
     if (inView) {
       fetchFeedNext();
