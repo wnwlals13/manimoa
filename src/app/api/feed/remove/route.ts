@@ -1,10 +1,5 @@
 import { conn } from '@/config/db';
-import {
-  FieldPacket,
-  QueryResult,
-  ResultSetHeader,
-  RowDataPacket,
-} from 'mysql2';
+import { FieldPacket, QueryResult, ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function PATCH(request: NextRequest) {
