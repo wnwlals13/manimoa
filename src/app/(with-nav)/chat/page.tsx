@@ -1,19 +1,18 @@
 'use client';
 import { useFetchMyChatRooms } from '@/app/lib/chat/hook/useFetchMyChatRooms';
 import { IChatRoom } from '@/types';
+import { formatChatDate } from '@/util/formatChatDate';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
-function ChatRooms() {
-  const { data, isPending } = useFetchMyChatRooms();
-  if (isPending) return <div>Loading...</div>;
+function ChatRooms({ chat }: { chat: IChatRoom[] }) {
   return (
     <div className="p-default pt-[60px]">
-      {data && data.length > 0 ? (
-        data.map((item: IChatRoom, idx: number) => (
+      {chat && chat.length > 0 ? (
+        chat.map((item: IChatRoom) => (
           <Link
-            key={idx}
+            key={item.roomId}
             href={{
               pathname: `/chat/room/${item.roomId}`,
               query: { otherUserEmail: item.participantEmails[0].email },
@@ -35,9 +34,7 @@ function ChatRooms() {
               {item.participantEmails[0].email}
             </div>
             <div className="flex justify-center items-center text-sm">
-              {`${new Date(item.createdAt).getFullYear()}-${
-                new Date(item.createdAt).getMonth() + 1
-              }-${String(new Date(item.createdAt).getDate()).padStart(2, '0')}`}
+              {formatChatDate(item.createdAt)}
             </div>
           </Link>
         ))
@@ -52,9 +49,13 @@ function ChatRooms() {
 }
 
 export default function Page() {
+  const { data, isLoading } = useFetchMyChatRooms();
+  if (isLoading) return <div>Loading...</div>;
+
+  const chat = data?.chat || [];
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ChatRooms />
+      <ChatRooms chat={chat} />
     </Suspense>
   );
 }
