@@ -16,18 +16,9 @@ export async function GET(request: NextRequest) {
     const response = await db.query(
       ` 
       SELECT
-          a.id AS id, 
-          a.user_id AS userId,
-          c.name  AS userName,
-          c.profile_img  AS profileImg,
-          a.content AS content,
-          a.price AS price,
-          a.price_option AS priceOption,
-          GROUP_CONCAT(b.image_url) AS images,
-          a.comment_count AS commentCount,
-          a.created_at AS createdAt,
-          a.updated_at AS updatedAt,
-          a.deleted_at AS deletedAt
+          a.id AS feedId,
+          a.like_count AS likeCount, 
+          IF(count(d.id)>0, 1, 0 ) as isUserDoLike
       FROM feeds a 
       LEFT JOIN images b 
         ON a.id = b.feed_id 
@@ -41,12 +32,12 @@ export async function GET(request: NextRequest) {
       [userId],
     );
 
-    const feeds = response[0] as FeedData[];
+    const likes = response[0] as FeedData[];
     //페이지네이션
-    const totalCount = feeds.length;
+    const totalCount = likes.length;
     const startIndex = (cursor - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    const paginatedFeeds = feeds.slice(startIndex, endIndex);
+    const paginatedLikes = likes.slice(startIndex, endIndex);
 
     const hasNextPage = endIndex < totalCount;
     const nextCursor = hasNextPage ? cursor + 1 : undefined;
@@ -54,7 +45,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       status: 200,
       message: '',
-      feeds: paginatedFeeds,
+      likes: paginatedLikes,
       hasNextPage,
       totalCount,
       nextCursor,

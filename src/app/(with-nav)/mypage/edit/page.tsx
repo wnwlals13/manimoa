@@ -3,13 +3,18 @@
 import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { createSupabaseClient } from '@/config/supabase-client';
+
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit2 } from 'react-icons/fi';
 import { useUpdateInfo } from '@/app/lib/user/hook/useUpdateInfo';
 import { UserData } from '@/types';
+import Profile from '@/components/ui/profile';
+import {
+  handleRemoveImageFromStorage,
+  handleUploadImageToStorage,
+} from '@/util/imageUpload';
 
 export interface ProfileFormInputs {
   name: string;
@@ -37,43 +42,18 @@ export default function Page() {
     setPreviewImg(file); // state 설정
   };
 
-  const uploadImg = async () => {
-    const supabase = await createSupabaseClient();
-    try {
-      // 해당 id 폴더의 기존 데이터 삭제..
-      const profile = user?.profileImg;
-      if (profile) {
-        await supabase.storage
-          .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
-          .remove([profile]);
-      }
-
-      const file = previewImg as File;
-      const fileExt = file.name.split('.').pop();
-      const filePath = `profile/${user?.uid}/${Date.now()}.${fileExt}`;
-
-      const { data, error } = await supabase.storage
-        .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
-        .upload(filePath, file);
-
-      if (error) {
-        console.error('Failed to insert image to storage : ', error);
-        throw new Error('[client] 프로필 이미지가 정상적으로 저장되지 않음');
-      }
-
-      return data.path;
-    } catch (err) {
-      console.error('[client] 프로필 이미지 저장 에러', err);
-    }
-  };
-
   const onSubmit = async (data: ProfileFormInputs) => {
     if (!user) return;
 
-    let path = user?.profileImg || undefined;
+    let path = user?.profileImg || null;
+
+    if (user?.profileImg) handleRemoveImageFromStorage(user?.profileImg);
     if (previewImg) {
-      // 1. 이미지 스토리지 저장
-      path = (await uploadImg()) as string;
+      path = await handleUploadImageToStorage({
+        file: previewImg,
+        type: 'profile',
+        userId: user.uid,
+      });
     }
     // 2. 이미지 path 가져와 db에 저장
     const props = { name: data.name, profileImg: path, userId: user?.uid };
@@ -95,30 +75,22 @@ export default function Page() {
       <div className="w-full flex flex-col">
         <div className="h-[100px] w-full flex justify-center">
           <div className="profile-btn w-[100px] h-[100px] bg-gray-300 rounded-full absolute">
-            <div className="profile-btn w-[100px] h-[100px] rounded-full border border-gray-200 absolute overflow-hidden flex justify-center">
-              {user?.profileImg ? (
+            {user && user?.profileImg ? (
+              <Profile src={user?.profileImg} size="xlg" />
+            ) : previewImg ? (
+              <div className="profile-btn w-[100px] h-[100px] rounded-full border border-gray-200 absolute overflow-hidden flex justify-center">
                 <Image
                   width={100}
                   height={100}
-                  style={{ width: '100%' }}
+                  style={{ objectFit: 'cover' }}
                   alt="프로필 이미지"
-                  src={
-                    previewImg
-                      ? URL.createObjectURL(previewImg)
-                      : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${user?.profileImg}`
-                  }
+                  src={URL.createObjectURL(previewImg)}
                 ></Image>
-              ) : (
-                previewImg && (
-                  <Image
-                    width={100}
-                    height={100}
-                    alt="프로필 이미지"
-                    src={URL.createObjectURL(previewImg)}
-                  ></Image>
-                )
-              )}
-            </div>
+              </div>
+            ) : (
+              <></>
+            )}
+
             <div className="absolute bottom-0 right-0 p-2 border border-gray-300 rounded-full bg-white cursor-pointer">
               <div onClick={handleClick}>
                 <FiEdit2 />

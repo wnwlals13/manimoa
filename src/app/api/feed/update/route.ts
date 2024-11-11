@@ -9,10 +9,10 @@ export async function PATCH(request: NextRequest) {
     const feedId = data.feedId;
     const delPaths = data.delPaths;
     const paths = data.paths;
-    console.log('data', data);
+    console.log('data', data, delPaths.length, paths.length);
     // 이미지 삭제
-    if (delPaths.length > 0) {
-      Promise.all(
+    if (delPaths && delPaths.length > 0) {
+      await Promise.all(
         delPaths.forEach(async (path: string) => {
           await db.query(
             `DELETE FROM images WHERE image_url = ? and feed_id = ?`,
@@ -25,8 +25,8 @@ export async function PATCH(request: NextRequest) {
     }
     console.log('[update img] delPaths=>', delPaths, 'paths=>', paths);
     // 이미지 추가
-    if (paths.length > 0) {
-      Promise.all(
+    if (paths && paths.length > 0) {
+      await Promise.all(
         paths.forEach(async (url: string) => {
           await db.query(
             `INSERT INTO images (feed_id, image_url) VALUES (?,?)`,

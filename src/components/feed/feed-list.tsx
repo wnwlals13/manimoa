@@ -2,25 +2,42 @@
 
 import { useFetchFeeds } from '@/app/lib/feed/hook/useFetchFeeds';
 import { IFeedWithLikeData } from '@/types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FeedItem } from './feed-item';
 import FeedListSkeleton from '../ui/skeleton/feed-list-skeleton';
+import { useFetchLikes } from '@/app/lib/feed/hook/useFetchLikes';
 
 const ROWS_PER_PAGE = 20;
 
 export default function FeedList() {
-  const { data, fetchNextPage, isFetchingNextPage, isLoading } = useFetchFeeds({
+  const {
+    data,
+    fetchNextPage: fetchFeedNext,
+    isFetchingNextPage,
+    isLoading,
+  } = useFetchFeeds({
     pageSize: ROWS_PER_PAGE,
   });
-  const feedsGroup = data ? data.pages.map((page) => page.feeds) : [];
+
+  const { data: likes, fetchNextPage: fetchLikeNext } =
+    useFetchLikes(ROWS_PER_PAGE);
+
+  const likesGroup = useMemo(() => {
+    return likes ? likes.pages.map((page) => page.likes) : [];
+  }, [likes]);
+
+  const feedsGroup = useMemo(() => {
+    return data ? data.pages.map((page) => page.feeds) : [];
+  }, [data]);
 
   const { ref, inView } = useInView({
     threshold: 0.5, // 화면의 20%가 보일 때 감지
   });
   useEffect(() => {
     if (inView) {
-      fetchNextPage();
+      fetchFeedNext();
+      fetchLikeNext();
     }
   }, [inView]);
 
@@ -31,7 +48,7 @@ export default function FeedList() {
       {feedsGroup.map((feeds, i) => (
         <div key={i}>
           {feeds.map((feed: IFeedWithLikeData, idx) => (
-            <FeedItem key={idx} {...feed} />
+            <FeedItem key={idx} {...likesGroup[i][idx]} {...feed} />
           ))}
         </div>
       ))}

@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useRemoveComment } from '@/app/lib/comment/hook/useRemoveComment';
+import { formatDate } from '@/util/formatDate';
 
 interface CommentItemProps {
   comments: CommentData;
@@ -21,7 +22,8 @@ export function CommentItem({
   mutateFn,
 }: CommentItemProps) {
   const { nowEdit, setNowEdit } = useAuthStore();
-  const { id, userId, userName, content, profileImg, feedId } = comments;
+  const { id, userId, userName, content, profileImg, feedId, createdAt } =
+    comments;
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,9 +40,12 @@ export function CommentItem({
   return (
     <div className="flex justify-between gap-5 items-center border-b">
       <div className="flex-1 flex items-center gap-5 pb-default pt-default">
-        <Profile profileImg={profileImg} />
+        <Profile src={profileImg as string} size="md" />
         <div className="flex-1">
-          <div>{userName}</div>
+          <div className="flex gap-2">
+            <p className="text-sm">{userName}</p>
+            <p className="text-sm text-gray-500">{formatDate(createdAt)}</p>
+          </div>
           {!isEdit ? (
             <div>{content}</div>
           ) : (

@@ -51,7 +51,7 @@ const FeedForm = () => {
       uploadFn.mutate({
         ...data,
         userId: user?.uid as string,
-        previewImage: previewImages || [],
+        previewImage: previewImages || null,
       });
     } else {
       updateFn.mutate({

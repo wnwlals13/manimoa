@@ -7,7 +7,6 @@ export interface FeedData {
   price: number;
   priceOption: number;
   images?: string;
-  likeCount: number;
   commentCount: number;
   createdAt: string;
   updatedAt: string;
@@ -15,7 +14,9 @@ export interface FeedData {
 }
 
 export interface LikeData {
+  likeCount: number;
   isUserDoLike: number;
+  feedId: number;
 }
 
 export interface IFeedWithLikeData extends FeedData, LikeData {}
@@ -76,4 +77,11 @@ export interface IChatRoom {
   participantIds: string[];
   participantEmails: { id: string; email: string }[];
   participantProfiles: { id: string; profileImg: string }[];
+}
+
+export interface ImageData {
+  id: string;
+  feedId: string;
+  imageUrl: string;
+  createdAt: string;
 }
