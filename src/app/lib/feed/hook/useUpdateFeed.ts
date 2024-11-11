@@ -1,12 +1,13 @@
+import { updateFeed } from './../api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateFeed } from '../api';
 import { useRouter } from 'next/navigation';
+import { updateFeedRequestDto } from '../type';
 
 export const useUpdateFeed = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<Promise<void>, Error, updateFeedRequestDto>({
     mutationFn: updateFeed,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['feeds'] });

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import InteractiveButton from '../ui/button/interactive-button';
-import { formatDate } from '@/lib/formatDate';
+import { formatDate } from '@/util/formatDate';
 
 export default function MyFeedItem(feed: FeedData) {
   const { id, content, images, createdAt } = feed;

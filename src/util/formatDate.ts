@@ -14,5 +14,7 @@ export function formatDate(date: string): string {
   const days = hours / 24;
   if (days < 7) return `${Math.floor(days)}일 전`;
 
-  return `${start.toLocaleDateString()}`;
+  return `${start.getFullYear()}년 ${start.getMonth()}월 ${String(
+    start.getDate(),
+  ).padStart(0, '2')}일`;
 }

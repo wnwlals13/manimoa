@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { undoLike } from '../api';
-import { PaginatedFeedDto } from '../../feed/type';
+import { PaginatedLikeDto } from '../../feed/type';
 import { likeDto } from '../type';
 
 export function useUnLike() {
@@ -13,29 +13,29 @@ export function useUnLike() {
     Promise<void>,
     Error,
     likeDto,
-    { previousFeeds: InfiniteData<PaginatedFeedDto, unknown> }
+    { previousFeeds: InfiniteData<PaginatedLikeDto, unknown> }
   >({
     mutationFn: undoLike,
     onMutate: async (value) => {
-      await queryClient.cancelQueries({ queryKey: ['feeds'] });
-      const previousFeeds = queryClient.getQueryData(['feeds']) as InfiniteData<
-        PaginatedFeedDto,
+      await queryClient.cancelQueries({ queryKey: ['likes'] });
+      const previousFeeds = queryClient.getQueryData(['likes']) as InfiniteData<
+        PaginatedLikeDto,
         unknown
       >;
 
       queryClient.setQueryData(
-        ['feeds'],
-        (old: InfiniteData<PaginatedFeedDto, unknown>) => {
+        ['likes'],
+        (old: InfiniteData<PaginatedLikeDto, unknown>) => {
           return {
             ...old,
-            pages: old.pages.map((page: PaginatedFeedDto) => ({
+            pages: old.pages.map((page: PaginatedLikeDto) => ({
               ...page,
-              feeds: page.feeds.map((item) =>
-                item.id === value.feedId
+              likes: page.likes.map((item) =>
+                item.feedId === value.feedId
                   ? {
                       ...item,
                       likeCount: item.likeCount - 1,
-                      isUserDoLike: 0,
+                      isUserDoLike: 1,
                     }
                   : { ...item },
               ),
@@ -47,12 +47,12 @@ export function useUnLike() {
       return { previousFeeds };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['feeds'] });
+      queryClient.invalidateQueries({ queryKey: ['likes'] });
     },
     onError: (err, _, context) => {
       console.error('좋아요 해제에 실패했습니다.', err);
       if (context?.previousFeeds) {
-        queryClient.setQueryData(['feeds'], context.previousFeeds);
+        queryClient.setQueryData(['likes'], context.previousFeeds);
       }
     },
   });

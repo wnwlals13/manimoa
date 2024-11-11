@@ -27,9 +27,7 @@ async function UserInfo({ userId }: { userId: string }) {
       <div className="relative flex  justify-between items-center">
         <div className="flex gap-10 justify-start items-center">
           <div className="flex gap-2 items-center">
-            <div className="w-[50px] h-[50px] rounded-full flex justify-center items-center ">
-              <Profile profileImg={user.profileImg} />
-            </div>
+            <Profile src={user.profileImg} size="lg" />
             <p>{user.email}</p>
           </div>
           <div className="flex gap-2">

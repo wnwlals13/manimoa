@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query';
 import { cookies } from 'next/headers';
 import { fetchFeedsAction } from '@/actions/fetch-feeds.action';
+import { fetchLikesAction } from '@/actions/fetch-likes.action';
 
 export default async function Home() {
   const cookieStore = cookies().get('user')?.value as string;
@@ -17,6 +18,14 @@ export default async function Home() {
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['feeds'],
     queryFn: ({ pageParam }) => fetchFeedsAction(pageParam, 10, user.uid),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    pages: 1,
+  });
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['likes'],
+    queryFn: ({ pageParam }) => fetchLikesAction(pageParam, 10, user.uid),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     pages: 1,

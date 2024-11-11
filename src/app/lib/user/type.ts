@@ -14,6 +14,6 @@ export interface GoalsRequestDto {
 
 export interface InfoRequestDto {
   name?: string;
-  profileImg?: string;
+  profileImg: string | null;
   userId: string;
 }

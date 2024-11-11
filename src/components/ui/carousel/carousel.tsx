@@ -6,12 +6,15 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Image from 'next/image';
+import React from 'react';
 
 interface CarouselProps {
   images: string[];
 }
 
-export function CarouselComponent({ images }: CarouselProps) {
+export const CarouselComponent = React.memo(function CarouselComponent({
+  images,
+}: CarouselProps) {
   return (
     <Swiper
       modules={[Navigation, Pagination]}
@@ -29,7 +32,9 @@ export function CarouselComponent({ images }: CarouselProps) {
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${item}`}
             alt={`picture of feed, ${item}`}
             fill
-            sizes="(max-width:558px) 100vw"
+            sizes="(max-width: 768px) 100%"
+            priority
+            style={{ objectFit: 'cover' }}
           />
         </SwiperSlide>
       ))}
@@ -38,4 +43,4 @@ export function CarouselComponent({ images }: CarouselProps) {
       <div className="swiper-button-prev"></div>
     </Swiper>
   );
-}
+});

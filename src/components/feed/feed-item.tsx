@@ -1,14 +1,15 @@
 import { FiMessageCircle } from 'react-icons/fi';
 import { CarouselComponent } from '../ui/carousel/carousel';
-import { FeedData, LikeData } from '@/types';
+import { IFeedWithLikeData } from '@/types';
 import Link from 'next/link';
 import InteractiveButton from '../ui/button/interactive-button';
 import Profile from '../ui/profile';
 import { LikeButton } from '../ui/button/like-button';
 import { FollowButton } from '../ui/button/follow-button';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { formatDate } from '@/util/formatDate';
 
-export function UserInfoGroup({
+export const UserInfoGroup = React.memo(function UserInfoGroup({
   writer,
   writerId,
   profileImg,
@@ -20,7 +21,7 @@ export function UserInfoGroup({
   return (
     <div className="flex p-2">
       <div className="flex-1 flex items-center gap-2">
-        <Profile profileImg={profileImg} />
+        <Profile src={profileImg} size="md" />
         <Link href={`/user/${writerId}`} className="flex-1">
           {writer}
         </Link>
@@ -30,31 +31,56 @@ export function UserInfoGroup({
       </div>
     </div>
   );
-}
+});
 
-export function FeedItem({
-  id,
+export const Contents = React.memo(function Contents({
+  feedId,
+  content,
+  createdAt,
+}: {
+  feedId: number;
+  content: string;
+  createdAt: string;
+}) {
+  const [displayDate, setDisplayDate] = useState<string>();
+
+  useEffect(() => {
+    if (createdAt) {
+      setDisplayDate(formatDate(createdAt));
+    }
+  }, [createdAt]);
+
+  return (
+    <Link href={`/feed/${feedId}`}>
+      <div className="max-w-[400px] overflow-hidden pt-default text-ellipsis">
+        {content}
+      </div>
+      <div className="pt-1 pb-default text-sm text-gray-500">{displayDate}</div>
+    </Link>
+  );
+});
+
+export const FeedItem = React.memo(function FeedItem({
+  feedId,
   userId,
   userName,
   profileImg,
-  content,
   images,
   commentCount,
+  createdAt,
+  content,
   likeCount,
   isUserDoLike,
-  createdAt,
-}: FeedData & LikeData) {
-  const [imgsArr, setImgsArr] = useState<string[]>([]);
-  const [displayDate, setDisplayDate] = useState<string>();
+}: IFeedWithLikeData) {
+  const [imgsArr, setImgsArr] = useState<string[]>(
+    images?.split(',') as string[],
+  );
 
   useEffect(() => {
     if (images) {
       setImgsArr(images?.split(','));
     }
-    if (createdAt) {
-      setDisplayDate(createdAt);
-    }
-  }, [images, createdAt]);
+  }, [images]);
 
   return (
     <div className="border-b mb-4">
@@ -65,19 +91,16 @@ export function FeedItem({
       />
       {imgsArr && <CarouselComponent images={imgsArr} />}
       <div className="flex gap-2 mt-4">
-        <LikeButton feedId={id} isLiked={isUserDoLike} likeCount={likeCount} />
-        <InteractiveButton variant="submain" name={`comments.${id}`}>
+        <LikeButton
+          feedId={feedId}
+          isLiked={isUserDoLike}
+          likeCount={likeCount}
+        />
+        <InteractiveButton variant="submain" name={`comments.${feedId}`}>
           <FiMessageCircle size="20" /> {commentCount}
         </InteractiveButton>
       </div>
-      <Link href={`/feed/${id}`}>
-        <div className="max-w-[400px] overflow-hidden pt-default text-ellipsis">
-          {content}
-        </div>
-        <div className="pt-1 pb-default text-sm text-gray-500">
-          {displayDate}
-        </div>
-      </Link>
+      <Contents feedId={feedId} content={content} createdAt={createdAt} />
     </div>
   );
-}
+});

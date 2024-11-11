@@ -1,4 +1,9 @@
-import { createSupabaseClient } from '@/config/supabase-client';
+import {
+  handleRemoveImageFromStorage,
+  handleUploadImageToStorage,
+} from '@/util/imageUpload';
+import { updateFeedRequestDto, uploadFeedRequestDto } from './type';
+import { ImageData } from '@/types';
 
 export const removeFeed = async (feedId: string) => {
   try {
@@ -13,8 +18,16 @@ export const removeFeed = async (feedId: string) => {
     if (!res.ok) {
       console.error(`데이터 삭제 과정 api 에러 발생`);
     }
-
     const result = await res.json();
+
+    // 이미지 삭제
+    if (result.delImgs) {
+      const willDelete = result.delImgs as ImageData[];
+      willDelete.forEach((img: ImageData) =>
+        handleRemoveImageFromStorage(img.imageUrl),
+      );
+    }
+
     return result;
   } catch (err) {
     console.error('피드 삭제에 실패했습니다.', err);
@@ -50,62 +63,29 @@ export const fetchOneFeed = async (feedId: string, userId: string) => {
   }
 };
 
-export const uploadImgs = async (userId: string, previewImage: File[]) => {
-  const supabase = await createSupabaseClient();
-  try {
-    // 이미지 저장
-    const result = await Promise.all(
-      previewImage.map(async (previews) => {
-        const file = previews;
-        const fileExt = file.name.split('.').pop();
-        const filePath = `feed/${userId}/${Math.random()}.${fileExt}`;
-
-        const { data, error } = await supabase.storage
-          .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
-          .upload(filePath, file);
-
-        if (error) {
-          console.error('Failed to insert image to storage : ', error);
-          throw new Error('[client] 이미지 저장 도중 에러가 발생했습니다.');
-        }
-
-        return data.path;
-      }),
-    );
-
-    return result;
-  } catch (err) {
-    console.error('[client] 이미지 저장 실패', err);
-  }
-};
-
-export interface uploadFeedRequestDto {
-  // date: string;
-  price: string;
-  priceOption: boolean;
-  content: string;
-  userId: string;
-  previewImage?: File[];
-}
-
 export const uploadFeed = async ({
   // date,
   price,
   priceOption,
   content,
-  userId,
   previewImage,
 }: uploadFeedRequestDto) => {
   try {
-    // 1. 저장소에 이미지 저장
-    let paths: string[] = [];
-    if (previewImage && previewImage.length > 0) {
-      paths = (await uploadImgs(userId, previewImage)) as string[];
+    let paths;
+    if (previewImage) {
+      paths = await Promise.all(
+        previewImage.map(
+          async (img) =>
+            await handleUploadImageToStorage({
+              file: img,
+              type: 'feed',
+            }),
+        ),
+      );
     }
-
+    console.log('paths', paths);
     // 2. db에 url 저장
     const contentData = {
-      // date,
       price,
       priceOption,
       content,
@@ -131,46 +111,34 @@ export const uploadFeed = async ({
   }
 };
 
-export interface updateFeedRequestDto {
-  // date: string;
-  price: string;
-  priceOption: boolean;
-  content: string;
-  userId: string;
-  willDeleteImgs?: string[];
-  previewImage?: File[];
-  feedId: string;
-}
-
 export const updateFeed = async ({
-  // date,
   price,
   priceOption,
   content,
-  userId,
   willDeleteImgs,
   previewImage,
   feedId,
 }: updateFeedRequestDto) => {
   try {
-    const supabase = await createSupabaseClient();
-    // 기존 이미지 (image) 삭제 시, 삭제
-    if (willDeleteImgs && willDeleteImgs.length > 0) {
-      willDeleteImgs.forEach(async (img) => {
-        await supabase.storage
-          .from(`${process.env.NEXT_PUBLIC_STORAGE_BUCKET}`)
-          .remove([img]);
-      });
+    if (willDeleteImgs) {
+      console.log('willDeleteImgs', willDeleteImgs);
+      willDeleteImgs.forEach((img) => handleRemoveImageFromStorage(img));
     }
-    // 기존 이미지 (image) 유지 시 패스
-    // 새로운 이미지 (previewImage) 존재 시 추가
-    let paths: string[] = [];
-    if (previewImage && previewImage.length > 0) {
-      paths = (await uploadImgs(userId, previewImage)) as string[];
+    let paths;
+    if (previewImage) {
+      paths = await Promise.all(
+        previewImage.map(
+          async (img) =>
+            await handleUploadImageToStorage({
+              file: img,
+              type: 'feed',
+            }),
+        ),
+      );
     }
+
     // 2. db에 url 저장
     const updateData = {
-      // date,
       price,
       priceOption,
       content,
@@ -191,9 +159,8 @@ export const updateFeed = async ({
       console.error('게시글 수정 도중 실패');
       throw new Error();
     }
-    // revalidateTag('expense');
-    // revalidateTag('my-feeds');
-    return resposne;
+
+    return await resposne.json();
   } catch (err) {
     console.error('feed 업데이트 도중 에러 발생', err);
   }
@@ -218,6 +185,29 @@ export const fetchFeeds = async (
     return response;
   } catch (err) {
     console.error('게시글 fetch 실패', err);
+    throw new Error();
+  }
+};
+
+export const fetchLikes = async (
+  pageParam: number,
+  pageSize: number,
+  userId: string,
+) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/readLikes?cursor=` +
+        pageParam +
+        `&pageSize=` +
+        pageSize +
+        `&userId=` +
+        userId,
+      { cache: 'no-store' },
+    ).then((res) => res.json());
+
+    return response;
+  } catch (err) {
+    console.error('게시글 Likes fetch 실패', err);
     throw new Error();
   }
 };
