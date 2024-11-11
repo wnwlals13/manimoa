@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { LoginRequestDto, LoginResponseDto } from '../type';
 import { useToast } from '@/store/toast/useToast';
-import { CustomToastProps } from '@/components/toasts/components';
 
 export const useLogin = () => {
   const { setUser } = useAuthStore();

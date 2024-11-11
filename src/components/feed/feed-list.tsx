@@ -7,8 +7,6 @@ import { useInView } from 'react-intersection-observer';
 import { FeedItem } from './feed-item';
 import FeedListSkeleton from '../ui/skeleton/feed-list-skeleton';
 import { useFetchLikes } from '@/app/lib/feed/hook/useFetchLikes';
-import { useToast } from '@/store/toast/useToast';
-import { CustomToastProps } from '../toasts/components';
 
 const ROWS_PER_PAGE = 20;
 

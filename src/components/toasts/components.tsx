@@ -60,7 +60,7 @@ export const CustomToastContainer = () => {
   }, [items]);
 
   const renderItems = (pos: CustomToastProps) => {
-    return items.map(({ id, message, type }) => (
+    return items.map(({ id, message }) => (
       <MotionContainer key={id} position={pos} visible={visible}>
         <span>{message}</span>
       </MotionContainer>
