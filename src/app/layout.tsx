@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import QueryProviders from './provider';
+import { CustomToastContainer } from '@/components/toasts/components';
 
 export const metadata: Metadata = {
   title: 'manimoa',
@@ -24,6 +25,7 @@ export default function RootLayout({
           {modal}
           <div id="modal-root" className=""></div>
         </QueryProviders>
+        <CustomToastContainer />
       </body>
     </html>
   );

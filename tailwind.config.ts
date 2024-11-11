@@ -76,6 +76,29 @@ const config: Config = {
       padding: {
         default: '1.25rem',
       },
+      keyframes: {
+        'toast-updown': {
+          '0%': {
+            transform: 'translateY(0) translateX(0)',
+            opacity: '0',
+          },
+          '10%': {
+            transform: 'translateY(-50%) translateX(0)',
+            opacity: '1',
+          },
+          '90%': {
+            transform: 'translateY(-50%) translateX(0)',
+            opacity: '1',
+          },
+          '100%': {
+            transform: 'translateY(0) translateX(0)',
+            opacity: '0',
+          },
+        },
+      },
+    },
+    animation: {
+      'toast-updown': 'toast-updown 2s ease-in-out',
     },
     screens: {
       custom: '600px',
