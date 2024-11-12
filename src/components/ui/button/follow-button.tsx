@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from './button';
-import { useIsFollow } from '@/app/lib/follow/hook/useIsFollow';
-import { useUserFollow } from '@/app/lib/follow/hook/useFollow';
-import { useUserUnFollow } from '@/app/lib/follow/hook/useUnFollow';
+import { useIsFollow } from '@/lib/follow/hook/useIsFollow';
+import { useUserFollow } from '@/lib/follow/hook/useFollow';
+import { useUserUnFollow } from '@/lib/follow/hook/useUnFollow';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 
 export function FollowButton({ targetId }: { targetId: string }) {

@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     if (rows[0].followingCount)
       returnData.followingCount = rows[0].followingCount;
 
-    return NextResponse.json({ status: 201, data: returnData });
+    return NextResponse.json({ status: 200, data: returnData });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ status: 500, message: 'profile 조회 실패!' });

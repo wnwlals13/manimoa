@@ -1,7 +1,7 @@
 'use client';
 import { Button } from './button';
 import { useRouter } from 'next/navigation';
-import { useNewChat } from '@/app/lib/chat/hook/useNewChat';
+import { useNewChat } from '@/lib/chat/hook/useNewChat';
 
 interface MessageButtonProps {
   targetId: string;

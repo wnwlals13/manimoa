@@ -1,6 +1,6 @@
-import { useLike } from '@/app/lib/like/hook/useDoLike';
+import { useLike } from '@/lib/like/hook/useDoLike';
 import { Button } from './button';
-import { useUnLike } from '@/app/lib/like/hook/useUndoLike';
+import { useUnLike } from '@/lib/like/hook/useUndoLike';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 
@@ -10,7 +10,7 @@ export function LikeButton({
   likeCount,
   children,
 }: {
-  feedId: number;
+  feedId: string;
   isLiked: number;
   likeCount: number;
   children?: React.ReactNode;

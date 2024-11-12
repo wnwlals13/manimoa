@@ -48,7 +48,7 @@ export async function PATCH(request: Request) {
 
     const result = { month_goals: month_goals, month_price: month_price };
 
-    return NextResponse.json({ status: 201, message: '성공', data: result });
+    return NextResponse.json({ status: 200, message: '성공', data: result });
   } catch (err) {
     console.error(err);
     throw new Error();

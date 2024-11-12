@@ -5,9 +5,9 @@ import Profile from '../ui/profile';
 import { Button } from '../ui/button/button';
 import InteractiveButton from '../ui/button/interactive-button';
 import { useEffect, useRef, useState } from 'react';
-import { Input } from '../ui/input';
+import { Input } from '../ui/inputs/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useRemoveComment } from '@/app/lib/comment/hook/useRemoveComment';
+import { useRemoveComment } from '@/lib/comment/hook/useRemoveComment';
 import { formatDate } from '@/util/formatDate';
 
 interface CommentItemProps {
@@ -38,16 +38,16 @@ export function CommentItem({
   }, []);
 
   return (
-    <div className="flex justify-between gap-5 items-center border-b">
-      <div className="flex-1 flex items-center gap-5 pb-default pt-default">
-        <Profile src={profileImg as string} size="md" />
+    <div className="flex justify-between gap-5 items-center">
+      <div className="flex-1 flex items-center gap-5 pt-[12px] mb-2">
+        <Profile src={profileImg as string} size="sm" />
         <div className="flex-1">
           <div className="flex gap-2">
-            <p className="text-sm">{userName}</p>
-            <p className="text-sm text-gray-500">{formatDate(createdAt)}</p>
+            <p className="text-sm min-w-[]">{userName}</p>
+            <p className="text-[12px] text-gray-500">{formatDate(createdAt)}</p>
           </div>
           {!isEdit ? (
-            <div>{content}</div>
+            <div className="text-sm">{content}</div>
           ) : (
             <Input
               defaultValue={content}

@@ -7,7 +7,7 @@ import {
   RowDataPacket,
 } from 'mysql2';
 import bcrypt from 'bcrypt';
-import { encrypt } from '@/app/lib/session';
+import { encrypt } from '@/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
           });
 
           const response = NextResponse.json({
-            status: 201,
+            status: 200,
             message: '로그인 성공',
             user: {
               uid: row[0].id,

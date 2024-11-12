@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CUSTOM_NAV_PATHS } from '@/constants';
 import { useChatStore } from '@/store/chat/useChatStore';
-import { useRemoveChat } from '@/app/lib/chat/hook/useRemoveChat';
+import { useRemoveChat } from '@/lib/chat/hook/useRemoveChat';
 import { Suspense } from 'react';
 
 function ChatRoomHeader() {
@@ -60,7 +60,8 @@ export default function Header() {
 
   if (
     Object.keys(CUSTOM_NAV_PATHS).includes(pathname) ||
-    pathname.startsWith('/user/')
+    pathname.startsWith('/user/') ||
+    pathname.startsWith('/feed/')
   ) {
     const title = CUSTOM_NAV_PATHS[pathname];
     return (

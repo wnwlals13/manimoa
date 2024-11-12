@@ -15,7 +15,8 @@ export default function Navigation() {
     return <></>;
   } else if (
     pathname.startsWith('/chat/room/') ||
-    pathname == '/chat/editRoom'
+    pathname == '/chat/editRoom' ||
+    pathname.startsWith('/feed/')
   ) {
     return <></>;
   } else
