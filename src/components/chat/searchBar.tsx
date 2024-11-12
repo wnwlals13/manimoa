@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { Button } from '../ui/button/button';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
@@ -17,10 +17,23 @@ export default function SearchBar() {
     if (!input) return;
     router.push(`/chat/addChat?q=${input}`);
   };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSubmit();
+    }
+  };
+
   return (
     <div className="flex gap-2 ">
-      <Input placeholder="친구 ID를 검색하세요." onChange={handleSearch} />
-      <Button onClick={onSubmit}>검색</Button>
+      <Input
+        placeholder="친구 ID를 검색하세요."
+        onChange={handleSearch}
+        onKeyDown={handleKeyDown}
+      />
+      <Button onClick={onSubmit} disabled={!input}>
+        검색
+      </Button>
     </div>
   );
 }

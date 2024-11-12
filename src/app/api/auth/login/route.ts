@@ -1,8 +1,8 @@
 import { conn } from '@/config/db';
+import { encrypt } from '@/lib/session';
 import bcrypt from 'bcrypt';
 import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
 import { NextResponse } from 'next/server';
-import { encrypt } from '@/app/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();

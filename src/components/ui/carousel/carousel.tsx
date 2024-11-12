@@ -31,10 +31,8 @@ export const CarouselComponent = React.memo(function CarouselComponent({
           <Image
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${item}`}
             alt={`picture of feed, ${item}`}
-            // fill
-            // sizes="(max-width: 768px) 100%"
-            width={558}
-            height={340}
+            fill
+            sizes="(max-width: 768px) 100%"
             priority
             style={{ objectFit: 'cover' }}
           />

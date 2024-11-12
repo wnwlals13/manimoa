@@ -3,7 +3,7 @@ import { ChangeEvent, KeyboardEvent, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { Button } from '../ui/button/button';
 import { FiSend } from 'react-icons/fi';
-import { useSendMessage } from '@/app/lib/chat/hook/useSendMessage';
+import { useSendMessage } from '@/lib/chat/hook/useSendMessage';
 import { IMsg } from '@/types';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 

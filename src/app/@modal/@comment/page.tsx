@@ -1,8 +1,5 @@
 'use client';
 
-import { useAddComment } from '@/app/lib/comment/hook/useAddComment';
-import { useFetchComments } from '@/app/lib/comment/hook/useFetchComments';
-import { useUpdateComment } from '@/app/lib/comment/hook/useUpdateComment';
 import { useModalStore } from '@/store/modal/useModalStore';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +9,9 @@ import { CommentList } from '@/components/comment/comment-list';
 import { Input } from '@/components/ui/input';
 import InteractiveButton from '@/components/ui/button/interactive-button';
 import { FiSend } from 'react-icons/fi';
+import { useFetchComments } from '@/lib/comment/hook/useFetchComments';
+import { useAddComment } from '@/lib/comment/hook/useAddComment';
+import { useUpdateComment } from '@/lib/comment/hook/useUpdateComment';
 
 interface commentInputs {
   content: string;

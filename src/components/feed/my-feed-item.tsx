@@ -14,8 +14,8 @@ export default function MyFeedItem(feed: FeedData) {
   }
 
   return (
-    <div className="flex p-default border-b justify-between items-center">
-      <Link href={`/feed/${id}`} className="flex-1 flex gap-2 justify-start">
+    <div className="flex pt-default pb-default border-b justify-between items-center">
+      <Link href={`/feed/${id}`} className="flex-1 flex gap-4 justify-start">
         {imagesArray && (
           <Image
             width={50}

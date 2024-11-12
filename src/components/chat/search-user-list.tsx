@@ -1,19 +1,15 @@
-import { useNewChat } from '@/app/lib/chat/hook/useNewChat';
-import { useGetUserList } from '@/app/lib/user/hook/useGetUserList';
+'use client';
+
+import { useNewChat } from '@/lib/chat/hook/useNewChat';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { IChatUser } from '@/types';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import UserItem from './user-item';
 
-export function SearchUserList({ q }: { q: string }) {
+export function SearchUserList({ users }: { q: string; users: IChatUser[] }) {
   const { user } = useAuthStore();
-  const router = useRouter();
   const { mutate } = useNewChat();
-  const { data, isPending } = useGetUserList(q);
-
-  const users = data?.pages
-    .flatMap((item) => item.users)
-    .filter((item) => item.uid != user?.uid) as IChatUser[];
+  const router = useRouter();
 
   // 채팅방 생성 혹은 입장
   const onHandleJoin = (
@@ -23,7 +19,6 @@ export function SearchUserList({ q }: { q: string }) {
   ) => {
     if (!otherId || !user?.uid) return;
     const joinIds = [otherId, user?.uid];
-
     if (!isChatExist && !chatRoomId) {
       console.log('새 채팅방입니다.');
       mutate({ userIds: joinIds });
@@ -33,13 +28,15 @@ export function SearchUserList({ q }: { q: string }) {
     router.push(`/chat/room/${chatRoomId}`);
   };
 
-  if (isPending) return <div>Loading...</div>;
   return (
-    <>
-      {users &&
+    <div className="flex flex-col justify-center mt-5">
+      {users.length > 0 ? (
         users.map((item) => (
           <UserItem key={item.uid} onHandleJoin={onHandleJoin} {...item} />
-        ))}
-    </>
+        ))
+      ) : (
+        <p>검색 결과가 없습니다.</p>
+      )}
+    </div>
   );
 }

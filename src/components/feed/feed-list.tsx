@@ -1,12 +1,12 @@
 'use client';
 
-import { useFetchFeeds } from '@/app/lib/feed/hook/useFetchFeeds';
+import { useFetchFeeds } from '@/lib/feed/hook/useFetchFeeds';
 import { IFeedWithLikeData } from '@/types';
 import React, { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FeedItem } from './feed-item';
 import FeedListSkeleton from '../ui/skeleton/feed-list-skeleton';
-import { useFetchLikes } from '@/app/lib/feed/hook/useFetchLikes';
+import { useFetchLikes } from '@/lib/feed/hook/useFetchLikes';
 
 const ROWS_PER_PAGE = 20;
 

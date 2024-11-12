@@ -7,7 +7,7 @@ import InteractiveButton from '../ui/button/interactive-button';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { useRemoveComment } from '@/app/lib/comment/hook/useRemoveComment';
+import { useRemoveComment } from '@/lib/comment/hook/useRemoveComment';
 import { formatDate } from '@/util/formatDate';
 
 interface CommentItemProps {

@@ -4,7 +4,7 @@ import MyMessage from './my-message';
 import OtherMessage from './other-message';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { Socket } from 'socket.io-client';
-import { useFetchAllMessages } from '@/app/lib/chat/hook/useFetchAllMessages';
+import { useFetchAllMessages } from '@/lib/chat/hook/useFetchAllMessages';
 
 interface MessageListProps {
   socket: Socket | null;

@@ -7,7 +7,7 @@ import {
   RowDataPacket,
 } from 'mysql2';
 import bcrypt from 'bcrypt';
-import { encrypt } from '@/app/lib/session';
+import { encrypt } from '@/lib/session';
 
 export async function POST(req: Request) {
   const db = await conn();
