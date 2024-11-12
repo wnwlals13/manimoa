@@ -1,10 +1,15 @@
 'use server';
 
-export const fetchLikesAction = async (
-  pageParam: number,
-  pageSize: number,
-  userId: string,
-) => {
+import { QueryFunctionContext } from '@tanstack/react-query';
+import { cookies } from 'next/headers';
+
+export const fetchLikesAction = async ({
+  pageParam = 1,
+}: QueryFunctionContext) => {
+  const cookieStore = cookies().get('user')?.value as string;
+  const user = JSON.parse(cookieStore);
+  const pageSize = 10;
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/readLikes?cursor=` +
@@ -12,7 +17,7 @@ export const fetchLikesAction = async (
         `&pageSize=` +
         pageSize +
         `&userId=` +
-        userId,
+        user.id,
       { cache: 'no-store' },
     ).then((res) => res.json());
 
