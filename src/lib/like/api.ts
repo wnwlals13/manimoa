@@ -2,7 +2,7 @@ export const doLike = async ({
   feedId,
   userId,
 }: {
-  feedId: number;
+  feedId: string;
   userId: string;
 }) => {
   try {
@@ -27,7 +27,7 @@ export const undoLike = async ({
   feedId,
   userId,
 }: {
-  feedId: number;
+  feedId: string;
   userId: string;
 }) => {
   try {

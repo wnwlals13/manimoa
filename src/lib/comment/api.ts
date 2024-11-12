@@ -6,6 +6,7 @@ export const fetchComments = async (
   pageParam: number,
 ) => {
   try {
+    console.log('feedId ?', feedId);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/readByFeed?id=${feedId}&cursor=${pageParam}&pageSize=${pageSize}`,
       {
@@ -29,7 +30,7 @@ export const addComment = async (commentData: NewComment) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/add`,
       {
-        method: 'post',
+        method: 'POST',
         body: JSON.stringify(commentData),
         next: { tags: ['comment'] },
       },

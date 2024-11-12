@@ -1,5 +1,5 @@
 export interface likeDto {
-  feedId: number;
+  feedId: string;
   userId: string;
   isLiked: number;
   likeCount: number;

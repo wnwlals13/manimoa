@@ -7,7 +7,8 @@ export function useAddComment(feedId: string) {
   const queryClient = useQueryClient();
   return useMutation<CommentData, Error, NewComment>({
     mutationFn: addComment,
-    onSuccess: () => {
+    onSuccess: (res) => {
+      console.log(res, feedId, queryClient.getQueryData(['comment', feedId]));
       queryClient.invalidateQueries({
         queryKey: ['comment', feedId],
       });

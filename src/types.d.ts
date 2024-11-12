@@ -1,12 +1,13 @@
 export interface FeedData {
-  id: number;
+  id: string;
   userId: string;
   userName: string;
   profileImg?: string;
   content: string;
-  price: number;
+  price: string;
   priceOption: number;
   images?: string;
+  imagesArray?: string[];
   commentCount: number;
   createdAt: string;
   updatedAt: string;
@@ -16,7 +17,7 @@ export interface FeedData {
 export interface LikeData {
   likeCount: number;
   isUserDoLike: number;
-  feedId: number;
+  feedId: string;
 }
 
 export interface IFeedWithLikeData extends FeedData, LikeData {}

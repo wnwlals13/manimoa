@@ -1,18 +1,18 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
-import { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FiImage } from 'react-icons/fi';
 import 'swiper/swiper-bundle.css';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button/button';
 import { useFetchOneFeed } from '@/lib/feed/hook/useFetchOneFeed';
-import { CarouselMultipleComponent } from '@/components/ui/carousel/carousel-multiple';
 import { useUploadFeed } from '@/lib/feed/hook/useUploadFeed';
 import { useUpdateFeed } from '@/lib/feed/hook/useUpdateFeed';
+import CustomTextArea from '@/components/ui/inputs/CustomTextArea/component';
+import FormField from '@/components/ui/inputs/FormField/component';
+import FeedImageList from '@/components/feed/feed-image-list';
 
 interface feedFormInputs {
   price: string;
@@ -25,18 +25,11 @@ const FeedForm = () => {
   const isEdit = searchParams.get('isEdit') === 'true'; // 게시글 수정 여부
   const feedId = searchParams.get('feedId'); // 게시글 id
 
-  const result = useFetchOneFeed(feedId || '');
-  const editFeed = result?.data && result?.data[0];
-  const editFeedInfo = { ...editFeed, feedId };
+  const { data: feed } = useFetchOneFeed(feedId);
 
-  const fileInputRef = useRef<HTMLInputElement>(null); // 이미지 등록 input
-  const [oldImages, setOldImages] = useState<string[]>(); // 이미 추가된 이미지들
-  const [previewImages, setPreviewImages] = useState<File[]>(); //새롭게 추가할 이미지들
-  const [willDeleteImgs, setWillDeleteImgs] = useState<string[]>([]); // 삭제할 이미지 이름들
-
+  const { user } = useAuthStore();
   const uploadFn = useUploadFeed();
   const updateFn = useUpdateFeed();
-  const { user } = useAuthStore();
 
   const { register, setValue, getValues, watch, handleSubmit } = useForm({
     defaultValues: {
@@ -46,134 +39,120 @@ const FeedForm = () => {
     },
   });
 
+  const [oldImgs, setOldImgs] = useState<string[]>(); // 이미 추가된 이미지들
+  const [previewImgs, setPreviewImgs] = useState<File[]>(); //새롭게 추가할 이미지들
+  const [willDeleteImgs, setWillDeleteImgs] = useState<string[]>([]); // 삭제할 이미지 이름들
+
+  // 새로 피드 등록
   const onSubmit = (data: feedFormInputs) => {
-    if (!isEdit) {
-      uploadFn.mutate({
-        ...data,
-        userId: user?.uid as string,
-        previewImage: previewImages || null,
-      });
+    uploadFn.mutate({
+      ...data,
+      userId: user?.uid as string,
+      previewImage: previewImgs || null,
+    });
+  };
+
+  // 기존 피드 업데이트
+  const onUpdate = (data: feedFormInputs) => {
+    if (!feedId) return;
+
+    updateFn.mutate({
+      ...data,
+      userId: user?.uid as string,
+      willDeleteImgs: willDeleteImgs ? willDeleteImgs : [],
+      previewImage: previewImgs ? previewImgs : [],
+      feedId: feedId,
+    });
+  };
+
+  const renderDate = () => {
+    if (isEdit && feed) {
+      const FeedDate = new Date(feed.createdAt);
+      return `${FeedDate.getFullYear()}년 ${FeedDate.getMonth()}월 ${FeedDate.getDate()}일`;
     } else {
-      updateFn.mutate({
-        ...data,
-        userId: user?.uid as string,
-        willDeleteImgs: willDeleteImgs ? willDeleteImgs : [],
-        previewImage: previewImages ? previewImages : [],
-        feedId: editFeedInfo.feedId as string,
-      });
+      const date = new Date();
+      return `${date.getFullYear()}년 ${
+        date.getMonth() + 1
+      }월 ${date.getDate()}일`;
     }
   };
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
+  const renderPriceOptionToggle = () => {
+    return !watch('priceOption') ? '금액 보이기' : '금액 숨기기';
   };
-  // 이미지 업로드 함수
-  const handleUploadImage = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files;
-    if (file && file.length > 0) {
-      const fileArray = Array.from(file);
-      setPreviewImages(fileArray);
-    }
+
+  const renderPriceOptionText = () => {
+    return !watch('priceOption')
+      ? '피드에는 노출되지 않습니다.'
+      : '피드에 함께 보여집니다.';
   };
-  // 기존 이미지 x 버튼 클릭
-  const handleDelImg = (index: number, item: string) => {
-    if (!oldImages) return;
-    const deletedImg = oldImages.filter((_, idx) => idx !== index);
-    setWillDeleteImgs([...willDeleteImgs, item]);
-    setOldImages(deletedImg);
+
+  const handlePriceOption = () => {
+    const prev = getValues('priceOption');
+    setValue('priceOption', !prev);
   };
-  // 새 이미지 x 버튼 클릭
-  const handleDelPreviewImg = (index: number) => {
-    const deletedImg = previewImages?.filter((_, idx) => idx !== index);
-    setPreviewImages(deletedImg);
+
+  const renderFormButton = () => {
+    return isEdit ? '게시글 수정' : '게시글 추가';
   };
 
   useEffect(() => {
-    if (isEdit && editFeedInfo) {
-      setValue('price', editFeedInfo.price?.toString());
-      setValue('content', editFeedInfo.content);
+    if (isEdit && feed) {
+      setValue('price', feed?.price.toString());
+      setValue('content', feed.content);
+      const imgUrls = feed.images?.split(',');
+      setOldImgs(imgUrls);
     }
-  }, [isEdit, editFeedInfo]);
-
-  useEffect(() => {
-    const imgUrls = editFeedInfo.images?.split(',');
-    setOldImages(imgUrls);
-  }, [editFeedInfo?.images]);
+  }, [isEdit, feed]);
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(isEdit ? onUpdate : onSubmit)}
       className="flex-1 flex flex-col p-default pt-[60px] h-screen"
     >
       <div className="flex-1 flex flex-col">
         <div className="flex pt-5 pb-5 border-b">
           <div className="min-w-[100px]">소비 일자</div>
-          {isEdit
-            ? `${new Date(editFeedInfo.createdAt).getFullYear()}년 ${new Date(
-                editFeedInfo.createdAt,
-              ).getMonth()}월 ${new Date(editFeedInfo.createdAt).getDate()}일`
-            : new Date().getFullYear() +
-              '년 ' +
-              (new Date().getMonth() + 1) +
-              '월 ' +
-              new Date().getDate() +
-              '일'}
+          {renderDate()}
         </div>
-        <div className="flex gap-5 pt-5 pb-5 border-b mb-5 items-center">
-          <div className="flex-1 flex items-center">
-            <div className="min-w-[100px]">오늘 소비</div>
-            <Input
-              type="number"
-              {...register('price', { required: true })}
-              onChange={(e) => {
-                console.log(e.target.value);
-              }}
-            />
+        <div className="border-b pb-5 mb-5">
+          <div className="flex gap-5 pt-5 items-center">
+            <div className="flex-1 flex items-center">
+              <div className="min-w-[100px]">오늘 소비</div>
+              <FormField
+                fieldType="number"
+                {...register('price', { required: true })}
+              />
+            </div>
+            <input type="hidden" {...register('priceOption')}></input>
+            <Toggle variant="outline" size="sm" onClick={handlePriceOption}>
+              {renderPriceOptionToggle()}
+            </Toggle>
           </div>
-          <input type="hidden" {...register('priceOption')}></input>
-          <Toggle
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const prev = getValues('priceOption');
-              setValue('priceOption', !prev);
-            }}
-          >
-            {!watch('priceOption') ? '금액 보이기' : '금액 숨기기'}
-          </Toggle>
+          <div className="mt-1 pl-[100px] text-sm text-gray-400">
+            {renderPriceOptionText()}
+          </div>
         </div>
         <div className="flex-1 flex flex-col w-full gap-2">
-          <textarea
+          {/* TextArea Section */}
+          <CustomTextArea
             id="content"
-            placeholder="오늘 당신의 소비내용을 기록해주세요."
-            className="min-h-44 h-44 resize-none w-full p-2"
+            placeholderText="오늘 당신의 소비내용을 기록해주세요."
             {...register('content', { required: true })}
-          ></textarea>
-          <div className="flex gap-2">
-            <FiImage
-              size="25"
-              className="mb-5 cursor-pointer"
-              onClick={handleClick}
-            />
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              multiple
-              ref={fileInputRef}
-              onChange={handleUploadImage}
-            />
-            <CarouselMultipleComponent
-              images={oldImages}
-              previewImages={previewImages}
-              handleDelImg={handleDelImg}
-              handleDelPreviewImg={handleDelPreviewImg}
-            />
-          </div>
+          />
+          {/* 이미지 추가 Section */}
+          <FeedImageList
+            oldImgs={oldImgs}
+            willDeleteImgs={willDeleteImgs}
+            previewImgs={previewImgs}
+            setOldImgs={setOldImgs}
+            setPreviewImgs={setPreviewImgs}
+            setWillDeleteImgs={setWillDeleteImgs}
+          />
         </div>
         <div className=" flex overflow-hidden ">
           <Button size="full" type="submit">
-            {isEdit ? '게시글 수정' : '게시글 추가'}
+            {renderFormButton()}
           </Button>
         </div>
       </div>

@@ -20,6 +20,7 @@ export async function POST(req: Request) {
       const isMatch = await bcrypt.compare(password, user[0].password);
 
       if (!isMatch) {
+        // 401 unauthorized : 비밀번호가 다른 경우
         return NextResponse.json(
           { error: '비밀번호가 맞지 않습니다.' },
           { status: 401 },
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
         });
 
         const response = NextResponse.json({
-          status: 201,
+          status: 200,
           message: '로그인 성공',
           user: {
             uid: user[0].id,
@@ -74,12 +75,12 @@ export async function POST(req: Request) {
         return response;
       }
     } else {
-      // 해당하는 이메일의 유저가 없다.
+      // 404 Not Found : 가입되지 않은 유저인 경우
       return NextResponse.json(
         {
           error: '가입되지 않은 유저입니다.',
         },
-        { status: 409 },
+        { status: 404 },
       );
     }
   } catch (err) {

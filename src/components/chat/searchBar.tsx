@@ -2,7 +2,7 @@
 
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { Button } from '../ui/button/button';
-import { Input } from '../ui/input';
+import { Input } from '../ui/inputs/input';
 import { useRouter } from 'next/navigation';
 
 export default function SearchBar() {

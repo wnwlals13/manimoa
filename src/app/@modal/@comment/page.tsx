@@ -2,22 +2,13 @@
 
 import { useModalStore } from '@/store/modal/useModalStore';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import Cookies from 'js-cookie';
 import { CommentList } from '@/components/comment/comment-list';
-import { Input } from '@/components/ui/input';
-import InteractiveButton from '@/components/ui/button/interactive-button';
-import { FiSend } from 'react-icons/fi';
 import { useFetchComments } from '@/lib/comment/hook/useFetchComments';
-import { useAddComment } from '@/lib/comment/hook/useAddComment';
 import { useUpdateComment } from '@/lib/comment/hook/useUpdateComment';
+import CommentInput from '@/components/comment/comment-input';
 
-interface commentInputs {
-  content: string;
-}
-
-const ROWS_PER_PAGE = 20;
+const ROWS_PER_PAGE = 10;
 
 export default function Page() {
   const { id, isOpen } = useModalStore();
@@ -28,18 +19,7 @@ export default function Page() {
       pageSize: ROWS_PER_PAGE,
     });
 
-  const addCommentHook = useAddComment(id);
   const updateCommentHook = useUpdateComment(id);
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { isValid },
-    reset,
-  } = useForm({
-    defaultValues: { content: '' },
-  });
 
   const { ref, inView } = useInView({
     threshold: 0.5, // 화면의 20%가 보일 때 감지
@@ -50,26 +30,9 @@ export default function Page() {
     }
   }, [inView]);
 
-  const onsubmit = (data: commentInputs) => {
-    const cookieStore = Cookies.get('user') as string;
-    const user = JSON.parse(cookieStore);
-    addCommentHook.mutate({
-      content: data.content,
-      writer: user.uid,
-      feedId: id,
-    });
-    setValue('content', '');
-  };
-
   const handleMutate = (content: string, commentId: string) => {
     updateCommentHook.mutate({ content, commentId });
   };
-
-  useEffect(() => {
-    return () => {
-      reset({ content: '' }); // 댓글창 나가면 인풋태그 초기화
-    };
-  }, [isOpen, reset]);
 
   if (!isOpen) return <></>;
   if (isPending) return <></>;
@@ -89,16 +52,8 @@ export default function Page() {
             <div ref={ref} style={{ width: '100%', height: 80 }} />
           )}
         </div>
+        <CommentInput feedId={id} />
       </div>
-      <form
-        onSubmit={handleSubmit(onsubmit)}
-        className="fixed bottom-0 w-full max-w-custom flex gap-2 pt-4 pb-5 p-default bg-white"
-      >
-        <Input type="text" {...register('content', { required: true })} />
-        <InteractiveButton type="submit" name="add-comment" disabled={!isValid}>
-          <FiSend />
-        </InteractiveButton>
-      </form>
     </>
   );
 }

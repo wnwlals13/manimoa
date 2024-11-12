@@ -4,10 +4,11 @@ import logo from '@/assets/logo.png';
 import { useForm } from 'react-hook-form';
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from '@/constants';
 import { Button } from '@/components/ui/button/button';
-import { Input } from '@/components/ui/input';
-import { useEffect } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { ResponseError } from '@/types';
 import { useRegister } from '@/lib/auth/hook/useRegister';
+import FormField from '@/components/ui/inputs/FormField/component';
+import { debounce } from '@/util/debounce';
 
 export interface RegisterFormInputs {
   email: string;
@@ -22,6 +23,7 @@ export default function Page() {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors, isLoading },
   } = useForm({
     defaultValues: { email: '', password: '', name: '', goal: '' },
@@ -43,6 +45,18 @@ export default function Page() {
     mutate({ email, password, name, goal });
   };
 
+  const isValidePassword = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    if (!PASSWORD_PATTERN.test(password)) {
+      setError('password', {
+        message:
+          '비밀번호는 영문 소문자, 영문 대문자, 숫자, 특수문자 중 3개 이상 포함해야 합니다.',
+      });
+    } else {
+      clearErrors('password');
+    }
+  });
+
   useEffect(() => {
     if (!isError) return;
     const error = failureReason as ResponseError;
@@ -57,69 +71,58 @@ export default function Page() {
       onSubmit={handleSubmit(onSubmit)}
     >
       <img width={180} src={logo.src} alt="" />
-      <div className="w-full">
-        <label htmlFor="email">이메일</label>
-        <div className="relative">
-          <Input
-            variant={`${errors.email ? 'error' : 'default'}`}
-            placeholder="이메일을 입력해주세요."
-            {...register('email', {
-              pattern: {
-                value: EMAIL_PATTERN,
-                message: '이메일 양식이 올바르지 않습니다.',
-              },
-              required: '이메일을 입력해주세요.',
-            })}
-          />
-        </div>
-        {errors.email && (
-          <p className="text-red-600 text-sm">{errors.email.message}</p>
-        )}
+      <FormField
+        variant={`${errors.email ? 'error' : 'default'}`}
+        fieldType="text"
+        labelName="email"
+        labelText="이메일"
+        placeholderText="이메일을 입력해주세요."
+        onFieldChange={(e) => {
+          const email = e.target.value;
+          if (!EMAIL_PATTERN.test(email)) {
+            setError('email', { message: '이메일 양식이 올바르지 않습니다.' });
+          }
+        }}
+        errorMsg={errors.email?.message ? errors.email.message : null}
+        {...register('email', {
+          required: '이메일을 입력해주세요.',
+        })}
+      />
+      <FormField
+        variant={`${errors.password ? 'error' : 'default'}`}
+        fieldType="password"
+        labelName="password"
+        labelText="비밀번호"
+        placeholderText="비밀번호를 입력해주세요."
+        onFieldChange={isValidePassword}
+        errorMsg={errors.password?.message ? errors.password.message : null}
+        {...register('password', {
+          required: '비밀번호를 입력해주세요.',
+        })}
+      />
+      <FormField
+        variant={`${errors.name ? 'error' : 'default'}`}
+        fieldType="text"
+        labelName="name"
+        labelText="이름"
+        placeholderText="이름을 입력해주세요."
+        errorMsg={errors.name?.message ? errors.name.message : null}
+        {...register('name', { required: '이름을 입력해주세요.' })}
+      />
+      <FormField
+        variant={`${errors.goal ? 'error' : 'default'}`}
+        fieldType="text"
+        labelName="goal"
+        labelText="소비 다짐"
+        placeholderText="이루고 싶은 소비 다짐을 입력해주세요. (선택)"
+        errorMsg={errors.goal?.message ? errors.goal.message : null}
+        {...register('goal')}
+      />
+      <div className="flex flex-col items-center w-full mt-5 gap-3">
+        <Button variant="default" size="full" disabled={isLoading}>
+          회원가입
+        </Button>
       </div>
-      <div className="w-full">
-        <label htmlFor="email">비밀번호</label>
-        <div className="relative"></div>
-        <Input
-          variant={`${errors.password ? 'error' : 'default'}`}
-          placeholder="비밀번호를 입력해주세요."
-          type="password"
-          {...register('password', {
-            pattern: {
-              value: PASSWORD_PATTERN,
-              message:
-                '비밀번호는 영문 소문자, 영문 대문자, 숫자, 특수문자 중 3개 이상 포함해야 합니다.',
-            },
-            required: '비밀번호를 입력해주세요.',
-          })}
-        />
-        {errors.password && (
-          <p className="text-red-600 text-sm">{errors.password.message}</p>
-        )}
-      </div>
-      <div className="w-full">
-        <label htmlFor="email">이름</label>
-        <div className="relative"></div>
-        <Input
-          variant={`${errors.name ? 'error' : 'default'}`}
-          placeholder="이름을 입력해주세요."
-          {...register('name', { required: '이름을 입력해주세요.' })}
-        />
-        {errors.name && (
-          <p className="text-red-600 text-sm">{errors.name.message}</p>
-        )}
-      </div>
-      <div className="w-full">
-        <label htmlFor="email">소비 다짐</label>
-        <div className="relative"></div>
-        <Input
-          maxLength={100}
-          placeholder="이루고 싶은 소비 다짐을 입력해주세요. (선택)"
-          {...register('goal')}
-        />
-      </div>
-      <Button variant="default" size="full" disabled={isLoading}>
-        회원가입
-      </Button>
     </form>
   );
 }

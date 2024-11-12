@@ -10,7 +10,7 @@ export function LikeButton({
   likeCount,
   children,
 }: {
-  feedId: number;
+  feedId: string;
   isLiked: number;
   likeCount: number;
   children?: React.ReactNode;

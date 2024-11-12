@@ -60,7 +60,8 @@ export default function Header() {
 
   if (
     Object.keys(CUSTOM_NAV_PATHS).includes(pathname) ||
-    pathname.startsWith('/user/')
+    pathname.startsWith('/user/') ||
+    pathname.startsWith('/feed/')
   ) {
     const title = CUSTOM_NAV_PATHS[pathname];
     return (

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     if (rows) {
       return NextResponse.json({
-        status: 201,
+        status: 200,
         message: '조회 성공',
         data: rows[0],
         headers: {

@@ -4,7 +4,7 @@ import { IExpenseInfo } from '@/lib/user/api';
 import { useInfoAndGoals } from '@/lib/user/hook/useInfoAndGoals';
 import { useUpdateGoals } from '@/lib/user/hook/useUpdateGoals';
 import { Button } from '@/components/ui/button/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/inputs/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { GoalData } from '@/types';
 import { Suspense, useEffect, useState } from 'react';

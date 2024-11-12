@@ -50,15 +50,17 @@ export default function Page() {
           <>
             <div className="flex items-center gap-2">
               <Progress className="bg-white" value={calculateProgress()} />
-              <p className="text-white">
+              <p className="text-white text-sm">
                 {priceFormat(Number(monthExpense))}/
                 {priceFormat(Number(expense.price))}
               </p>
             </div>
-            <p className="text-white">{progressMsg()}</p>
+            <p className="text-white text-sm mt-2">{progressMsg()}</p>
           </>
         ) : (
-          <p>아직 소비 목표액을 설정하지 않았어요! 목표를 설정해보세요</p>
+          <p className="text-white text-sm mt-2">
+            아직 소비 목표액을 설정하지 않았어요! 목표를 설정해보세요
+          </p>
         )}
       </Link>
       <div className="">

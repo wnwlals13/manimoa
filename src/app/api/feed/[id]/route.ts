@@ -4,13 +4,23 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
   try {
     const db = await conn();
 
     const searchParams = request.nextUrl.searchParams;
-    const feedId = searchParams.get('id');
     const userId = searchParams.get('userId');
+    const { id: feedId } = params;
+
+    if (!feedId) {
+      return NextResponse.json(
+        { error: '피드 ID가 필요합니다.' },
+        { status: 400 },
+      );
+    }
 
     const result: [QueryResult, FieldPacket[]] = await db.query(
       `
@@ -40,15 +50,18 @@ export async function GET(request: NextRequest) {
     `,
       [userId, feedId],
     );
-    const rows = result[0] as RowDataPacket;
+    const feed = result[0] as RowDataPacket;
 
-    return NextResponse.json({
-      status: 200,
-      message: '상세보기 성공',
-      feed: rows,
-    });
+    if (!feed) {
+      return NextResponse.json(
+        { error: '피드 게시물이 없습니다.' },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(feed[0], { status: 200 });
   } catch (err) {
     console.error('feed/detail api call Failed : ', err);
-    return NextResponse.json({ status: 500, message: '에러' });
+    return NextResponse.json({ error: '피드 상세보기 실패' }, { status: 500 });
   }
 }

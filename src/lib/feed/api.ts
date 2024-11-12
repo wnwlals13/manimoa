@@ -3,7 +3,7 @@ import {
   handleUploadImageToStorage,
 } from '@/util/imageUpload';
 import { updateFeedRequestDto, uploadFeedRequestDto } from './type';
-import { ImageData } from '@/types';
+import { FeedData, ImageData } from '@/types';
 
 export const removeFeed = async (feedId: string) => {
   try {
@@ -50,14 +50,23 @@ export const fetchMyFeeds = async (userId: string) => {
   }
 };
 
-export const fetchOneFeed = async (feedId: string, userId: string) => {
+export const fetchOneFeed = async (
+  id: string,
+  userId: string,
+): Promise<FeedData | undefined> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/detail?id=${feedId}&userId=${userId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/${id}?userId=${userId}`,
       { method: 'get' },
-    ).then((res) => res.json());
-    console.log('fetchOneFeed resposne =>', response);
-    return response.feed;
+    );
+    if (!response) {
+      return {} as FeedData;
+    }
+
+    let result = (await response.json()) as FeedData;
+    result = { ...result, imagesArray: result.images?.split(',') };
+
+    return result;
   } catch (err) {
     console.error('myfetch 에러 발생', err);
   }

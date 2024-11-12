@@ -13,7 +13,7 @@ interface IProfileProps {
 const ProfileVariants = cva(`rounded-full overflow-hidden relative`, {
   variants: {
     size: {
-      sm: 'w-[25px] h-[25px]',
+      sm: 'w-[35px] h-[35px]',
       md: 'w-[50px] h-[50px]',
       lg: 'w-[75px] h-[75px]',
       xlg: 'w-[100px] h-[100px]',

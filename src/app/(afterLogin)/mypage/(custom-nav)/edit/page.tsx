@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/inputs/input';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 
 import Image from 'next/image';

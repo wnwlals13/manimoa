@@ -14,18 +14,14 @@ export async function POST(request: NextRequest) {
     );
     const result = res[0] as ResultSetHeader;
 
-    const res2 = await db.query(
+    if (!result) {
+      return NextResponse.json({ status: 500, message: '추가 실패' });
+    }
+
+    await db.query(
       `UPDATE feeds SET comment_count = comment_count + 1 WHERE id = ?`,
       [feedId],
     );
-
-    if (!res2) {
-      throw new Error();
-    }
-
-    if (!result) {
-      throw new Error();
-    }
 
     revalidateTag('comment');
 

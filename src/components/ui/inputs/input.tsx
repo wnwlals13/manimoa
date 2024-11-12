@@ -18,17 +18,33 @@ const inputVariants = cva(
   },
 );
 
+export type VariantType = 'default' | 'error';
+
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: 'default' | 'error';
+  variant?: VariantType;
+  placeholderText?: string;
+  handlechange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant = 'default', ...props }, ref) => {
+  (
+    {
+      className,
+      type,
+      variant = 'default',
+      placeholderText = '',
+      handlechange,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <input
         type={type}
         className={cn(inputVariants({ variant, className }))}
+        placeholder={placeholderText}
+        onChange={handlechange}
         ref={ref}
         {...props}
       />

@@ -4,10 +4,10 @@ import logo from '@/assets/logo.png';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button/button';
-import { Input } from '@/components/ui/input';
 import { useEffect } from 'react';
 import { ResponseError } from '@/types';
 import { useLogin } from '@/lib/auth/hook/useLogin';
+import FormField from '@/components/ui/inputs/FormField/component';
 
 export interface LoginFormInputs {
   email: string;
@@ -36,43 +36,43 @@ export default function Page() {
 
     if (err.status === 401) {
       setError('password', { message: err.message });
-    } else if (err.status === 409) {
+    } else if (err.status === 404) {
       setError('email', { message: err.message });
     }
   }, [isError, isSuccess]);
+
   return (
     <form
       className="w-full h-full min-h-screen flex flex-col justify-center items-center gap-2 pl-8 pr-8"
       onSubmit={handleSubmit(onSubmit)}
     >
       <img width={180} src={logo.src} alt="" />
-      <div className="w-full">
-        <label htmlFor="email">이메일</label>
-        <Input
-          variant={`${errors.email ? 'error' : 'default'}`}
-          placeholder="이메일을 입력해주세요."
-          {...register('email', { required: true })}
-        />
-        {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
-        )}
+      <FormField
+        variant={`${errors.email ? 'error' : 'default'}`}
+        fieldType="text"
+        labelName="email"
+        labelText="이메일"
+        placeholderText="이메일을 입력해주세요."
+        errorMsg={errors.email ? `${errors.email.message}` : null}
+        {...register('email', { required: true })}
+      />
+      <FormField
+        variant={`${errors.password ? 'error' : 'default'}`}
+        fieldType="password"
+        labelName="password"
+        labelText="비밀번호"
+        placeholderText="비밀번호를 입력해주세요."
+        errorMsg={errors.password ? `${errors.password.message}` : null}
+        {...register('password', {
+          required: '잘못된 비밀번호입니다. 다시 확인하세요.',
+        })}
+      />
+      <div className="flex flex-col items-center w-full mt-5 gap-3">
+        <Button variant="default" size="full">
+          로그인
+        </Button>
+        <Link href={'/register'}>회원가입</Link>
       </div>
-      <div className="w-full">
-        <label htmlFor="password">비밀번호</label>
-        <Input
-          variant={`${errors.password ? 'error' : 'default'}`}
-          type="password"
-          placeholder="비밀번호를 입력해주세요."
-          {...register('password', { required: true })}
-        />
-        {errors.password && (
-          <p className="text-red-500 text-sm">{errors.password.message}</p>
-        )}
-      </div>
-      <Button variant="default" size="full">
-        로그인
-      </Button>
-      <Link href={'/register'}>회원가입</Link>
     </form>
   );
 }
