@@ -4,7 +4,7 @@ import logo from '@/assets/logo.png';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button/button';
-import { useEffect } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { ResponseError } from '@/types';
 import { useLogin } from '@/lib/auth/hook/useLogin';
 import FormField from '@/components/ui/inputs/FormField/component';
@@ -23,6 +23,7 @@ export default function Page() {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
     setError,
   } = useForm({
     defaultValues: { email: '', password: '' },
@@ -31,6 +32,16 @@ export default function Page() {
   const onSubmit = (data: LoginFormInputs) => {
     setLoading(true);
     mutate(data);
+  };
+
+  const isValideEmail = (e: ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    setValue('email', email);
+  };
+
+  const isValidePassword = (e: ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    setValue('password', password);
   };
 
   useEffect(() => {
@@ -56,8 +67,9 @@ export default function Page() {
         labelName="email"
         labelText="이메일"
         placeholderText="이메일을 입력해주세요."
+        onFieldChange={isValideEmail}
         errorMsg={errors.email ? `${errors.email.message}` : null}
-        {...register('email', { required: true })}
+        {...register('email', { required: '이메일을 입력해주세요.' })}
       />
       <FormField
         variant={`${errors.password ? 'error' : 'default'}`}
@@ -65,10 +77,9 @@ export default function Page() {
         labelName="password"
         labelText="비밀번호"
         placeholderText="비밀번호를 입력해주세요."
+        onFieldChange={isValidePassword}
         errorMsg={errors.password ? `${errors.password.message}` : null}
-        {...register('password', {
-          required: '잘못된 비밀번호입니다. 다시 확인하세요.',
-        })}
+        {...register('password', { required: '비밀번호를 입력해주세요.' })}
       />
       <div className="flex flex-col items-center w-full mt-5 gap-3">
         <Button variant="default" size="full">
