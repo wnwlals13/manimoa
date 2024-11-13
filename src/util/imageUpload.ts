@@ -17,7 +17,7 @@ export interface UploadReturnType {
 const supabase = createSupabaseClient();
 
 const MAX_WIDTH = 1000;
-const MAX_HEIGHT = 600;
+const MAX_HEIGHT = 1000;
 const MAX_SIZE_MB = 1;
 const WEBP_QUALITY = 0.85;
 

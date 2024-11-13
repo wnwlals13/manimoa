@@ -6,11 +6,13 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { LoginRequestDto, LoginResponseDto } from '../type';
 import { useToast } from '@/store/toast/useToast';
+import { useLoadingStore } from '@/store/loading/loadingStore';
 
 export const useLogin = () => {
   const { setUser } = useAuthStore();
   const { addToast } = useToast();
   const router = useRouter();
+  const { setLoading } = useLoadingStore();
 
   return useMutation<LoginResponseDto, Error, LoginRequestDto>({
     mutationFn: userLogin,
@@ -29,6 +31,9 @@ export const useLogin = () => {
       });
 
       router.push('/');
+    },
+    onSettled: () => {
+      setLoading(false);
     },
     onError: (err: ResponseError) => {
       return { status: err.status, message: err.message };

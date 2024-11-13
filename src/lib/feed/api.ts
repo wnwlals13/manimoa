@@ -180,6 +180,7 @@ export const fetchFeeds = async (
   pageSize: number,
   userId: string,
 ) => {
+  console.log('iscall?');
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/readAll?cursor=` +

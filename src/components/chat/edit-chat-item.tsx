@@ -1,6 +1,6 @@
 import { useChatStore } from '@/store/chat/useChatStore';
-import Image from 'next/image';
 import { ChangeEvent, useEffect } from 'react';
+import Profile from '../ui/profile';
 
 export interface EditChatProps {
   roomId: string;
@@ -34,7 +34,7 @@ export function EditChatItem({
   };
 
   return (
-    <div className="flex border-b [&:not(:first-child)]:pt-default pb-default gap-5">
+    <div className="flex border-b [&:not(:first-child)]:pt-2 pb-2 gap-5">
       <div className="inline-flex items-center">
         <label className="flex items-center cursor-pointer relative">
           <input
@@ -62,17 +62,10 @@ export function EditChatItem({
         </label>
       </div>
       <div className="flex gap-2">
-        <div className="w-[45px] h-[45px] bg-gray-200 flex justify-center items-center rounded-full">
-          {participantProfiles && participantProfiles[0] && (
-            <Image
-              width={45}
-              height={45}
-              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${participantProfiles[0].profileImg}`}
-              alt=""
-              style={{ height: `100%` }}
-            ></Image>
-          )}
-        </div>
+        <Profile
+          src={participantProfiles[0] ? participantProfiles[0].profileImg : ''}
+          size="md"
+        />
         <div className="flex-1 flex justify-start items-center">
           {participantEmails[0].email}
         </div>

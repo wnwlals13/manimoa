@@ -6,17 +6,18 @@ import { IChatRoom } from '@/types';
 import { Suspense } from 'react';
 
 function EditChatRoomList() {
-  const { data, isLoading } = useFetchMyChatRooms();
+  const { data, isLoading } = useFetchMyChatRooms({ pageSize: 10 });
 
   if (isLoading) return <div>Loading...</div>;
 
-  const chat = data?.chat || [];
+  const chatGroup = data?.pages.map((page) => page.chats) || [];
   return (
     <div className="p-default pt-[60px]">
-      {chat &&
+      {chatGroup?.map((chat) =>
         chat.map((item: IChatRoom) => (
           <EditChatItem key={item.roomId} {...item} />
-        ))}
+        )),
+      )}
     </div>
   );
 }

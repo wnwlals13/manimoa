@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import QueryProviders from './provider';
 import { CustomToastContainer } from '@/components/toasts/components';
+import { SocketProvider } from '@/store/socket/provider';
+import LoadingSpinner from '@/components/ui/spinner/loading-spinner';
 
 export const metadata: Metadata = {
   title: 'manimoa',
@@ -19,11 +21,15 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-screen">
         <QueryProviders>
-          <main className="flex flex-col relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
-            {children}
-          </main>
-          {modal}
-          <div id="modal-root" className=""></div>
+          <SocketProvider>
+            <main className="flex flex-col relative w-[600px] min-w-custom max-w-custom min-h-screen m-auto bg-white shadow-xl">
+              {children}
+            </main>
+            <LoadingSpinner />
+            {modal}
+            <div id="modal-root" className=""></div>
+          </SocketProvider>
+          {/* Loading */}
         </QueryProviders>
         <CustomToastContainer />
       </body>

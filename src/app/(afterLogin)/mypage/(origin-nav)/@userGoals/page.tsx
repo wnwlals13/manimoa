@@ -7,13 +7,14 @@ import { FiCheck } from 'react-icons/fi';
 import { useFetchExpenseInfo } from '@/lib/user/hook/useFetchExpenseInfo';
 import { IExpenseInfo } from '@/lib/user/api';
 import { useAuthStore } from '@/store/auth/useAuthStore';
+import MyGoalSkeleton from '@/components/ui/skeleton/mypage/my-goal-skeleton';
 
 export default function Page() {
   const { user } = useAuthStore();
   const [expenseQuery, monthlyQuery] = useFetchExpenseInfo(user?.uid as string);
 
   if (expenseQuery.isLoading || monthlyQuery.isLoading)
-    return <div>Loading...</div>;
+    return <MyGoalSkeleton />;
 
   const expense = expenseQuery.data as IExpenseInfo;
   const monthExpense = monthlyQuery.data as string;

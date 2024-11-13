@@ -1,35 +1,42 @@
 'use client';
 
-import { useFetchFeeds } from '@/lib/feed/hook/useFetchFeeds';
+import { fetchInfiniteQueries } from '@/lib/feed/hook/useFetchFeeds';
 import { IFeedWithLikeData } from '@/types';
 import React, { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FeedItem } from './feed-item';
-import FeedListSkeleton from '../ui/skeleton/feed-list-skeleton';
-import { useFetchLikes } from '@/lib/feed/hook/useFetchLikes';
+import FeedListSkeleton from '../ui/skeleton/feed/feed-list-skeleton';
+import { fetchFeeds, fetchLikes } from '@/lib/feed/api';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 
-const ROWS_PER_PAGE = 20;
+const ROWS_PER_PAGE = 10;
 
 export default function FeedList() {
-  const {
-    data,
-    fetchNextPage: fetchFeedNext,
-    isFetchingNextPage,
-    isLoading,
-  } = useFetchFeeds({
-    pageSize: ROWS_PER_PAGE,
-  });
-
-  const { data: likes, fetchNextPage: fetchLikeNext } =
-    useFetchLikes(ROWS_PER_PAGE);
+  const { user } = useAuthStore();
+  const [feeds, likes] = fetchInfiniteQueries([
+    {
+      queryKey: ['feeds'],
+      queryFn: async ({ pageParam = 1 }) =>
+        fetchFeeds(pageParam as number, ROWS_PER_PAGE, user?.uid as string),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage: any) => lastPage.nextCursor,
+    },
+    {
+      queryKey: ['likes'],
+      queryFn: async ({ pageParam = 1 }) =>
+        fetchLikes(pageParam as number, ROWS_PER_PAGE, user?.uid as string),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage: any) => lastPage.nextCursor,
+    },
+  ]);
 
   const likesGroup = useMemo(() => {
-    return likes ? likes.pages.map((page) => page.likes) : [];
+    return likes ? likes.data?.pages.map((page) => page.likes) : [];
   }, [likes]);
 
   const feedsGroup = useMemo(() => {
-    return data ? data.pages.map((page) => page.feeds) : [];
-  }, [data]);
+    return feeds ? feeds.data?.pages.map((page) => page.feeds) : [];
+  }, [feeds]);
 
   const { ref, inView } = useInView({
     threshold: 0.5, // 화면의 20%가 보일 때 감지
@@ -37,23 +44,24 @@ export default function FeedList() {
 
   useEffect(() => {
     if (inView) {
-      fetchFeedNext();
-      fetchLikeNext();
+      likes.fetchNextPage();
+      feeds.fetchNextPage();
     }
   }, [inView]);
 
-  if (isLoading) return <FeedListSkeleton count={3} />;
-
+  if (feeds.isLoading || likes.isLoading) return <FeedListSkeleton count={3} />;
+  // console.log(feedsGroup, likesGroup);
   return (
     <div>
-      {feedsGroup.map((feeds, i) => (
-        <div key={i}>
-          {feeds.map((feed: IFeedWithLikeData, idx) => (
-            <FeedItem key={idx} {...likesGroup[i][idx]} {...feed} />
-          ))}
-        </div>
-      ))}
-      {isFetchingNextPage ? (
+      {likesGroup &&
+        feedsGroup?.map((feeds, i) => (
+          <div key={i}>
+            {feeds.map((feed: IFeedWithLikeData, idx: any) => (
+              <FeedItem key={idx} {...likesGroup[i][idx]} {...feed} />
+            ))}
+          </div>
+        ))}
+      {feeds.isFetchingNextPage ? (
         <div>Loading...</div>
       ) : (
         <div ref={ref} style={{ width: '100%', height: 80 }} />

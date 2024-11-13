@@ -8,7 +8,7 @@ import UserInfo from './user-info';
 import FeedContents from './feed-contents';
 
 export const FeedItem = React.memo(function FeedItem({
-  feedId,
+  id: feedId,
   userId,
   userName,
   profileImg,

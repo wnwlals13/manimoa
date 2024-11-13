@@ -1,5 +1,5 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchMyChatRooms } from '../api';
 import { IChatRoom } from '@/types';
 
@@ -7,9 +7,25 @@ export interface ChatRoomResponseDto {
   chat: IChatRoom[];
 }
 
-export function useFetchMyChatRooms() {
-  return useQuery({
+export interface PaginatedChatDto {
+  chats: IChatRoom[];
+  hasNextPage: boolean;
+  totalCount: number;
+  nextCursor?: number;
+  currentPage: number;
+}
+
+export interface ChatRequestDto {
+  pageParam: number;
+  pageSize: number;
+}
+
+export function useFetchMyChatRooms({ pageSize }: { pageSize: number }) {
+  return useInfiniteQuery<PaginatedChatDto, Error>({
     queryKey: ['chatRooms'],
-    queryFn: fetchMyChatRooms,
+    queryFn: ({ pageParam = 1 }) =>
+      fetchMyChatRooms({ pageParam: pageParam as number, pageSize }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 }

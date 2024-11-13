@@ -9,8 +9,11 @@ export function useNewChat() {
     mutationFn: addNewChat,
     onSuccess: (res) => {
       const newChatRoomId = res.newChatRoomId;
-      // 채팅 연결
-      router.push(`/chat/room/${newChatRoomId}`);
+      const otherUserEmail = res.otherUserEmail;
+      // // 채팅 연결
+      router.push(
+        `/chat/room/${newChatRoomId}?otherUserEmail=${otherUserEmail}`,
+      );
     },
   });
 }

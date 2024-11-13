@@ -47,6 +47,7 @@ async function UserInfo({ userId }: { userId: string }) {
           loginId={loginUser.uid}
           isChatExist={user.isChatExist}
           roomId={user.chatRoomId}
+          email={user.email}
         >
           메세지
         </MessageButton>

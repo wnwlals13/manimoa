@@ -3,6 +3,7 @@ import { IMsg } from '@/types';
 export default function MyMessage(item: IMsg) {
   const dateFormatter = (date: string) => {
     const parseDate = new Date(date);
+
     let hours = parseDate.getHours();
     const minutes = String(parseDate.getMinutes()).padStart(2, '0');
     let ampm = '오전';

@@ -95,10 +95,19 @@ const config: Config = {
             opacity: '0',
           },
         },
+        spin: {
+          from: {
+            transform: 'rotate(0deg)',
+          },
+          to: {
+            transform: 'rotate(360deg)',
+          },
+        },
       },
     },
     animation: {
       'toast-updown': 'toast-updown 2s ease-in-out',
+      spin: 'spin 1s linear infinite',
     },
     screens: {
       custom: '600px',

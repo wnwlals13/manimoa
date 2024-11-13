@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     const result = await db.query(
       `
-      INSERT INTO messages (send_user_id,room_id,content, \`read\`) VALUES (?,?,?,0)
+      INSERT INTO messages (send_user_id,room_id,content, \`read\`) VALUES (?,?,?,1)
       `,
       [author, roomId, msg],
     );

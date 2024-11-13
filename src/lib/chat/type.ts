@@ -1,9 +1,11 @@
 export interface RequestChatDto {
   userIds: string[];
+  otherUserEmail: string;
 }
 
 export interface ResponseChatDto {
   newChatRoomId: string;
+  otherUserEmail: string;
 }
 
 export interface RemoveRequestDto {

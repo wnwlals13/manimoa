@@ -8,6 +8,7 @@ interface MessageButtonProps {
   loginId: string;
   isChatExist: string;
   roomId: string;
+  email: string;
   children: React.ReactNode;
 }
 
@@ -16,6 +17,7 @@ export function MessageButton({
   loginId,
   isChatExist,
   roomId,
+  email,
   children,
 }: MessageButtonProps) {
   const router = useRouter();
@@ -28,7 +30,7 @@ export function MessageButton({
 
     if (!isChatExist && !roomId) {
       console.log('새 채팅방입니다.');
-      mutate({ userIds: joinIds });
+      mutate({ userIds: joinIds, otherUserEmail: email });
     } else {
       console.log('존재합니다.');
     }

@@ -1,119 +1,32 @@
 'use client';
 
-import { FiChevronLeft, FiBell, FiUserPlus, FiSettings } from 'react-icons/fi';
+import { FiBell } from 'react-icons/fi';
 import logo from '@/assets/logo.png';
 import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CUSTOM_NAV_PATHS } from '@/constants';
-import { useChatStore } from '@/store/chat/useChatStore';
-import { useRemoveChat } from '@/lib/chat/hook/useRemoveChat';
+import { usePathname } from 'next/navigation';
+import ChatEditHeader from './custom-header/chat-edit-header';
+import ChatHeader from './custom-header/chat-header';
+import CustomHeader from './custom-header/custom-header';
 import { Suspense } from 'react';
 
-function ChatRoomHeader() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const otherUserEmail = searchParams.get('otherUserEmail');
-  const otherUserEmailId = otherUserEmail?.split('@')[0];
-
-  return (
-    <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
-      <div className="absolute">
-        <FiChevronLeft
-          size="25"
-          className="cursor-pointer"
-          onClick={() => {
-            // [TODO] 경고 문구
-            router.replace('/chat');
-          }}
-        />
-      </div>
-      <div className="flex-1 flex justify-center">{otherUserEmailId}</div>
-    </header>
-  );
-}
-
-export default function Header() {
-  const pathname = usePathname() as string;
-  const router = useRouter();
-  const { willRemoveRoomCnt, willRemoveRooms } = useChatStore();
-  const { mutate } = useRemoveChat();
-
-  const handleAddChatRoom = () => {
-    router.push('/chat/addChat');
-  };
-
-  // 채팅방 더보기 버튼
-  const handleMore = () => {
-    router.push('/chat/editRoom');
-  };
-
-  // 채팅방 삭제 버튼
-  const handleRemoveChats = () => {
-    if (
-      confirm(
-        '채팅방에 나가면 채팅 내용이 모두 사라집니다. \n 정말 나가시겠습니까?',
-      )
-    ) {
-      mutate({ willRemoveRooms });
-    }
-  };
-
+const renderHeader = (pathname: string) => {
   if (
     Object.keys(CUSTOM_NAV_PATHS).includes(pathname) ||
     pathname.startsWith('/user/') ||
     pathname.startsWith('/feed/')
   ) {
     const title = CUSTOM_NAV_PATHS[pathname];
-    return (
-      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
-        <div className="absolute">
-          <FiChevronLeft
-            size="25"
-            className="cursor-pointer"
-            onClick={() => {
-              // [TODO] 경고 문구
-              router.back();
-            }}
-          />
-        </div>
-        <div className="flex-1 flex justify-center">{title}</div>
-      </header>
-    );
+    return <CustomHeader title={title} />;
   } else if (pathname.startsWith('/chat/room')) {
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <ChatRoomHeader />
-      </Suspense>
-    );
+    return <CustomHeader />;
   } else if (pathname === '/chat') {
-    return (
-      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-start items-center bg-white z-10">
-        <h1 className="flex-1 font-bold">채팅</h1>
-        <div className="flex gap-2">
-          <FiUserPlus
-            style={{ cursor: 'pointer' }}
-            size={25}
-            onClick={handleAddChatRoom}
-          />
-          <FiSettings
-            style={{ cursor: 'pointer' }}
-            size={25}
-            onClick={handleMore}
-          />
-        </div>
-      </header>
-    );
+    return <ChatHeader />;
   } else if (pathname == '/chat/editRoom') {
-    return (
-      <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-between items-center bg-white z-10">
-        <div onClick={() => router.back()}>완료</div>
-        <div onClick={handleRemoveChats}>
-          {willRemoveRoomCnt > 0 ? `${willRemoveRoomCnt} 나가기` : ''}
-        </div>
-      </header>
-    );
+    return <ChatEditHeader />;
   } else
     return (
+      // 디폴트 헤더 영역
       <header className="fixed w-full max-w-custom h-[60px] p-default flex justify-between items-center bg-white z-10">
         <Image
           src={logo.src}
@@ -127,4 +40,10 @@ export default function Header() {
         </div>
       </header>
     );
+};
+
+export default function Header() {
+  const pathname = usePathname() as string;
+
+  return <Suspense>{renderHeader(pathname)}</Suspense>;
 }
