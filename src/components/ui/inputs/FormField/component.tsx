@@ -21,7 +21,6 @@ const FormField = React.forwardRef<HTMLInputElement, IFormFieldProps>(
       variant,
       errorMsg,
       onFieldChange,
-      ...props
     },
     ref,
   ) => {
@@ -39,8 +38,8 @@ const FormField = React.forwardRef<HTMLInputElement, IFormFieldProps>(
                 type="password"
                 variant={variant}
                 placeholderText={placeholderText}
+                handlechange={onFieldChange}
                 ref={ref}
-                {...props}
               />
             </>
           );
@@ -56,8 +55,8 @@ const FormField = React.forwardRef<HTMLInputElement, IFormFieldProps>(
                 type="text"
                 variant={variant}
                 placeholderText={placeholderText}
+                handlechange={onFieldChange}
                 ref={ref}
-                {...props}
               />
             </>
           );

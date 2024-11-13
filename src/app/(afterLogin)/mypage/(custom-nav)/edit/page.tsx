@@ -74,10 +74,8 @@ export default function Page() {
     >
       <div className="w-full flex flex-col">
         <div className="h-[100px] w-full flex justify-center">
-          <div className="profile-btn w-[100px] h-[100px] bg-gray-300 rounded-full absolute">
-            {user && user?.profileImg ? (
-              <Profile src={user?.profileImg} size="xlg" />
-            ) : previewImg ? (
+          <div className="profile-btn w-[100px] h-[100px] rounded-full absolute">
+            {previewImg ? (
               <div className="profile-btn w-[100px] h-[100px] rounded-full border border-gray-200 absolute overflow-hidden flex justify-center">
                 <Image
                   width={100}
@@ -88,9 +86,8 @@ export default function Page() {
                 ></Image>
               </div>
             ) : (
-              <></>
+              <Profile src={user?.profileImg as string} size="xlg" />
             )}
-
             <div className="absolute bottom-0 right-0 p-2 border border-gray-300 rounded-full bg-white cursor-pointer">
               <div onClick={handleClick}>
                 <FiEdit2 />

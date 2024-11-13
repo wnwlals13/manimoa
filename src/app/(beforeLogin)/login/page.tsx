@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { ResponseError } from '@/types';
 import { useLogin } from '@/lib/auth/hook/useLogin';
 import FormField from '@/components/ui/inputs/FormField/component';
+import { useLoadingStore } from '@/store/loading/loadingStore';
 
 export interface LoginFormInputs {
   email: string;
@@ -16,6 +17,7 @@ export interface LoginFormInputs {
 
 export default function Page() {
   const { mutate, isError, isSuccess, failureReason } = useLogin();
+  const { setLoading } = useLoadingStore();
 
   const {
     register,
@@ -27,6 +29,7 @@ export default function Page() {
   });
 
   const onSubmit = (data: LoginFormInputs) => {
+    setLoading(true);
     mutate(data);
   };
 

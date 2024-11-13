@@ -5,12 +5,13 @@ import { useFetchProfile } from '@/lib/user/hook/useFetchProfile';
 import InteractiveButton from '@/components/ui/button/interactive-button';
 import Profile from '@/components/ui/profile';
 import { useAuthStore } from '@/store/auth/useAuthStore';
+import MyProfileSkeleton from '@/components/ui/skeleton/mypage/my-profile-skeleton';
 
 export default function Page() {
   const { user } = useAuthStore();
   const { data, isPending } = useFetchProfile(user?.uid as string);
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending) return <MyProfileSkeleton />;
   const follwData = data as IFollow;
 
   return (

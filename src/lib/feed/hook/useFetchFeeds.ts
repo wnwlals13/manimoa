@@ -1,16 +1,27 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchFeeds } from '../api';
-import { useAuthStore } from '@/store/auth/useAuthStore';
-import { PaginatedFeedDto, UseFetchFeedsProps } from '../type';
+import {
+  QueryFunctionContext,
+  QueryKey,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
 
-export const useFetchFeeds = ({ pageSize }: UseFetchFeedsProps) => {
-  const { user } = useAuthStore();
+interface IQueryProps<TData = any, TPageParam = number> {
+  queryKey: QueryKey;
+  queryFn: (context: QueryFunctionContext<any, number>) => Promise<TData>;
+  initialPageParam: TPageParam;
+  getNextPageParam: (lastPage: any) => any;
+}
 
-  return useInfiniteQuery<PaginatedFeedDto, Error>({
-    queryKey: ['feeds'],
-    queryFn: async ({ pageParam = 1 }) =>
-      fetchFeeds(pageParam as number, pageSize, user?.uid as string),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
-};
+export function fetchInfiniteQueries<Q extends IQueryProps[]>(queries: Q) {
+  const queryResults = queries.map(
+    ({ queryKey, queryFn, initialPageParam, getNextPageParam }) =>
+      useInfiniteQuery({
+        queryKey,
+        queryFn,
+        initialPageParam,
+        getNextPageParam,
+        staleTime: 1000 * 60 * 5,
+      }),
+  );
+
+  return queryResults;
+}

@@ -6,10 +6,13 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import Cookies from 'js-cookie';
 import { RegisterRequestDto, RegisterResponseDto } from '../type';
 import { useToast } from '@/store/toast/useToast';
+import { useLoadingStore } from '@/store/loading/loadingStore';
 
 export const useRegister = () => {
   const { setUser } = useAuthStore();
   const { addToast } = useToast();
+  const { setLoading } = useLoadingStore();
+
   const router = useRouter();
   return useMutation<RegisterResponseDto, Error, RegisterRequestDto>({
     mutationFn: userRegister,
@@ -28,6 +31,9 @@ export const useRegister = () => {
       });
 
       router.replace('/');
+    },
+    onSettled: () => {
+      setLoading(false);
     },
     onError: (err: ResponseError) => {
       return { status: err.status, message: err.message };

@@ -5,8 +5,11 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const db = await conn();
-    const userIds = (await request.json()) as string[];
-    console.log('userId =>', userIds);
+    const body = await request.json();
+
+    const userIds = body.userIds as string[];
+    const otherUserEmail = body.otherUserEmail as string;
+    console.log('userId =>', userIds, 'otherUserEmail', otherUserEmail);
     // 채팅방 생성
     const result: [QueryResult, FieldPacket[]] = await db.query(`
         INSERT INTO chat_rooms (created_at) VALUES (current_timestamp())
@@ -31,11 +34,12 @@ export async function POST(request: NextRequest) {
       console.error('채팅방 추가 실패');
     }
 
-    return NextResponse.json({
-      status: 200,
-      message: '채팅방 추가 성공',
-      newChatRoomId,
-    });
+    return NextResponse.json(
+      { newChatRoomId, otherUserEmail },
+      {
+        status: 200,
+      },
+    );
   } catch (err) {
     console.error(`채팅방 추가 도중 에러 발생`, err);
   }

@@ -6,6 +6,7 @@ export interface ChatStore {
   setWillRemoveCnt: (count: number) => void;
   setWillRemoveRooms: (roomId: string) => void;
   filterWillRemoveRooms: (roomId: string) => void;
+  resetRemoveRooms: () => void;
 }
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -20,4 +21,5 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       willRemoveRooms: deleted,
     }));
   },
+  resetRemoveRooms: () => set({ willRemoveRoomCnt: 0, willRemoveRooms: [] }),
 }));
