@@ -32,7 +32,7 @@ const renderHeader = (pathname: string) => {
           src={logo.src}
           width={80}
           height={100}
-          alt="마니모아의 메인 로고입니다."
+          alt="마니모아(manimoa)의 메인 로고"
           priority={true}
         />
         <div>

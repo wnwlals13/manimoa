@@ -122,7 +122,7 @@ async function UserFeeds({ userId }: { userId: string }) {
                     }/storage/v1/object/public/${
                       process.env.NEXT_PUBLIC_STORAGE_BUCKET
                     }/${item.images?.split(',')[0]}`}
-                    alt=""
+                    alt={`${userId} 사용자가 업로드한 피드 이미지`}
                     style={{ height: '100%' }}
                   />
                 )}

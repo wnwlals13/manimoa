@@ -42,7 +42,7 @@ export function CarouselMultipleComponent({
                 width: '100%',
                 height: '100%',
               }}
-              alt=""
+              alt="피드 게시글 이미지"
             />
           </SwiperSlide>
         ))}
@@ -66,6 +66,7 @@ export function CarouselMultipleComponent({
                 width: '100%',
                 height: '100%',
               }}
+              alt="피드 게시글 이미지"
             />
           </SwiperSlide>
         ))}
