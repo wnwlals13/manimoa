@@ -85,7 +85,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   // 전역 소켓 연결
   const connectToSocket = () => {
-    const _socket = SocketIoClient(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
+    const _socket = SocketIoClient(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
+      withCredentials: true,
+    });
     setGlobalSocket(_socket);
     setIsConnected(true);
   };
