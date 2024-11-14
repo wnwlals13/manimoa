@@ -19,7 +19,7 @@ export default function ChatItem({
       className="flex border-b [&:not(:first-child)]:pt-default pb-2 gap-2"
     >
       <Profile
-        src={participantProfiles[0] ? participantProfiles[0].profileImg : ''}
+        src={participantProfiles ? participantProfiles[0].profileImg : ''}
         size="md"
       />
       <div className="flex-1 flex justify-start items-center">
