@@ -30,7 +30,7 @@ export const CarouselComponent = React.memo(function CarouselComponent({
         <SwiperSlide key={idx} className="h-[340px]">
           <Image
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${item}`}
-            alt={`picture of feed, ${item}`}
+            alt="사용자가 업로드한 피드 이미지"
             fill
             sizes="(max-width: 768px) 100%"
             priority

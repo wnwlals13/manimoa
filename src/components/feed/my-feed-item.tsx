@@ -21,7 +21,7 @@ export default function MyFeedItem(feed: FeedData) {
             width={50}
             height={50}
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${imagesArray[0]}`}
-            alt="이미지 정보"
+            alt="사용자가 업로드한 피드 이미지"
             style={{ borderRadius: '5px', maxHeight: `50px` }}
           />
         )}

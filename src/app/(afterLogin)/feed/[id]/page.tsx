@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     openGraph: {
       title: `${feed.userName} 의 피드 게시물`,
       description: `${feed.content}`,
-      images: [feed.images],
+      images: [feed.images ? feed.images.split(',')[0] : '/thumbnail.png'],
     },
   };
 }

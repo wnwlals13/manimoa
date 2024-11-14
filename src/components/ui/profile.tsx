@@ -33,14 +33,14 @@ export default function Profile({ src, size }: IProfileProps) {
           sizes="(max-width:768px) 40px"
           style={{ objectFit: 'cover' }}
           src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${src}`}
-          alt="프로필 이미지입니다."
+          alt="사용자가 업로드한 프로필 이미지"
         ></Image>
       ) : (
         <Image
           fill
           sizes="(max-width:768px) 40px"
           style={{ objectFit: 'cover' }}
-          alt="프로필 이미지입니다."
+          alt="사용자가 업로드한 프로필 이미지"
           src={profileImg}
         />
       )}

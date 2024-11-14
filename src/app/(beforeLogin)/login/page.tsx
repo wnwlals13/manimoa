@@ -60,7 +60,7 @@ export default function Page() {
       className="w-full h-full min-h-screen flex flex-col justify-center items-center gap-2 pl-8 pr-8"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <img width={180} src={logo.src} alt="" />
+      <img width={180} src={logo.src} alt="manimoa 메인 로고 이미지" />
       <FormField
         variant={`${errors.email ? 'error' : 'default'}`}
         fieldType="text"

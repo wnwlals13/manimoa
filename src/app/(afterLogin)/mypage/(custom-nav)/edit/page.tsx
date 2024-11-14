@@ -81,7 +81,7 @@ export default function Page() {
                   width={100}
                   height={100}
                   style={{ objectFit: 'cover' }}
-                  alt="프로필 이미지"
+                  alt=""
                   src={URL.createObjectURL(previewImg)}
                 ></Image>
               </div>
