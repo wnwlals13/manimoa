@@ -8,6 +8,11 @@ import LoadingSpinner from '@/components/ui/spinner/loading-spinner';
 export const metadata: Metadata = {
   title: 'manimoa',
   description: '소비 습관 형성 어플리케이션, 마니모아',
+  openGraph: {
+    title: 'manimoa',
+    description: '소비 습관 형성 어플리케이션, 마니모아',
+    images: ['/thumbnail.png'],
+  },
 };
 
 export default function RootLayout({
