@@ -1,7 +1,7 @@
 import { FollowButton } from '@/components/ui/button/follow-button';
 import { MessageButton } from '@/components/ui/button/message-button';
 import Profile from '@/components/ui/profile';
-import { FeedData, UserData } from '@/types';
+import { FeedData } from '@/types';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
