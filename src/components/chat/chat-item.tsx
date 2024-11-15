@@ -26,7 +26,7 @@ export default function ChatItem({
         {participantEmails[0].email}
       </div>
       <div className="flex justify-center items-center text-[12px]">
-        {formatChatDate(createdAt)}
+        {formatChatDate(new Date(createdAt))}
       </div>
     </Link>
   );
