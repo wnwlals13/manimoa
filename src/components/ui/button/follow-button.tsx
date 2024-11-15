@@ -9,12 +9,10 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 export function FollowButton({ targetId }: { targetId: string }) {
   const { user } = useAuthStore();
   const { data: isFriend } = useIsFollow(targetId);
-  const { mutate: followMutate, isPending: followPending } = useUserFollow(
-    targetId,
-    user?.uid as string,
-  );
+  const { mutate: followMutate, isPending: followPending } =
+    useUserFollow(targetId);
   const { mutate: unfollowMutate, isPending: unfollowPending } =
-    useUserUnFollow(targetId, user?.uid as string);
+    useUserUnFollow(targetId);
 
   const handleUnFollow = () =>
     unfollowMutate({ targetId, userId: user?.uid as string, state: !isFriend });

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userFollow } from '../api';
 import { FollowProps } from '../type';
 
-export const useUserFollow = (targetId: string, userId: string) => {
+export const useUserFollow = (targetId: string) => {
   const queryClient = useQueryClient();
   return useMutation<Promise<void>, Error, FollowProps>({
     mutationFn: userFollow,
