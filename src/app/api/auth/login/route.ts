@@ -68,7 +68,8 @@ export async function POST(req: Request) {
             email: user[0].email,
             name: user[0].name,
             profileImg: user[0].profile_img,
-            accessToken: accessToken,
+            accessToken,
+            refreshToken,
           }),
         );
 

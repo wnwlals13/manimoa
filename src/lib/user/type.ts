@@ -17,3 +17,8 @@ export interface InfoRequestDto {
   profileImg: string | null;
   userId: string;
 }
+
+export interface IFollow {
+  followCount: number;
+  followingCount: number;
+}

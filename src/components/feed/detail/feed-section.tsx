@@ -4,6 +4,7 @@ import { useFetchOneFeed } from '@/lib/feed/hook/useFetchOneFeed';
 import { FeedData } from '@/types';
 import UserInfo from '../user-info';
 import { CarouselComponent } from '@/components/ui/carousel/carousel';
+import { formatChatDate } from '@/util/formatChatDate';
 
 export function FeedSection({ feedId }: { feedId: string }) {
   const { data: feed, isLoading: fetchFeedLoading } = useFetchOneFeed(feedId);
@@ -28,7 +29,7 @@ export function FeedSection({ feedId }: { feedId: string }) {
           <></>
         )}
         <div className="pt-1 pb-default text-sm text-gray-500">
-          {feed?.createdAt}
+          {formatChatDate(new Date(feed?.createdAt as string))}
         </div>
       </div>
     </>

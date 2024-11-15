@@ -6,10 +6,16 @@ import MyMessage from './my-message';
 import OtherMessage from './other-message';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useFetchAllMessages } from '@/lib/chat/hook/useFetchAllMessages';
+import { formatChatDate } from '@/util/formatChatDate';
 
-interface MessageListProps {
+export interface MessageListProps {
   chats: IMsg | null;
   roomId: string;
+}
+
+export interface IMsgDate {
+  type: 'date';
+  date: string;
 }
 
 export default function MessageList({ chats, roomId }: MessageListProps) {
@@ -17,14 +23,59 @@ export default function MessageList({ chats, roomId }: MessageListProps) {
   const ulRef = useRef<HTMLUListElement | null>(null);
   const [chat, setChat] = useState<IMsg[]>([]);
 
-  const { data } = useFetchAllMessages(roomId); // 기존 채팅 이력
-  const messageList = data?.messages;
+  const { data, isLoading } = useFetchAllMessages(roomId); // 기존 채팅 이력
 
-  useEffect(() => {
-    if (messageList) {
-      setChat([...messageList]);
-    }
-  }, [messageList]);
+  const messageGrpList: IMsg[] = data?.pages.flatMap((page) => page.data) || [];
+
+  const isIMsgDate = (item: IMsg | IMsgDate): item is IMsgDate => {
+    return (item as IMsgDate).type === 'date';
+  };
+
+  // 채팅 날짜별로 그룹화하여 렌더링하기
+  const renderChatWithDate = (items: IMsg[]): React.ReactNode => {
+    const result: (IMsg | IMsgDate)[] = [];
+    let lastDate: any = null;
+
+    items.forEach((item) => {
+      const messageDate = new Date(item.date); // 메세지 전송 날짜
+      const formatDate = formatChatDate(messageDate);
+
+      // 이전 메세지 전송일자가 없거나 메세지 전송 일자가 다른 경우 날짜를 목록에 추가한다.
+      if (!lastDate || formatDate !== formatChatDate(lastDate)) {
+        result.push({
+          type: 'date',
+          date: `${messageDate.getMonth() + 1}월 ${messageDate.getDate()}일`,
+        });
+      }
+
+      result.push(item);
+      lastDate = messageDate; // 마지막 전송일자 설정
+    });
+
+    return (
+      <>
+        {result.map((item, idx) => {
+          if (isIMsgDate(item)) {
+            return (
+              <div className="flex justify-center mb-2" key={idx}>
+                <p className="bg-blue-200 p-1 pl-2 pr-2 rounded-2xl text-sm">
+                  {item.date}
+                </p>
+              </div>
+            );
+          } else {
+            {
+              return item.author === user?.uid ? (
+                <MyMessage key={idx} {...item} />
+              ) : (
+                <OtherMessage key={idx} {...item} />
+              );
+            }
+          }
+        })}
+      </>
+    );
+  };
 
   useEffect(() => {
     // 메세지 전송 시 추가된 메세지들
@@ -46,18 +97,28 @@ export default function MessageList({ chats, roomId }: MessageListProps) {
     if (ulRef.current) ulRef.current.scrollTop = ulRef.current?.scrollHeight;
   }, [chat]);
 
+  // 데이터 로딩이 끝나면 메세지 담기
+  useEffect(() => {
+    if (!isLoading) {
+      messageGrpList.forEach((item) => setChat((prev) => [...prev, item]));
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    //clean up
+    return () => {
+      setChat([]);
+    };
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <ul
       ref={ulRef}
       className="flex-1 h-screen max-h-full bg-blue-100 p-default pt-[80px] pb-[100px] flex flex-col gap-2 overflow-y-scroll"
     >
-      {chat.map((item, idx) =>
-        item.author == user?.uid ? (
-          <MyMessage key={idx} {...item} />
-        ) : (
-          <OtherMessage key={idx} {...item} />
-        ),
-      )}
+      {renderChatWithDate(chat)}
     </ul>
   );
 }

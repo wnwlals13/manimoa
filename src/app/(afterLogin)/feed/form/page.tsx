@@ -1,7 +1,7 @@
 'use client';
 
 import { Toggle } from '@/components/ui/toggle';
-import { Suspense, useEffect, useState } from 'react';
+import { ChangeEvent, Suspense, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import 'swiper/swiper-bundle.css';
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -13,9 +13,10 @@ import { useUpdateFeed } from '@/lib/feed/hook/useUpdateFeed';
 import CustomTextArea from '@/components/ui/inputs/CustomTextArea/component';
 import FormField from '@/components/ui/inputs/FormField/component';
 import FeedImageList from '@/components/feed/feed-image-list';
+import { formatChatDate } from '@/util/formatChatDate';
 
 interface feedFormInputs {
-  price: string;
+  price: number;
   content: string;
   priceOption: boolean;
 }
@@ -33,7 +34,7 @@ const FeedForm = () => {
 
   const { register, setValue, getValues, watch, handleSubmit } = useForm({
     defaultValues: {
-      price: '0',
+      price: 0,
       priceOption: false,
       content: '',
     },
@@ -65,40 +66,38 @@ const FeedForm = () => {
     });
   };
 
-  const renderDate = () => {
-    if (isEdit && feed) {
-      const FeedDate = new Date(feed.createdAt);
-      return `${FeedDate.getFullYear()}년 ${FeedDate.getMonth()}월 ${FeedDate.getDate()}일`;
-    } else {
-      const date = new Date();
-      return `${date.getFullYear()}년 ${
-        date.getMonth() + 1
-      }월 ${date.getDate()}일`;
-    }
-  };
-
-  const renderPriceOptionToggle = () => {
+  const renderPriceOptionToggle = useCallback(() => {
     return !watch('priceOption') ? '금액 보이기' : '금액 숨기기';
-  };
+  }, [getValues('priceOption')]);
 
-  const renderPriceOptionText = () => {
+  const renderPriceOptionText = useCallback(() => {
     return !watch('priceOption')
       ? '피드에는 노출되지 않습니다.'
       : '피드에 함께 보여집니다.';
-  };
+  }, [getValues('priceOption')]);
 
-  const handlePriceOption = () => {
+  const handlePriceOption = useCallback(() => {
     const prev = getValues('priceOption');
     setValue('priceOption', !prev);
-  };
+  }, [getValues('priceOption')]);
 
-  const renderFormButton = () => {
+  const renderFormButton = useCallback(() => {
     return isEdit ? '게시글 수정' : '게시글 추가';
-  };
+  }, [isEdit]);
+
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      const num = e.target.value;
+      setValue('price', Number(num));
+    },
+    [getValues('price')],
+  );
 
   useEffect(() => {
     if (isEdit && feed) {
-      setValue('price', feed?.price.toString());
+      // 수정인 경우, 기존의 정보 넣어주기
+      setValue('price', Number(feed?.price));
       setValue('content', feed.content);
       const imgUrls = feed.images?.split(',');
       setOldImgs(imgUrls);
@@ -113,7 +112,9 @@ const FeedForm = () => {
       <div className="flex-1 flex flex-col">
         <div className="flex pt-5 pb-5 border-b">
           <div className="min-w-[100px]">소비 일자</div>
-          {renderDate()}
+          {formatChatDate(
+            isEdit ? new Date(feed?.createdAt as string) : new Date(),
+          )}
         </div>
         <div className="border-b pb-5 mb-5">
           <div className="flex gap-5 pt-5 items-center">
@@ -121,6 +122,7 @@ const FeedForm = () => {
               <div className="min-w-[100px]">오늘 소비</div>
               <FormField
                 fieldType="number"
+                onFieldChange={handleChange}
                 {...register('price', { required: true })}
               />
             </div>

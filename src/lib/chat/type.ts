@@ -1,3 +1,5 @@
+import { IMsg } from '@/types';
+
 export interface RequestChatDto {
   userIds: string[];
   otherUserEmail: string;
@@ -17,4 +19,9 @@ export interface SendRequestDto {
   msg: string;
   date: string;
   roomId: string;
+}
+
+export interface IPaginatedMessages {
+  data: IMsg[];
+  nextCursor?: number;
 }

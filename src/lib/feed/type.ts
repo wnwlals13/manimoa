@@ -13,7 +13,7 @@ export interface PaginatedFeedDto {
 }
 
 export interface uploadFeedRequestDto {
-  price: string;
+  price: number;
   content: string;
   priceOption: boolean;
   userId: string;
@@ -21,7 +21,7 @@ export interface uploadFeedRequestDto {
 }
 
 export interface updateFeedRequestDto {
-  price: string;
+  price: number;
   priceOption: boolean;
   content: string;
   userId: string;

@@ -117,10 +117,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log('sockets changed!', sockets);
-  }, [sockets]);
-
   return (
     <SocketContext.Provider
       value={{

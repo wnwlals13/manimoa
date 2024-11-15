@@ -1,6 +1,6 @@
 import { IChatRoom, IMsg } from '@/types';
 import Cookies from 'js-cookie';
-import { RequestChatDto } from './type';
+import { IPaginatedMessages, RequestChatDto } from './type';
 import { ChatRequestDto } from './hook/useFetchMyChatRooms';
 
 export const addNewChat = async (data: RequestChatDto) => {
@@ -84,17 +84,29 @@ export const fetchMyChatRooms = async ({
   }
 };
 
-export const fetchAllMessages = async (roomId: string) => {
-  try {
-    console.log('roomId', roomId);
-    const result = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/message/readAll?roomId=${roomId}`,
-      { method: 'get', cache: 'no-store' },
-    ).then((res) => res.json());
-    return result;
-  } catch (err) {
-    console.error('error', err);
+export const fetchAllMessages = async ({
+  pageParam,
+  roomId,
+}: {
+  pageParam: number;
+  roomId: string;
+}): Promise<IPaginatedMessages> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/message/readAll?page=${pageParam}&roomId=${roomId}`,
+    { method: 'get', cache: 'no-store' },
+  );
+
+  if (!response.ok) {
+    throw new Error(`메세지 조회 API 요청 실패 : ${response.status}`);
   }
+
+  if (!response) {
+    return { data: [], nextCursor: undefined };
+  }
+
+  const result = await response.json();
+
+  return result;
 };
 
 export const sendMessage = async (msg: IMsg) => {

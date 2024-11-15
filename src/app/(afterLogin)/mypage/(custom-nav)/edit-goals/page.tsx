@@ -24,7 +24,7 @@ function EditGoalsForm() {
 
   const [tempGoal, setTempGoal] = useState<string[]>([]);
   const [tempPrice, setTempPrice] = useState<string>();
-  console.log('edit-goals', data);
+
   const { control, register, handleSubmit, setValue } =
     useForm<ExpenseFormInputs>({
       defaultValues: {

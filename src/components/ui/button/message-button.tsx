@@ -34,7 +34,7 @@ export function MessageButton({
     } else {
       console.log('존재합니다.');
     }
-    router.push(`/chat/room/${roomId}`);
+    router.push(`/chat/room/${roomId}?otherUserEmail=${email}`);
   };
 
   return (

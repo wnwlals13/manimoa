@@ -1,6 +1,6 @@
 import { GoalData } from '@/types';
 import Cookies from 'js-cookie';
-import { GoalsRequestDto, InfoRequestDto } from './type';
+import { GoalsRequestDto, IFollow, InfoRequestDto } from './type';
 
 export const updateInfo = async (data: InfoRequestDto) => {
   try {
@@ -97,15 +97,12 @@ export const getUserList = async () => {
   return result;
 };
 
-export interface IFollow {
-  followCount: number;
-  followingCount: number;
-}
-
 export const getUserProfile = async (userId: string) => {
   try {
+    const cookieStore = Cookies.get('user') as string;
+    const user = JSON.parse(cookieStore);
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/getInfo?userId=${userId}&loginId=${user.uid}`,
       {
         method: 'GET',
         headers: {
@@ -115,16 +112,31 @@ export const getUserProfile = async (userId: string) => {
     );
 
     if (!response.ok) {
-      return { error: `팔로우/팔로잉 데이터 조회에 실패했습니다.` };
+      return { error: `유저 정보 조회에 실패했습니다.` };
     }
     const result = await response.json();
-    return result.data as IFollow;
+    return result.user;
   } catch (err) {
-    console.error(
-      `로그인 유저의 팔로우/팔로잉 데이터 조회 도중 에러 발생`,
-      err,
-    );
+    console.error(`유저 정보 데이터 조회 도중 에러 발생`, err);
   }
+};
+
+export const getUserFollowCnt = async (userId: string): Promise<IFollow> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/mypage/profile?q=${userId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`유저 팔로우/팔로잉 데이터 조회에 실패했습니다.`);
+  }
+  const result = await response.json();
+  return result.data;
 };
 
 export const getMyFeeds = async (userId: string) => {
