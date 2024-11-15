@@ -23,7 +23,9 @@ export const useLogin = () => {
         name: userData.name,
         profileImg: userData.profileImg,
       });
+
       Cookies.set('accessToken', userData.accessToken);
+      Cookies.set('refreshToken', userData.refreshToken);
 
       addToast({
         message: '로그인에 성공했습니다.',

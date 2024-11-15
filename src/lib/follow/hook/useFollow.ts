@@ -12,11 +12,8 @@ export const useUserFollow = (targetId: string, userId: string) => {
       queryClient.setQueryData(['follow', targetId], !newState.state);
       return { previousState };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile', userId] });
-    },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['follow', targetId] });
+      queryClient.invalidateQueries({ queryKey: ['followCount'] }); // 팔로우한 대상자 팔로우정보
     },
     onError: (err, context) => {
       console.error('팔로우에 실패했습니다.', err);

@@ -30,11 +30,11 @@ export default function Page() {
   const progressMsg = (): string => {
     const val = (Number(monthExpense) / Number(expense.price)) * 100;
 
-    if (25 < val && val < 5) {
+    if (25 < val && val <= 50) {
       return `👍 불필요한 지출은 줄이고 여유를 찾아보세요.`;
-    } else if (50 < val && val < 75) {
+    } else if (50 < val && val <= 75) {
       return `현명한 소비 계획을 세우고 미래의 행복을 키워보세요! :)`;
-    } else if (75 < val && val < 100) {
+    } else if (75 < val && val <= 100) {
       return `미래를 위한 투자를 하는 당신께 박수를!👏`;
     }
     return `👏 당신은 절약왕! 아낀만큼 주변사람들과의 관계도 챙겨보세요!`;
