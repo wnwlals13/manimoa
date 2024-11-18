@@ -4,6 +4,7 @@ import { FiSend } from 'react-icons/fi';
 import { useSendMessage } from '@/lib/chat/hook/useSendMessage';
 import { IMsg } from '@/types';
 import { useAuthStore } from '@/store/auth/useAuthStore';
+import { debounce } from '@/util/debounce';
 
 interface MessageInputProps {
   sendMessage: (roomId: string, message: IMsg) => void;
@@ -23,14 +24,12 @@ export default function MessageInput({
     setMsg(e.target.value);
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == 'Enter') {
-      e.preventDefault();
-      if (msg) {
-        handleSendMessage();
-      }
+  const handleKeyDown = debounce((e: KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.key == 'Enter' && msg) {
+      handleSendMessage();
     }
-  };
+  });
 
   const handleSendMessage = async () => {
     if (!inputRef.current) return;

@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
         FROM messages a 
         JOIN chat_rooms b ON (a.room_id = b.id)
         WHERE b.id = ?
+        ORDER BY a.created_at DESC
     `,
       [roomId],
     );

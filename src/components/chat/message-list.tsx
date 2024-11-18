@@ -7,6 +7,7 @@ import OtherMessage from './other-message';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useFetchAllMessages } from '@/lib/chat/hook/useFetchAllMessages';
 import { formatChatDate } from '@/util/formatChatDate';
+import { useInView } from 'react-intersection-observer';
 
 export interface MessageListProps {
   chats: IMsg | null;
@@ -23,13 +24,18 @@ export default function MessageList({ chats, roomId }: MessageListProps) {
   const ulRef = useRef<HTMLUListElement | null>(null);
   const [chat, setChat] = useState<IMsg[]>([]);
 
-  const { data, isLoading } = useFetchAllMessages(roomId); // 기존 채팅 이력
+  const { data, isLoading, fetchNextPage, isFetchingNextPage } =
+    useFetchAllMessages(roomId); // 기존 채팅 이력
 
-  const messageGrpList: IMsg[] = data?.pages.flatMap((page) => page.data) || [];
+  const messageGrpLast: IMsg[] = data?.pages[data?.pages.length - 1].data || [];
 
   const isIMsgDate = (item: IMsg | IMsgDate): item is IMsgDate => {
     return (item as IMsgDate).type === 'date';
   };
+
+  const { ref, inView } = useInView({
+    threshold: 0.5, // 화면의 20%가 보일 때 감지
+  });
 
   // 채팅 날짜별로 그룹화하여 렌더링하기
   const renderChatWithDate = (items: IMsg[]): React.ReactNode => {
@@ -94,15 +100,16 @@ export default function MessageList({ chats, roomId }: MessageListProps) {
 
   // 가장 최근 메세지가 보이도록 스크롤 하단 이동
   useEffect(() => {
+    // console.log('chat', chat, hasNextPage);
     if (ulRef.current) ulRef.current.scrollTop = ulRef.current?.scrollHeight;
   }, [chat]);
 
   // 데이터 로딩이 끝나면 메세지 담기
   useEffect(() => {
-    if (!isLoading) {
-      messageGrpList.forEach((item) => setChat((prev) => [...prev, item]));
+    if (!isLoading && !isFetchingNextPage) {
+      messageGrpLast.forEach((item) => setChat((prev) => [item, ...prev]));
     }
-  }, [isLoading]);
+  }, [isLoading, isFetchingNextPage]);
 
   useEffect(() => {
     //clean up
@@ -111,13 +118,24 @@ export default function MessageList({ chats, roomId }: MessageListProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <ul
       ref={ulRef}
-      className="flex-1 h-screen max-h-full bg-blue-100 p-default pt-[80px] pb-[100px] flex flex-col gap-2 overflow-y-scroll"
+      className="flex-1 h-screen max-h-full bg-blue-100 p-default pb-[100px] flex flex-col gap-2 overflow-y-scroll"
     >
+      {isFetchingNextPage ? (
+        <div>Loading...</div>
+      ) : (
+        <div ref={ref} style={{ width: '100%', height: 80 }} />
+      )}
       {renderChatWithDate(chat)}
     </ul>
   );
