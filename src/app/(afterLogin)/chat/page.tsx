@@ -3,8 +3,10 @@ import ChatItem from '@/components/chat/chat-item';
 import { Button } from '@/components/ui/button/button';
 import ChatListSkeleton from '@/components/ui/skeleton/chat/chat-list-skeleton';
 import { useFetchMyChatRooms } from '@/lib/chat/hook/useFetchMyChatRooms';
+import { useChatStore } from '@/store/chat/useChatStore';
 import { IChatRoom } from '@/types';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 function ChatRooms({ chat }: { chat: IChatRoom[] }) {
   const router = useRouter();
@@ -27,17 +29,18 @@ function ChatRooms({ chat }: { chat: IChatRoom[] }) {
 }
 
 export default function Page() {
+  const { setRoomCnt } = useChatStore();
   const { data, isLoading } = useFetchMyChatRooms({ pageSize: 10 });
 
+  const chats = data?.pages.flatMap((page) => page.chats) || [];
+  useEffect(() => {
+    setRoomCnt(chats.length);
+  }, [data]);
+
   if (isLoading) return <ChatListSkeleton count={10} />;
-
-  const chatsGroup = data?.pages.map((page) => page.chats) || [];
-
   return (
     <>
-      {chatsGroup.map((chats, i) => (
-        <ChatRooms key={i} chat={chats} />
-      ))}
+      <ChatRooms chat={chats} />
     </>
   );
 }

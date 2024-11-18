@@ -92,7 +92,7 @@ export const uploadFeed = async ({
         ),
       );
     }
-    console.log('paths', paths);
+
     // 2. db에 url 저장
     const contentData = {
       price,

@@ -3,6 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { updateFeedRequestDto } from '../type';
 import { useToast } from '@/store/toast/useToast';
+import { FEEDS_KEY } from '../key';
+import {
+  EXPENSES_KEY,
+  MONTHLY_EXPENSE_KEY,
+  MY_FEEDS_KEY,
+} from '@/lib/user/key';
 
 export const useUpdateFeed = () => {
   const router = useRouter();
@@ -12,10 +18,10 @@ export const useUpdateFeed = () => {
   return useMutation<Promise<void>, Error, updateFeedRequestDto>({
     mutationFn: updateFeed,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['feeds'] });
-      queryClient.invalidateQueries({ queryKey: ['myfeeds'] });
-      queryClient.invalidateQueries({ queryKey: ['expense'] });
-      queryClient.invalidateQueries({ queryKey: ['month-expense'] });
+      queryClient.invalidateQueries({ queryKey: [FEEDS_KEY] });
+      queryClient.invalidateQueries({ queryKey: [MY_FEEDS_KEY] });
+      queryClient.invalidateQueries({ queryKey: [EXPENSES_KEY] });
+      queryClient.invalidateQueries({ queryKey: [MONTHLY_EXPENSE_KEY] });
 
       addToast({
         message: '피드가 정상적으로 수정되었습니다.',

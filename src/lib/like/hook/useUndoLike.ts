@@ -6,6 +6,7 @@ import {
 import { undoLike } from '../api';
 import { PaginatedLikeDto } from '../../feed/type';
 import { likeDto } from '../type';
+import { LIKES_KEY } from '../key';
 
 export function useUnLike() {
   const queryClient = useQueryClient();
@@ -17,14 +18,13 @@ export function useUnLike() {
   >({
     mutationFn: undoLike,
     onMutate: async (value) => {
-      await queryClient.cancelQueries({ queryKey: ['likes'] });
-      const previousFeeds = queryClient.getQueryData(['likes']) as InfiniteData<
-        PaginatedLikeDto,
-        unknown
-      >;
+      await queryClient.cancelQueries({ queryKey: [LIKES_KEY] });
+      const previousFeeds = queryClient.getQueryData([
+        LIKES_KEY,
+      ]) as InfiniteData<PaginatedLikeDto, unknown>;
 
       queryClient.setQueryData(
-        ['likes'],
+        [LIKES_KEY],
         (old: InfiniteData<PaginatedLikeDto, unknown>) => {
           return {
             ...old,
@@ -47,12 +47,12 @@ export function useUnLike() {
       return { previousFeeds };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['likes'] });
+      queryClient.invalidateQueries({ queryKey: [LIKES_KEY] });
     },
     onError: (err, _, context) => {
       console.error('좋아요 해제에 실패했습니다.', err);
       if (context?.previousFeeds) {
-        queryClient.setQueryData(['likes'], context.previousFeeds);
+        queryClient.setQueryData([LIKES_KEY], context.previousFeeds);
       }
     },
   });

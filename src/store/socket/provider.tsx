@@ -5,6 +5,7 @@ import SocketIoClient, { Socket } from 'socket.io-client';
 import { useAuthStore } from '../auth/useAuthStore';
 import { IMsg } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
+import { MESSAGES_KEY } from '@/lib/chat/key';
 
 export interface SocketContextType {
   globalSocket: Socket | null;
@@ -80,7 +81,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     // 새로운 메세지 수신!
-    queryClient.invalidateQueries({ queryKey: [`messages-${message.roomId}`] });
+    queryClient.invalidateQueries({
+      queryKey: [`${MESSAGES_KEY}-${message.roomId}`],
+    });
   };
 
   // 전역 소켓 연결

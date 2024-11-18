@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
     // 피드 콘텐츠 추가
     const firstResponse: [QueryResult, FieldPacket[]] = await db.query(
-      `INSERT INTO feeds (user_id, content, price, price_option, created_at) VALUES (?,?,?,?,CURRENT_TIMESTAMP())`,
+      `INSERT INTO feeds (user_id, content, price, price_option) VALUES (?,?,?,?)`,
       [user.uid, req.content, req.price, option],
     );
     const first = firstResponse[0] as ResultSetHeader;

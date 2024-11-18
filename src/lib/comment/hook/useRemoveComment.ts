@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteComment } from '../api';
 import { removeCommentDto } from '../type';
+import { COMMENT_KEY } from '../key';
 
 export function useRemoveComment(feedId: string) {
   const queryClient = useQueryClient();
@@ -8,7 +9,7 @@ export function useRemoveComment(feedId: string) {
     mutationFn: deleteComment,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['comment', feedId],
+        queryKey: [COMMENT_KEY, feedId],
       });
     },
   });
