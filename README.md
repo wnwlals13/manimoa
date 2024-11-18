@@ -56,7 +56,8 @@ http://localhost:3000
 <details><summary> 로그인/회원가입
 </summary>
 
-_Write here!_
+![login](https://github.com/user-attachments/assets/ed7a13f2-9276-4310-bf33-3c02fdc619ff)
+![register](https://github.com/user-attachments/assets/9bc54386-4a5d-4c21-9a70-3848fcc59f33)
 
 </details>
 
@@ -66,7 +67,7 @@ _Write here!_
 <details><summary> 전체 피드 조회
 </summary>
 
-_Write here!_
+![main](https://github.com/user-attachments/assets/1aff78a3-c788-4908-a5a3-c8016f560b46)
 
 </details>
 
@@ -78,7 +79,7 @@ _Write here!_
 <details><summary> 피드 상세보기
 </summary>
 
-_Write here!_
+![feed-detail](https://github.com/user-attachments/assets/eaf0d967-d807-4ee3-a284-db66180b513c)
 
 </details>
 
@@ -87,7 +88,8 @@ _Write here!_
 <details><summary> 댓글 작성
 </summary>
 
-_Write here!_
+![comment-1](https://github.com/user-attachments/assets/1ca28a04-a7f5-43e7-b301-aa7e6eae9d2f)
+![comment-2](https://github.com/user-attachments/assets/03842531-609a-41f8-8730-6c78e958ad67)
 
 </details>
 
@@ -98,7 +100,7 @@ _Write here!_
 <details><summary> 좋아요 기능
 </summary>
 
-_Write here!_
+![likes](https://github.com/user-attachments/assets/051ed9a2-72b1-4030-90d3-db401209d35f)
 
 </details>
 
@@ -108,7 +110,7 @@ _Write here!_
 <details><summary> 팔로우/언팔로우
 </summary>
 
-_Write here!_
+![follow](https://github.com/user-attachments/assets/b731783d-b03c-4dfe-af90-aa1ce5dedf03)
 
 </details>
 
@@ -118,7 +120,9 @@ _Write here!_
 <details><summary> 1:1 채팅
 </summary>
 
-_Write here!_
+![chat](https://github.com/user-attachments/assets/b76cc37b-71c6-49b5-9f36-0bbd731b6670)
+![chat-new](https://github.com/user-attachments/assets/f7f0b716-a483-4834-bc58-c87447b20b33)
+![chat-delete](https://github.com/user-attachments/assets/75d7f535-9963-4591-b87d-473f4f51478f)
 
 </details>
 
@@ -126,12 +130,13 @@ _Write here!_
 - 다른 유저와 1:1 실시간 채팅
 - 이전 채팅 내역 조회
 - 참여중인 채팅 목록 조회
-- 참여중인 채팅 타가기 기능
+- 참여중인 채팅 나가기 기능
 
 <details><summary> 개인 정보 관리
 </summary>
 
-_Write here!_
+![mypage-edit-profile](https://github.com/user-attachments/assets/5190182b-00c7-4404-adcd-f8690e3859d2)
+![mypage-edit-goal](https://github.com/user-attachments/assets/6c1cfcdd-21cd-447c-a8d6-0c0f8f9cfee3)
 
 </details>
 
@@ -143,7 +148,7 @@ _Write here!_
 
 ## 아키텍처
 
-![아키텍처 설계도](https://github.com/user-attachments/assets/a2cf629a-ef97-4537-9dbc-9c5854151d4d)
+![아키텍처 설계도](https://github.com/user-attachments/assets/a63e66b8-5038-408c-909c-34caea796229)
 
 </br>
 
@@ -173,17 +178,12 @@ _Write here!_
  ┃ ┃ ┣ 📂search
  ┃ ┃ ┣ 📂user
  ┃ ┃ ┃ ┗ 📂[id]
- ┃ ┃ ┣ 📜error.tsx
- ┃ ┃ ┣ 📜layout.tsx
- ┃ ┃ ┗ 📜page.tsx
  ┃ ┣ 📂(beforeLogin)
  ┃ ┃ ┣ 📂login
  ┃ ┃ ┗ 📂register
  ┃ ┣ 📂@modal
  ┃ ┃ ┣ 📂@comment
  ┃ ┃ ┣ 📂@setting
- ┃ ┃ ┣ 📜default.tsx
- ┃ ┃ ┗ 📜layout.tsx
  ┃ ┣ 📂api
  ┃ ┃ ┣ 📂auth
  ┃ ┃ ┣ 📂chat
@@ -193,13 +193,6 @@ _Write here!_
  ┃ ┃ ┣ 📂like
  ┃ ┃ ┣ 📂mypage
  ┃ ┃ ┗ 📂user
- ┃ ┣ 📜favicon.ico
- ┃ ┣ 📜globals.css
- ┃ ┣ 📜layout.tsx
- ┃ ┣ 📜not-found.tsx
- ┃ ┣ 📜provider.tsx
- ┃ ┣ 📜robots.txt
- ┃ ┗ 📜sitemap.xml
  ┣ 📂assets
  ┣ 📂components
  ┣ 📂config

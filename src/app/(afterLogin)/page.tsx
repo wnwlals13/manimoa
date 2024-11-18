@@ -5,14 +5,13 @@ import { HydrationBoundary } from '@tanstack/react-query';
 import { fetchFeedsAction } from '@/actions/fetch-feeds.action';
 import { fetchLikesAction } from '@/actions/fetch-likes.action';
 import { getDehydratedQueries } from '@/util/react-query';
-
-const FEEDS_QUERY_KEY = 'feeds';
-const LIKES_QUERY_KEY = 'likes';
+import { FEEDS_KEY } from '@/lib/feed/key';
+import { LIKES_KEY } from '@/lib/like/key';
 
 export default async function Home() {
   const queries = await getDehydratedQueries([
-    { queryKey: [FEEDS_QUERY_KEY], queryFn: fetchFeedsAction },
-    { queryKey: [LIKES_QUERY_KEY], queryFn: fetchLikesAction },
+    { queryKey: [FEEDS_KEY], queryFn: fetchFeedsAction },
+    { queryKey: [LIKES_KEY], queryFn: fetchLikesAction },
   ]);
 
   return (

@@ -1,10 +1,11 @@
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { USERS_KEY } from '../key';
 
 export function useGetUserList(input: string) {
   const { user } = useAuthStore();
   return useInfiniteQuery({
-    queryKey: ['users', input],
+    queryKey: [USERS_KEY, input],
     queryFn: async ({ pageParam = 1 }) => {
       try {
         const userId = user?.uid;

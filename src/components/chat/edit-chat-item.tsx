@@ -1,38 +1,19 @@
-import { useChatStore } from '@/store/chat/useChatStore';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 import Profile from '../ui/profile';
 
 export interface EditChatProps {
   roomId: string;
   participantEmails: { id: string; email: string }[];
   participantProfiles: { id: string; profileImg: string }[];
+  handleDelete: (e: ChangeEvent<HTMLInputElement>, roomId: string) => void;
 }
 
 export function EditChatItem({
   roomId,
   participantEmails,
   participantProfiles,
+  handleDelete,
 }: EditChatProps) {
-  const {
-    willRemoveRooms,
-    filterWillRemoveRooms,
-    setWillRemoveCnt,
-    setWillRemoveRooms,
-  } = useChatStore();
-
-  useEffect(() => {
-    setWillRemoveCnt(willRemoveRooms.length);
-  }, [willRemoveRooms]);
-
-  // 체크하면 삭제대상
-  const handleCheck = (e: ChangeEvent<HTMLInputElement>, roomId: string) => {
-    if (e.target.checked) {
-      setWillRemoveRooms(roomId);
-    } else {
-      filterWillRemoveRooms(roomId);
-    }
-  };
-
   return (
     <div className="flex border-b [&:not(:first-child)]:pt-2 pb-2 gap-5">
       <div className="inline-flex items-center">
@@ -41,7 +22,7 @@ export function EditChatItem({
             type="checkbox"
             className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
             id="check"
-            onChange={(e) => handleCheck(e, roomId)}
+            onChange={(e) => handleDelete(e, roomId)}
           />
           <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
             <svg
@@ -63,7 +44,7 @@ export function EditChatItem({
       </div>
       <div className="flex gap-2">
         <Profile
-          src={participantProfiles[0] ? participantProfiles[0].profileImg : ''}
+          src={participantProfiles ? participantProfiles[0].profileImg : ''}
           size="md"
         />
         <div className="flex-1 flex justify-start items-center">

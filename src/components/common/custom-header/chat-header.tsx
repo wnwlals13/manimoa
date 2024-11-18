@@ -1,8 +1,10 @@
+import { useChatStore } from '@/store/chat/useChatStore';
 import { useRouter } from 'next/navigation';
 import { FiSettings, FiUserPlus } from 'react-icons/fi';
 
 export default function ChatHeader() {
   const router = useRouter();
+  const { roomCnt } = useChatStore();
 
   const handleAddChatRoom = () => {
     router.push('/chat/addChat');
@@ -10,6 +12,8 @@ export default function ChatHeader() {
 
   // 채팅방 더보기 버튼
   const handleMore = () => {
+    if (roomCnt < 1) return;
+
     router.push('/chat/editRoom');
   };
 
