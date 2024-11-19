@@ -31,10 +31,11 @@ export const CarouselComponent = React.memo(function CarouselComponent({
           <Image
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${item}`}
             alt="사용자가 업로드한 피드 이미지"
-            fill
-            sizes="(max-width: 768px) 100%"
-            priority
-            style={{ objectFit: 'cover' }}
+            width={600}
+            height={400}
+            priority={idx === 0}
+            sizes="(max-width: 768px) 100vw, 600px"
+            style={{ height: '100%', objectFit: 'cover' }}
           />
         </SwiperSlide>
       ))}
