@@ -117,7 +117,7 @@ function EditGoalsForm() {
           </div>
         </div>
       </div>
-      <Button variant="default" size="full">
+      <Button variant="primary" size="full">
         저장하기
       </Button>
     </form>

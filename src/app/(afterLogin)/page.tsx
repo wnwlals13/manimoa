@@ -1,4 +1,3 @@
-import { FiPlus } from 'react-icons/fi';
 import InteractiveButton from '@/components/ui/button/interactive-button';
 import FeedList from '@/components/feed/feed-list';
 import { HydrationBoundary } from '@tanstack/react-query';
@@ -24,12 +23,14 @@ export default async function Home() {
         <FeedList />
       </HydrationBoundary>
       <InteractiveButton
-        variant="default"
-        className="fixed custom:right-[calc((100vw-570px)/2)] right-5 bottom-20 rounded-full flex justify-center items-center h-[50px] w-[50px] shadow-lg z-10"
+        className="fixed custom:right-[calc((100vw-570px)/2)] right-5 bottom-20 rounded-full flex justify-center items-center h-[50px] w-[50px] shadow-lg z-10 bg-primary"
         name="add_feed"
-      >
-        <FiPlus color="white" size="25" />
-      </InteractiveButton>
+        isIcon={true}
+        icon="plus"
+        iconColor="white"
+        variant="primary"
+        size="md"
+      ></InteractiveButton>
     </div>
   );
 }

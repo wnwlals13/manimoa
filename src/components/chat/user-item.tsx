@@ -1,7 +1,6 @@
 import { IChatUser } from '@/types';
-import { Button } from '../ui/button/button';
-import { FiSend } from 'react-icons/fi';
 import Profile from '../ui/profile';
+import { IconButton } from '../ui/button/IconButton';
 
 export interface IChatUserProps extends IChatUser {
   onHandleJoin: (
@@ -21,9 +20,7 @@ export default function UserItem({ onHandleJoin, ...item }: IChatUserProps) {
       <Profile src={item.profileImg as string} size="md" />
       <div className="flex-1 flex justify-start items-center">{item.name}</div>
       <div className="flex items-center">
-        <Button variant="none" onClick={onHandleJoinRoom}>
-          <FiSend size={30} />
-        </Button>
+        <IconButton icon="message" variant="none" onClick={onHandleJoinRoom} />
       </div>
     </div>
   );

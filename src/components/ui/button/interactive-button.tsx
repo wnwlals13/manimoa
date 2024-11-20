@@ -4,70 +4,59 @@ import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from './button';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { VariantProps } from 'class-variance-authority';
-import { useDeleteFeed } from '@/lib/feed/hook/useRemoveFeed';
 import { useModalStore } from '@/store/modal/useModalStore';
+import { IconButton, IconButtonProps, IconType } from './IconButton';
 
 interface InteractiveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  variant?: 'default' | 'outline' | 'main' | 'submain' | 'none';
-  size?: 'default' | 'full' | 'sm';
-  className?: string;
+    VariantProps<typeof buttonVariants>,
+    IconButtonProps {
   name: string;
   children?: React.ReactNode;
+  isIcon?: boolean;
 }
 
 export default function InteractiveButton({
-  variant,
-  size,
   children,
   name,
+  isIcon = false,
+  icon,
   ...props
 }: InteractiveButtonProps) {
   const router = useRouter();
   const { logout } = useAuthStore();
-  const { setIsOpen, setModalContent } = useModalStore();
+  const { setIsOpen, setModalContent } = useModalStore(); //모달 Store
 
-  const { mutate, isPending: isLoading } = useDeleteFeed();
-
-  const onClick = () => {
-    console.log('button name', name);
-    if (name === 'edit_profile') {
+  // 버튼 name에 따라 인터랙션하는 분기처리
+  const handleClick = () => {
+    if (name.includes('edit_profile')) {
       router.push(`/mypage/edit`);
-    } else if (name === 'logout') {
+    } else if (name.includes('logout')) {
       logout();
       router.push('/login');
-    } else if (name === 'add_feed') {
-      // 새 피드 작성
+    } else if (name.includes('add_feed')) {
       router.push(`/feed/form?isEdit=${false}`);
-    } else if (name.startsWith('edit_feed')) {
-      // 유저가 작성한 피드 수정
-      const feedId = name.split('.')[1];
-      router.push(`/feed/form?isEdit=${true}&feedId=${feedId}`);
-    } else if (name.startsWith('delete_feed')) {
-      const feedId = name.split('.')[1];
-      mutate(feedId);
-      router.refresh();
-    } else if (name.startsWith('comments')) {
-      // 댓글 모달창
+    } else if (name.includes('comments')) {
       const feedId = name.split('.')[1];
       setModalContent('comment', feedId);
       setIsOpen(true);
-    } else if (name.startsWith('openModal')) {
+    } else if (name.includes('openModal')) {
       const feedId = name.split('.')[1];
       setIsOpen(true);
       setModalContent('setting', feedId);
     }
   };
   return (
-    <Button
-      variant={variant}
-      size={size}
-      onClick={onClick}
-      disabled={isLoading}
-      {...props}
-    >
-      {children}
-    </Button>
+    <>
+      {isIcon && icon ? (
+        <IconButton onClick={handleClick} icon={icon} {...props}>
+          {children}
+        </IconButton>
+      ) : (
+        <Button onClick={handleClick} {...props}>
+          {children}
+        </Button>
+      )}
+    </>
   );
 }

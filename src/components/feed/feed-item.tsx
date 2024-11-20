@@ -41,8 +41,13 @@ export const FeedItem = React.memo(function FeedItem({
           isLiked={isUserDoLike}
           likeCount={likeCount}
         />
-        <InteractiveButton variant="submain" name={`comments.${feedId}`}>
-          <FiMessageCircle size="20" /> {commentCount}
+        <InteractiveButton
+          variant="accent"
+          name={`comments.${feedId}`}
+          isIcon={true}
+          icon="comment"
+        >
+          {commentCount}
         </InteractiveButton>
       </div>
       <FeedContents

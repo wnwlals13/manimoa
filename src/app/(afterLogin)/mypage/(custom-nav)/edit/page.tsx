@@ -113,7 +113,7 @@ export default function Page() {
           />
         </div>
       </div>
-      <Button variant="default" size="full" type="submit">
+      <Button variant="primary" size="full" type="submit">
         저장하기
       </Button>
     </form>

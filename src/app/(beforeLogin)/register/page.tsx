@@ -9,6 +9,7 @@ import { ResponseError } from '@/types';
 import { useRegister } from '@/lib/auth/hook/useRegister';
 import FormField from '@/components/ui/inputs/FormField/component';
 import { useLoadingStore } from '@/store/loading/loadingStore';
+import { debounce } from '@/util/debounce';
 
 export interface RegisterFormInputs {
   email: string;
@@ -48,7 +49,7 @@ export default function Page() {
     mutate({ email, password, name, goal });
   };
 
-  const isValideEmail = (e: ChangeEvent<HTMLInputElement>) => {
+  const isValideEmail = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const email = e.target.value;
     if (!EMAIL_PATTERN.test(email)) {
       setError('email', {
@@ -58,9 +59,9 @@ export default function Page() {
       setValue('email', email);
       clearErrors('email');
     }
-  };
+  });
 
-  const isValidePassword = (e: ChangeEvent<HTMLInputElement>) => {
+  const isValidePassword = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const password = e.target.value;
     if (!PASSWORD_PATTERN.test(password)) {
       setError('password', {
@@ -71,7 +72,7 @@ export default function Page() {
       setValue('password', password);
       clearErrors('password');
     }
-  };
+  });
 
   const handleNameVal = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
@@ -142,7 +143,12 @@ export default function Page() {
         {...register('goal')}
       />
       <div className="flex flex-col items-center w-full mt-5 gap-3">
-        <Button variant="default" size="full" disabled={isLoading}>
+        <Button
+          variant="primary"
+          size="full"
+          type="submit"
+          disabled={isLoading}
+        >
           회원가입
         </Button>
       </div>

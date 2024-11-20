@@ -24,7 +24,7 @@ export function FollowButton({ targetId }: { targetId: string }) {
   } else {
     return (
       <Button
-        variant={isFriend ? 'outline' : 'main'}
+        variant={isFriend ? 'outline' : 'secondary'}
         size="full"
         disabled={followPending || unfollowPending}
         onClick={isFriend ? handleUnFollow : handleFollow}
