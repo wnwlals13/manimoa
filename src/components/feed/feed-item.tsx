@@ -1,4 +1,3 @@
-import { FiMessageCircle } from 'react-icons/fi';
 import { CarouselComponent } from '../ui/carousel/carousel';
 import { IFeedWithLikeData } from '@/types';
 import InteractiveButton from '../ui/button/interactive-button';

@@ -61,7 +61,7 @@ export function CommentItem({
         isEdit ? (
           <div className="flex gap-1">
             <Button
-              variant="submain"
+              variant="accent"
               onClick={() => {
                 const content = inputRef.current?.value as string;
                 const commentId = id;

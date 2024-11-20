@@ -5,7 +5,7 @@ import { Button, buttonVariants } from './button';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { VariantProps } from 'class-variance-authority';
 import { useModalStore } from '@/store/modal/useModalStore';
-import { IconButton, IconButtonProps, IconType } from './IconButton';
+import { IconButton, IconButtonProps } from './IconButton';
 
 interface InteractiveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,

@@ -57,7 +57,7 @@ export default function MessageInput({
         onKeyDown={handleKeyDown}
       ></input>
       <Button
-        variant={!msg ? `outline` : 'submain'}
+        variant={!msg ? `outline` : 'accent'}
         onClick={handleSendMessage}
         disabled={!msg}
       >
