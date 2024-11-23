@@ -6,5 +6,6 @@ export function useFetchProfile(userId: string) {
   return useQuery({
     queryKey: [PROFILE_KEY, userId],
     queryFn: () => getUserProfile(userId),
+    staleTime: 3 * 60 * 1000,
   });
 }

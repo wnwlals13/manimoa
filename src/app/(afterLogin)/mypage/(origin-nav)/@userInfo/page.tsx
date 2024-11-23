@@ -6,6 +6,8 @@ import UserProfileInfo from '@/components/user/user-profile-info';
 export default function Page() {
   const { user } = useAuthStore();
 
+  if (!user?.uid) return <></>;
+
   return (
     <>
       <UserProfileInfo userId={user?.uid as string} />

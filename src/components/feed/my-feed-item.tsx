@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import InteractiveButton from '../ui/button/interactive-button';
 import { formatDate } from '@/util/formatDate';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 
 export default function MyFeedItem(feed: FeedData) {
-  const { id, content, images, createdAt } = feed;
+  const { user } = useAuthStore();
+  const { id, content, images, createdAt, userId } = feed;
   const feedDisplayDate = formatDate(createdAt);
   let imagesArray;
   if (images) {
@@ -32,11 +34,13 @@ export default function MyFeedItem(feed: FeedData) {
           <p className="text-sm text-gray-500">{feedDisplayDate}</p>
         </div>
       </Link>
-      <div>
-        <InteractiveButton variant="none" name={`openModal.${id}`}>
-          <FiMoreHorizontal />
-        </InteractiveButton>
-      </div>
+      {user?.uid === userId && (
+        <div>
+          <InteractiveButton variant="none" name={`openModal.${id}`}>
+            <FiMoreHorizontal />
+          </InteractiveButton>
+        </div>
+      )}
     </div>
   );
 }

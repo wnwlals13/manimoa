@@ -11,6 +11,7 @@ export function useUpdateInfo(user: UserData) {
   const { setUser } = useAuthStore();
   const { addToast } = useToast();
   const router = useRouter();
+
   return useMutation<InfoRequestDto, Error, InfoRequestDto>({
     mutationFn: updateInfo,
     onSuccess: (res) => {

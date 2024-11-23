@@ -82,7 +82,7 @@ export default function Page() {
         {...register('password', { required: '비밀번호를 입력해주세요.' })}
       />
       <div className="flex flex-col items-center w-full mt-5 gap-3">
-        <Button variant="default" size="full">
+        <Button variant="primary" size="full" type="submit">
           로그인
         </Button>
         <Link href={'/register'}>회원가입</Link>

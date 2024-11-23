@@ -17,7 +17,7 @@ export const fetchLikesAction = async ({
         `&pageSize=` +
         pageSize +
         `&userId=` +
-        user.id,
+        user.uid,
       { cache: 'no-store' },
     ).then((res) => res.json());
 

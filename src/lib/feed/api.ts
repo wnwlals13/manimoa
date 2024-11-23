@@ -175,20 +175,13 @@ export const updateFeed = async ({
   }
 };
 
-export const fetchFeeds = async (
-  pageParam: number,
-  pageSize: number,
-  userId: string,
-) => {
-  console.log('iscall?');
+export const fetchFeeds = async (pageParam: number, pageSize: number) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/feed/readAll?cursor=` +
         pageParam +
         `&pageSize=` +
-        pageSize +
-        `&userId=` +
-        userId,
+        pageSize,
       { cache: 'no-store' },
     ).then((res) => res.json());
 

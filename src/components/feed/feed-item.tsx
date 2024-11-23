@@ -1,4 +1,3 @@
-import { FiMessageCircle } from 'react-icons/fi';
 import { CarouselComponent } from '../ui/carousel/carousel';
 import { IFeedWithLikeData } from '@/types';
 import InteractiveButton from '../ui/button/interactive-button';
@@ -34,15 +33,20 @@ export const FeedItem = React.memo(function FeedItem({
   return (
     <div className="border-b mb-4">
       <UserInfo writer={userName} writerId={userId} profileImg={profileImg!} />
-      {imgsArr && <CarouselComponent images={imgsArr} />}
+      {imgsArr ? <CarouselComponent images={imgsArr} /> : <></>}
       <div className="flex gap-2 mt-4">
         <LikeButton
           feedId={feedId}
           isLiked={isUserDoLike}
           likeCount={likeCount}
         />
-        <InteractiveButton variant="submain" name={`comments.${feedId}`}>
-          <FiMessageCircle size="20" /> {commentCount}
+        <InteractiveButton
+          variant="accent"
+          name={`comments.${feedId}`}
+          isIcon={true}
+          icon="comment"
+        >
+          {commentCount}
         </InteractiveButton>
       </div>
       <FeedContents
