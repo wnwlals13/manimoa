@@ -9,10 +9,12 @@ export function useFetchExpenseInfo(userId: string) {
       {
         queryKey: [EXPENSES_KEY, userId],
         queryFn: () => getExpenseInfo(userId),
+        staleTime: 3 * 60 * 1000,
       },
       {
         queryKey: [MONTHLY_EXPENSE_KEY, userId],
         queryFn: () => getUserMonthExpense(userId),
+        staleTime: 3 * 60 * 1000,
       },
     ],
   });

@@ -24,8 +24,8 @@ export default function UserProfileInfo({ userId }: { userId: string }) {
           <div className="flex gap-5 items-center">
             <Profile src={user?.profileImg as string} size="lg" />
             <div className="flex flex-col">
-              <h1 className="font-semibold text-lg">{user && user.email}</h1>
-              <p className="text-sm text-gray-500">{user && user.name}</p>
+              <h1 className="font-semibold text-lg">{user?.email}</h1>
+              <p className="text-sm text-gray-500">{user?.name}</p>
             </div>
           </div>
           <div className="flex-1 flex justify-center gap-5">

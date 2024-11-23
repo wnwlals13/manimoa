@@ -10,8 +10,6 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const cursor = Number(searchParams.get('cursor'));
     const pageSize = Number(searchParams.get('pageSize'));
-    const userId = searchParams.get('userId');
-    console.log('cursor', cursor, 'pageSize', pageSize, userId);
 
     const response = await db.query(
       ` 
@@ -33,12 +31,9 @@ export async function GET(request: NextRequest) {
         ON a.id = b.feed_id 
       LEFT JOIN users c
         ON a.user_id = c.id 
-      LEFT JOIN likes d
-        on a.id  = d.feed_id AND d.user_id = ? 
       WHERE a.deleted_at is NULL 
       GROUP BY a.id 
       ORDER BY a.created_at DESC`,
-      [userId],
     );
 
     const feeds = response[0] as FeedData[];

@@ -19,7 +19,7 @@ export default function FeedList() {
     {
       queryKey: [FEEDS_KEY],
       queryFn: async ({ pageParam = 1 }) =>
-        fetchFeeds(pageParam as number, ROWS_PER_PAGE, user?.uid as string),
+        fetchFeeds(pageParam as number, ROWS_PER_PAGE),
       initialPageParam: 1,
       getNextPageParam: (lastPage: any) => lastPage.nextCursor,
     },
@@ -57,11 +57,13 @@ export default function FeedList() {
     <div>
       {feedsGroup &&
         likesGroup &&
-        feedsGroup?.map((feed: IFeedWithLikeData, idx: number) => (
-          <div key={idx}>
-            <FeedItem key={idx} {...likesGroup[idx]} {...feed} />
-          </div>
-        ))}
+        feedsGroup?.map((feed: IFeedWithLikeData, idx: number) => {
+          return (
+            <div key={idx}>
+              <FeedItem key={idx} {...likesGroup[idx]} {...feed} />
+            </div>
+          );
+        })}
       {feeds.isFetchingNextPage ? (
         <div>Loading...</div>
       ) : (
