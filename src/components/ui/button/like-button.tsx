@@ -1,7 +1,7 @@
 import { useLike } from '@/lib/like/hook/useDoLike';
 import { useUnLike } from '@/lib/like/hook/useUndoLike';
 import { useAuthStore } from '@/store/auth/useAuthStore';
-import { IconButton } from './IconButton';
+import { Button } from './button';
 
 export function LikeButton({
   feedId,
@@ -25,13 +25,13 @@ export function LikeButton({
   };
 
   return (
-    <IconButton
+    <Button
       icon={isLiked ? 'like' : 'unlike'}
       style={{ width: '65px' }}
       onClick={!isLiked ? handleLike : handleUnLike}
       disabled={likePending || unlikePending}
     >
       {likeCount}
-    </IconButton>
+    </Button>
   );
 }

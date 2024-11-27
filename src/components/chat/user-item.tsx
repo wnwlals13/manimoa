@@ -1,6 +1,6 @@
 import { IChatUser } from '@/types';
 import Profile from '../ui/profile';
-import { IconButton } from '../ui/button/IconButton';
+import { Button } from '../ui/button/button';
 
 export interface IChatUserProps extends IChatUser {
   onHandleJoin: (
@@ -20,7 +20,7 @@ export default function UserItem({ onHandleJoin, ...item }: IChatUserProps) {
       <Profile src={item.profileImg as string} size="md" />
       <div className="flex-1 flex justify-start items-center">{item.name}</div>
       <div className="flex items-center">
-        <IconButton icon="message" variant="none" onClick={onHandleJoinRoom} />
+        <Button icon="message" variant="none" onClick={onHandleJoinRoom} />
       </div>
     </div>
   );

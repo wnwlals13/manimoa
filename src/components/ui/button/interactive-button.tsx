@@ -1,16 +1,15 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button, buttonVariants } from './button';
+import { Button, ButtonProps, buttonVariants } from './button';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { VariantProps } from 'class-variance-authority';
 import { useModalStore } from '@/store/modal/useModalStore';
-import { IconButton, IconButtonProps } from './IconButton';
 
 interface InteractiveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants>,
-    IconButtonProps {
+    ButtonProps {
   name: string;
   children?: React.ReactNode;
   isIcon?: boolean;
@@ -48,15 +47,11 @@ export default function InteractiveButton({
   };
   return (
     <>
-      {isIcon && icon ? (
-        <IconButton onClick={handleClick} icon={icon} {...props}>
-          {children}
-        </IconButton>
-      ) : (
-        <Button onClick={handleClick} {...props}>
+      {
+        <Button onClick={handleClick} icon={icon} {...props}>
           {children}
         </Button>
-      )}
+      }
     </>
   );
 }
