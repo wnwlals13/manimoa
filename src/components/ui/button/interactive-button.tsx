@@ -18,7 +18,7 @@ interface InteractiveButtonProps
 export default function InteractiveButton({
   children,
   name,
-  isIcon = false,
+
   icon,
   ...props
 }: InteractiveButtonProps) {
