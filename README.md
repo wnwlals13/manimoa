@@ -1,36 +1,14 @@
-# 💸 manimoa (마니모아)
+# Manimoa(마니모아) 🐭
 
-텅장되기 쉬운 요즘 고물가 시대, 친구들과 오순도순 대화하며 알뜰한 소비 습관을 공유하는 SNS 서비스
 ![thumbnail](https://github.com/user-attachments/assets/f0c6da4f-688c-4a9a-999d-e6dc15f4e0a8)
+
+<div align="center"> 텅장되기 쉬운 요즘 고물가 시대, 친구들과 오순도순 대화하며<br/> <b>알뜰한 소비 습관</b>을 공유하는 SNS 서비스 <br/><br/> 🔗 사이트 링크 : https://dev-manimoa.vercel.app/</div>
 
 <br/>
 
 ## 프로젝트 진행기간
 
 2024.10.16 ~ 2024.11.16
-
-<br/>
-
-## 실행 방법
-
-1. 레포지토리 복제 후 의존성 설치
-
-```
-$ git clone https://github.com/wnwlals13/manimoa.git
-$ npm install
-```
-
-2. 개발 서버 가동
-
-```
-npm run dev
-```
-
-3. 브라우저에서 실행
-
-```
-http://localhost:3000
-```
 
 <br/>
 
@@ -152,6 +130,17 @@ http://localhost:3000
 
 </br>
 
+## ERD
+
+<details><summary> ERD 설계도
+</summary>
+
+![drawSQL-image-export-2024-11-27](https://github.com/user-attachments/assets/a48c5ab7-abd2-458d-9f2a-de63b44b9aca)
+
+</details>
+
+</br>
+
 ## 폴더구조
 
 ```
@@ -160,44 +149,36 @@ http://localhost:3000
  ┣ 📂app
  ┃ ┣ 📂(afterLogin)
  ┃ ┃ ┣ 📂chat
- ┃ ┃ ┃ ┣ 📂addChat
- ┃ ┃ ┃ ┣ 📂editRoom
- ┃ ┃ ┃ ┣ 📂room
  ┃ ┃ ┃ ┃ ┗ 📂[id]
  ┃ ┃ ┣ 📂feed
- ┃ ┃ ┃ ┣ 📂[id]
- ┃ ┃ ┃ ┗ 📂form
+ ┃ ┃ ┃ ┃ ┗ 📂[id]
  ┃ ┃ ┣ 📂mypage
- ┃ ┃ ┃ ┣ 📂(custom-nav)
- ┃ ┃ ┃ ┃ ┣ 📂edit
- ┃ ┃ ┃ ┃ ┗ 📂edit-goals
- ┃ ┃ ┃ ┗ 📂(origin-nav)
- ┃ ┃ ┃ ┃ ┣ 📂@userFeeds
- ┃ ┃ ┃ ┃ ┣ 📂@userGoals
- ┃ ┃ ┃ ┃ ┣ 📂@userInfo
- ┃ ┃ ┣ 📂search
  ┃ ┃ ┣ 📂user
- ┃ ┃ ┃ ┗ 📂[id]
  ┃ ┣ 📂(beforeLogin)
  ┃ ┃ ┣ 📂login
  ┃ ┃ ┗ 📂register
  ┃ ┣ 📂@modal
- ┃ ┃ ┣ 📂@comment
- ┃ ┃ ┣ 📂@setting
  ┃ ┣ 📂api
- ┃ ┃ ┣ 📂auth
- ┃ ┃ ┣ 📂chat
- ┃ ┃ ┣ 📂comment
- ┃ ┃ ┣ 📂feed
- ┃ ┃ ┣ 📂feedformeta
- ┃ ┃ ┣ 📂like
- ┃ ┃ ┣ 📂mypage
- ┃ ┃ ┗ 📂user
  ┣ 📂assets
  ┣ 📂components
  ┣ 📂config
  ┣ 📂lib
  ┣ 📂store
+ ┣ 📂stories
  ┣ 📂util
- ┃┗ 📂__test__
 ```
+
+<ul>
+ <li>app : 라우트 폴더 디렉토리</li>
+ <ul>
+  <li>(afterLogin) : 로그인 시, 접근 가능한 라우트 폴더</li>
+  <li>(beforeLogin) : 로그인 전, 접근 가능한 라우트 폴더</li>
+ </ul>
+ <li>assets : 이미지 파일 저장소</li>
+ <li>components : 공용 컴포넌트</li>
+ <li>config : Database 및 기타 설정 파일</li>
+ <li>lib : 공용 훅 파일</li>
+ <li>store : Zustand 전역 상태 관리 파일</li>
+ <li>stories : Storybook 파일</li>
+ <li>util : 공용 유틸 함수 파일</li>
+</ul>

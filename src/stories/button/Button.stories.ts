@@ -59,3 +59,11 @@ export const None: Story = {
     variant: 'none',
   },
 };
+
+export const IconButton: Story = {
+  args: {
+    ...Primary.args,
+    icon: 'unlike',
+    iconPosition: 'left',
+  },
+};

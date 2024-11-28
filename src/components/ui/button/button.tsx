@@ -2,9 +2,18 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/util/utils';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { FiMessageCircle, FiPlus, FiSend } from 'react-icons/fi';
 
 export type BtnVariantType = 'primary' | 'secondary' | 'outline' | 'none';
 export type BtnSizeType = 'sm' | 'md' | 'lg' | 'full';
+export type IconType =
+  | 'like'
+  | 'unlike'
+  | 'comment'
+  | 'message'
+  | 'plus'
+  | undefined;
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
@@ -37,10 +46,34 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   children?: React.ReactNode;
+  icon?: IconType;
+  iconPosition?: 'left' | 'right';
+  iconColor?: 'black' | 'white';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ type = 'button', className, variant, size, children, ...props }, ref) => {
+  (
+    {
+      type = 'button',
+      className,
+      variant,
+      size,
+      children,
+      icon,
+      iconColor,
+      iconPosition = 'left',
+      ...props
+    },
+    ref,
+  ) => {
+    const renderIcon = (icon: IconType) => {
+      if (icon === 'like') return <AiFillHeart color="red" />;
+      else if (icon === 'unlike') return <AiOutlineHeart />;
+      else if (icon === 'comment') return <FiMessageCircle />;
+      else if (icon === 'message') return <FiSend />;
+      else if (icon === 'plus') return <FiPlus color={iconColor} size="25" />;
+    };
+
     return (
       <button
         type={type}
@@ -48,11 +81,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
+        {iconPosition === 'left' && renderIcon(icon)}
         {children}
+        {iconPosition === 'right' && renderIcon(icon)}
       </button>
     );
   },
 );
 Button.displayName = 'Button';
+Button.propTypes = {};
 
 export { Button, buttonVariants };

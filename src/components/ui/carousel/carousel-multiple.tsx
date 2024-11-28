@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FiX } from 'react-icons/fi';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -35,7 +36,7 @@ export function CarouselMultipleComponent({
             >
               <FiX size={20} />
             </button>
-            <img
+            <Image
               src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${process.env.NEXT_PUBLIC_STORAGE_BUCKET}/${item}`}
               style={{
                 objectFit: 'cover',
@@ -59,7 +60,7 @@ export function CarouselMultipleComponent({
             >
               <FiX size={20} />
             </button>
-            <img
+            <Image
               src={URL.createObjectURL(item)}
               style={{
                 objectFit: 'cover',
