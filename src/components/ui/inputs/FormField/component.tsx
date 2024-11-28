@@ -29,7 +29,7 @@ const FormField = React.forwardRef<HTMLInputElement, IFormFieldProps>(
         case 'password':
           return (
             <>
-              {labelName && (
+              {labelText && (
                 <label className="text-md" htmlFor={labelName}>
                   {labelText}
                 </label>
@@ -46,7 +46,7 @@ const FormField = React.forwardRef<HTMLInputElement, IFormFieldProps>(
         case 'text':
           return (
             <>
-              {labelName && (
+              {labelText && (
                 <label className="text-md" htmlFor={labelName}>
                   {labelText}
                 </label>
