@@ -33,7 +33,7 @@ export const FeedItem = React.memo(function FeedItem({
   return (
     <div className="border-b mb-4">
       <UserInfo writer={userName} writerId={userId} profileImg={profileImg!} />
-      {imgsArr ? <CarouselComponent images={imgsArr} /> : <></>}
+      <CarouselComponent images={imgsArr} />
       <div className="flex gap-2 mt-4">
         <LikeButton
           feedId={feedId}
