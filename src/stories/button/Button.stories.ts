@@ -1,22 +1,40 @@
+import { Button } from '@/components/ui/button/button';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
-
-import { Button } from '../../components/ui/button/button';
+import {} from '@storybook/nextjs';
 
 export const BtnActionsData = {
   onClick: fn(),
 };
+
+const staticData = { iconColor: 'white' };
 
 const meta = {
   title: 'Components/Button',
   component: Button,
   parameters: {
     layout: 'centered',
+    controls: {
+      exclude: Object.keys(staticData),
+    },
   },
   tags: ['autodocs'],
   excludeStories: /.*Data$/,
-  args: {
-    ...BtnActionsData,
+  args: { isIcon: false, icon: 'unlike' },
+  argTypes: {
+    size: {
+      control: { type: 'radio' },
+      options: ['sm', 'md', 'lg'],
+    },
+    variant: {
+      control: { type: 'radio' },
+      options: ['primary', 'outline', 'secondary', 'accent', 'none'],
+    },
+    icon: {
+      control: { type: 'radio' },
+      options: ['unlike', 'like', 'comment', 'message', 'plus'],
+    },
+    isIcon: { control: 'boolean' },
   },
 } satisfies Meta<typeof Button>;
 
@@ -29,6 +47,7 @@ export const Primary: Story = {
     children: 'Click Me',
     size: 'md',
     variant: 'primary',
+    isIcon: false,
   },
 };
 

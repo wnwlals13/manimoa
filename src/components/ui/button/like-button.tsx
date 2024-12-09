@@ -26,6 +26,7 @@ export function LikeButton({
 
   return (
     <Button
+      isIcon={true}
       icon={isLiked ? 'like' : 'unlike'}
       style={{ width: '65px' }}
       onClick={!isLiked ? handleLike : handleUnLike}

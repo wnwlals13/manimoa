@@ -46,6 +46,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   children?: React.ReactNode;
+  isIcon?: boolean;
   icon?: IconType;
   iconPosition?: 'left' | 'right';
   iconColor?: 'black' | 'white';
@@ -59,6 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size,
       children,
+      isIcon = false,
       icon,
       iconColor,
       iconPosition = 'left',
@@ -81,9 +83,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {iconPosition === 'left' && renderIcon(icon)}
+        {isIcon && iconPosition === 'left' ? renderIcon(icon) : ''}
         {children}
-        {iconPosition === 'right' && renderIcon(icon)}
+        {isIcon && iconPosition === 'right' ? renderIcon(icon) : ''}
       </button>
     );
   },

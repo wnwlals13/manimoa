@@ -1,6 +1,5 @@
 'use client';
 import { useDeleteFeed } from '@/lib/feed/hook/useRemoveFeed';
-import { Button } from '@/components/ui/button/button';
 import { useModalStore } from '@/store/modal/useModalStore';
 import { useRouter } from 'next/navigation';
 
@@ -20,12 +19,7 @@ export default function Page() {
   };
 
   return (
-    <ul className="p-default">
-      <div className="flex justify-end">
-        <Button variant="none" size="sm" onClick={() => setIsOpen(false)}>
-          X
-        </Button>
-      </div>
+    <ul className="p-default min-h-[300px]">
       <li className="cursor-pointer pb-2" onClick={handleMove}>
         수정하기
       </li>

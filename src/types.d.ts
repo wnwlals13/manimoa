@@ -48,7 +48,7 @@ export interface CommentData {
   parentCommentId: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt?: string;
 }
 
 export interface ResponseError extends Error {

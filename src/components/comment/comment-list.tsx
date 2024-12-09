@@ -8,8 +8,8 @@ export function CommentList({
   comments,
   mutateFn,
 }: {
-  comments: CommentData[][];
-  mutateFn: (content: string, commentId: string) => void;
+  comments: CommentData[];
+  mutateFn: (content: string, commentId: string) => void | undefined;
 }) {
   const { user } = useAuthStore();
 
@@ -22,19 +22,17 @@ export function CommentList({
     );
 
   return (
-    <>
+    <div className="w-full max-h-[500px] overflow-scroll pl-default pr-default">
       {comments.map((comment, i) => (
         <div key={i}>
-          {comment.map((item: CommentData, idx: number) => (
-            <CommentItem
-              key={idx}
-              comments={item}
-              loginUserId={user?.uid}
-              mutateFn={mutateFn}
-            />
-          ))}
+          <CommentItem
+            key={i}
+            comments={comment}
+            loginUserId={user?.uid}
+            mutateFn={mutateFn}
+          />
         </div>
       ))}
-    </>
+    </div>
   );
 }

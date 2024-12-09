@@ -31,7 +31,7 @@ export function CommentSection({ feedId }: { feedId: string }) {
   };
 
   if (isPending) return <></>;
-  const commentsGroup = data ? data.pages.map((page) => page.comments) : [];
+  const commentsGroup = data ? data.pages.flatMap((page) => page.comments) : [];
 
   return (
     <div>

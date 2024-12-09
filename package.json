@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=chpt_957ef9a9a7bec67"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.678.0",

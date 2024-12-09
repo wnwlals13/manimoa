@@ -36,22 +36,18 @@ export default function Page() {
 
   if (!isOpen) return <></>;
   if (isPending) return <></>;
-  const commentsGroup = data ? data.pages.map((page) => page.comments) : [];
+  const commentsGroup = data ? data.pages.flatMap((page) => page.comments) : [];
 
   return (
     <>
       <div className="flex-1 flex flex-col justify-start items-center pb-[60px]">
-        <h3 className="flex-1 absolute flex justify-center font-bold h-[50px] w-full max-w-custom bg-white p-3">
-          댓글
-        </h3>
-        <div className="w-full max-h-[500px] overflow-scroll mt-[50px] pl-default pr-default">
-          <CommentList comments={commentsGroup} mutateFn={handleMutate} />
-          {isFetchingNextPage ? (
-            <div>Loading...</div>
-          ) : (
-            <div ref={ref} style={{ width: '100%', height: 80 }} />
-          )}
-        </div>
+        <CommentList comments={commentsGroup} mutateFn={handleMutate} />
+        {isFetchingNextPage ? (
+          <div>Loading...</div>
+        ) : (
+          <div ref={ref} style={{ width: '100%', height: 80 }} />
+        )}
+
         <CommentInput feedId={id} />
       </div>
     </>
