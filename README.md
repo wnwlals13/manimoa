@@ -2,7 +2,12 @@
 
 ![thumbnail](https://github.com/user-attachments/assets/f0c6da4f-688c-4a9a-999d-e6dc15f4e0a8)
 
-<div align="center"> 텅장되기 쉬운 요즘 고물가 시대, 친구들과 오순도순 대화하며<br/> <b>알뜰한 소비 습관</b>을 공유하는 SNS 서비스 <br/><br/> 🔗 사이트 링크 : https://dev-manimoa.vercel.app/</div>
+<div align="center"> 텅장되기 쉬운 요즘 고물가 시대, 친구들과 오순도순 대화하며<br/> <b>알뜰한 소비 습관</b>을 공유하는 SNS 서비스 <br/><br/> </div>
+
+## 프로젝트 배포링크
+
+- 🔗 [웹사이트](https://dev-manimoa.vercel.app/)
+- 🔗 [Storybook 링크](https://673dba9d9079f0c41224522c-eaaeopkwne.chromatic.com/?path=/docs/components-button--docs)
 
 <br/>
 
@@ -123,6 +128,13 @@
 - 내 피드 모아보기 기능
 
 </br>
+
+## 기술적 의사결정
+
+- Storybook 을 이용한 공통화된 UI 컴포넌트 환경과 문서 구축
+- Github Actions를 이용한 Storybook 배포 사이트 CI/CD 환경 구축
+
+<br />
 
 ## 아키텍처
 
