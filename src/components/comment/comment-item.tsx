@@ -66,7 +66,7 @@ export function CommentItem({
                 const content = inputRef.current?.value as string;
                 const commentId = id;
 
-                mutateFn && mutateFn(content, commentId.toString());
+                mutateFn(content, commentId.toString());
                 setNowEdit(false);
                 setIsEdit(false);
               }}

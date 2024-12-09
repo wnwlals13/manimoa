@@ -1,6 +1,5 @@
 'use client';
 import { useDeleteFeed } from '@/lib/feed/hook/useRemoveFeed';
-import { Button } from '@/components/ui/button/button';
 import { useModalStore } from '@/store/modal/useModalStore';
 import { useRouter } from 'next/navigation';
 
