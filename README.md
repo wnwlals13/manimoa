@@ -7,7 +7,7 @@
 ## 프로젝트 배포링크
 
 - 🔗 [웹사이트](https://dev-manimoa.vercel.app/)
-- 🔗 [Storybook 링크](https://673dba9d9079f0c41224522c-eaaeopkwne.chromatic.com/?path=/docs/components-button--docs)
+- 🔗 [Storybook 링크](https://673dba9d9079f0c41224522c-sczcqacssf.chromatic.com/?path=/docs/components-button--docs)
 
 <br/>
 
