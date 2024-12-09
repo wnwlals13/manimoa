@@ -17,8 +17,14 @@ export const NoImage: Story = {
   args: {},
 };
 
-export const DefaultImage: Story = {
+export const SingleImage: Story = {
   args: {
-    images: ['test.png', ''],
+    images: ['feed/defaultImage.png'],
+  },
+};
+
+export const MultipleImage: Story = {
+  args: {
+    images: ['feed/defaultImage.png', 'feed/defaultImage.png'],
   },
 };

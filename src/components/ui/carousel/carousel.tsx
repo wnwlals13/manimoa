@@ -36,7 +36,7 @@ export const CarouselComponent = React.memo(function CarouselComponent({
                 alt="사용자가 업로드한 피드 이미지"
                 width={600}
                 height={400}
-                loading={idx === 0 ? 'eager' : 'lazy'}
+                // loading={idx === 0 ? 'eager' : 'lazy'}
                 priority={idx === 0}
                 sizes="(max-width: 768px) 100vw, 600px"
                 style={{ height: '100%', objectFit: 'cover' }}
