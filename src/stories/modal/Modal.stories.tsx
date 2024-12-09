@@ -19,6 +19,7 @@ const meta = {
     (Story) => {
       const client = new QueryClient();
       useModalStore();
+
       return (
         <QueryClientProvider client={client}>
           <Story />
